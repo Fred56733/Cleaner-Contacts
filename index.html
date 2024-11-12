@@ -1,38 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contact Manager</title>
-    <!-- Link the external CSS file -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 
-    <!-- Include PapaParse from CDN -->
+    <!-- Include PapaParse from CDN for CSV parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
-    <!-- Use jsVCard from the jsVCard library -->
-    <!-- Doesnt work -->
+    <!-- Include ical.js library for VCF parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Contact Manager</h1>
-    <input type="file" id="fileInput">
+    <input type="file" id="fileInput" />
     <button id="uploadButton">Upload Contacts</button>
+    <button id="downloadButton" disabled>Download CSV</button>
 
     <table id="contactsTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-            </tr>
-        </thead>
-        <tbody id="contactsBody">
-            <!-- Contacts will be appended here -->
-        </tbody>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody id="contactsBody">
+        <!-- Contacts will be appended here -->
+      </tbody>
     </table>
 
-    <!-- Include your JavaScript file -->
-    <script type="module" src="app.js"></script>
-</body>
+    <script src="./app.js"></script>
+  </body>
 </html>
