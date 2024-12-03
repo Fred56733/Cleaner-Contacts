@@ -1,6 +1,10 @@
 let contacts = []; // Store all contacts globally
 const seenContacts = new Map(); // Track unique contacts by a key for deduplication
 
+document.getElementById('ViewButton').addEventListener('click', function () {
+  handleFileUpload(previewCSV);
+});
+
 // Event listener for the upload button
 document.getElementById('uploadButton').addEventListener('click', function () {
   handleFileUpload(addNewContacts);
@@ -8,10 +12,8 @@ document.getElementById('uploadButton').addEventListener('click', function () {
 });
 
 // Event listener for the download button
-document
-  .getElementById('downloadButton')
-  .addEventListener('click', function () {
-    downloadCSV(contacts); // Download the current contact list as CSV
+document.getElementById('downloadButton').addEventListener('click', function () {
+downloadCSV(contacts); // Download the current contact list as CSV
   });
 
 // Function to handle file uploads and apply a callback
@@ -63,6 +65,11 @@ function handleFileUpload(callback) {
   } else {
     alert('Please select a file to upload.');
   }
+}
+
+// Function to just display the CSV data
+function previewCSV(data) {
+  displayContactsCSV(data); // Use the same display function
 }
 
 // Function to add new contacts to the existing list
