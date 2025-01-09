@@ -1,3 +1,4 @@
+// Code to manage the contact data (Viewing, Cleaning, and Downloading)
 import React, { useState } from "react";
 import Papa from "papaparse";
 import FileInput from "../components/FileInput.jsx";

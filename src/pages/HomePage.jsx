@@ -1,3 +1,4 @@
+// Code to render the Home page of the application.
 import React from 'react';
 
 function HomePage() {

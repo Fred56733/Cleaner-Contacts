@@ -1,3 +1,4 @@
+// Used to clean and format raw contacts data
 import React, { useState } from "react";
 
 const ContactCleaner = ({ rawContacts, onCleaned }) => {
@@ -11,7 +12,7 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
       : phone;
   };
 
-  // Handle the cleaning process
+  // Handle the cleaning process and removing duplicates
   const cleanContacts = () => {
     setIsProcessing(true);
 
@@ -28,9 +29,9 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
         seenContacts.set(key, { firstName, lastName, email, phone });
         return { firstName, lastName, email, phone };
       } else {
-        // Duplicate handling logic (optional)
+        // Duplicate handling
         console.log("Duplicate found:", { firstName, lastName, email, phone });
-        return null; // Skip duplicates
+        return null; // Skips duplicates
       }
     });
 
@@ -41,6 +42,7 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
     onCleaned(filteredCleaned);
   };
 
+  // Reveils the button to clean contacts
   return (
     <div>
       <button onClick={cleanContacts} disabled={isProcessing}>

@@ -1,4 +1,4 @@
-// src/components/DownloadButton.jsx
+// Used to download the cleaned contacts data as a CSV file
 import React from "react";
 
 const DownloadButton = ({ onDownload }) => {

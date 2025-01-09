@@ -1,3 +1,4 @@
+// Used to upload a CSV file and parse it using PapaParse
 import React from "react";
 import Papa from "papaparse";
 

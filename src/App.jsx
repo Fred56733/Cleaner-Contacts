@@ -1,3 +1,4 @@
+// Displays the home page
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.jsx';

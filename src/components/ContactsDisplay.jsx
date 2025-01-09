@@ -1,3 +1,4 @@
+//Used to display cleaned contacts data
 import React from "react";
 
 const ContactsDisplay = ({ contacts }) => {
