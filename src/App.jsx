@@ -17,6 +17,8 @@ function App() {
         <NavBar />
         <main>
           <Routes>
+            <Route path="file-converter" element={<div>File Converter</div>} />
+            <Route path="/merge-page" element={<div>Merge Page</div>} />
             <Route path="/contact-manager" element={<ContactManagerPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<Navigate to="/" />} /> {/* Fallback to redirect to the home page if no other routes match */}
