@@ -42,6 +42,7 @@ table {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
+  table-layout: fixed
 }
 
 th,
@@ -49,6 +50,7 @@ td {
   padding: 10px 15px;
   border: 1px solid var(--border-color);
   text-align: left;
+  word-wrap: break-word;
 }
 
 th {
