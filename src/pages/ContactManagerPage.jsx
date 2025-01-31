@@ -14,8 +14,8 @@ const ContactManagerPage = () => {
     const formattedData = parsedData.map(contact => ({
       fn: contact["First Name"] || "N/A",
       ln: contact["Last Name"] || "N/A",
-      email: contact["E-mail Address"] || "N/A",
-      phone: contact["Mobile Phone"] || "N/A"
+      email: [contact["E-mail Address"], contact["E-mail 2 Address"], contact["E-mail 3 Address"]].filter(Boolean).join(', ') || "N/A",
+      phone: [contact["Business Phone"],contact["Business Phone 2"],contact["Car Phone"],contact["Company Main Phone"],contact["Home Phone"],contact["Home Phone 2"],contact["Mobile Phone"],contact["Primary Phone"],contact["Other Phone"]].filter(Boolean).join(', ') || "N/A"
     }));
     setRawContacts(formattedData);
     setCleanedContacts([]); // Reset cleaned contacts when new file is uploaded
