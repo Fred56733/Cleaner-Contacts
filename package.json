@@ -1,43 +1,26 @@
 {
-<<<<<<< HEAD
-  "name": "contact-manager",
+  "name": "cleanercontacts",
+  "private": true,
   "version": "1.0.0",
+  "type": "module",
   "main": "app.js",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "devDependencies": {
-    "@eslint/js": "^9.13.0",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.37.1",
-    "globals": "^15.11.0",
-    "prettier": "^3.3.3"
-=======
-  "name": "cleanercontacts",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
->>>>>>> Fred-React
-  },
   "dependencies": {
     "papaparse": "^5.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-<<<<<<< HEAD
+    "react-router-dom": "^7.1.1",
     "vcard-parser": "^1.0.0"
-=======
-    "react-router-dom": "^7.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -53,6 +36,5 @@
     "globals": "^15.14.0",
     "prettier": "^3.4.2",
     "vite": "^6.0.5"
->>>>>>> Fred-React
   }
 }
