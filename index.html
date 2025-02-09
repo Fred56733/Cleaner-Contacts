@@ -1,52 +1,13 @@
-<<<<<<< HEAD
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact Manager</title>
-    <link rel="stylesheet" href="style.css" />
-
-    <!-- Include PapaParse from CDN for CSV parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
-    <!-- Include ical.js library for VCF parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.js"></script>
-  </head>
-  <body>
-    <h1>Contact Manager</h1>
-    <input type="file" id="fileInput" />
-    <button id="ViewButton">View Contacts</button>
-    <button id="uploadButton">Clean Contacts</button>
-    <button id="downloadButton" disabled>Download CSV</button>
-
-    <table id="contactsTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-        </tr>
-      </thead>
-      <tbody id="contactsBody">
-        <!-- Contacts will be appended here -->
-      </tbody>
-    </table>
-
-    <script src="./app.js"></script>
-  </body>
-</html>
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Manager</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <div id="root"></div>  <!-- React mounts its components inside this div -->
     <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
->>>>>>> Fred-React
