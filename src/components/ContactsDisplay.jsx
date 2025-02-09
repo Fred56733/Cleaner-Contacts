@@ -1,28 +1,26 @@
-//Used to display cleaned contacts data
 import React from "react";
+import "./ContactsDisplay.css"; 
 
-const ContactsDisplay = ({ contacts }) => {
+const ContactsDisplay = ({ contacts, onSelectContact }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-        </tr>
-      </thead>
-      <tbody>
-        {contacts.map((contact, index) => (
-          <tr key={index}>
-            <td>{contact.firstName || contact.fn || "N/A"}</td>
-            <td>{contact.lastName || contact.ln || "N/A"}</td>
-            <td>{contact.email || "N/A"}</td>
-            <td>{contact.phone || "N/A"}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="contacts-container">
+      <h2>Contacts</h2>
+      {contacts.length === 0 ? (
+        <p>No contacts available</p>
+      ) : (
+        <ul className="contacts-list">
+          {contacts.map((contact, index) => (
+            <li
+              key={index}
+              className="contact-item"
+              onClick={() => onSelectContact(contact)} 
+            >
+              {contact["First Name"] || "Unknown"} {contact["Last Name"] || ""}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 
