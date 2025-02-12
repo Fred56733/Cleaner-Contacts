@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 const ContactsDisplay = ({ contacts }) => {
   const [sortedContacts, setSortedContacts] = useState(contacts);
   
-  useEffect(()=>{
+  useEffect (( ) => {
     setSortedContacts(contacts);
   }, [contacts]);
 
@@ -86,7 +86,7 @@ const ContactsDisplay = ({ contacts }) => {
       </thead>
       <tbody>
         {sortedContacts.map((contact, index) => (
-          <tr key={contact.firstName || index}>
+          <tr key={`${contact.email}-${contact.phone}-${index}`}>
             <td>{contact.firstName || contact.fn || "N/A"}</td>
             <td>{contact.lastName || contact.ln || "N/A"}</td>
             <td>{contact.email || "N/A"}</td>
