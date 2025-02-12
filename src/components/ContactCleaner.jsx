@@ -12,6 +12,16 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
       : phone;
   };
 
+  const formatEmail = (email) => {
+    if (email.includes("@")) {
+      return email;
+    }
+
+    // Add functions here
+
+    return email;
+  };
+
   // Handle the cleaning process and removing duplicates
   const cleanContacts = () => {
     setIsProcessing(true);
@@ -20,8 +30,14 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
     const cleaned = rawContacts.map((contact) => {
       const firstName = contact.fn || "N/A";
       const lastName = contact.ln || "N/A";
-      const email = (contact.email || "N/A").toLowerCase().trim();
+      const email = formatEmail((contact.email || "N/A").toLowerCase().trim());
       const phone = formatPhoneNumber(contact.phone || "");
+
+      // Skip contacts with invalid email
+      if (!email.includes("@")) {
+        console.log("Invalid email found:", email);
+        return null;
+      }
 
       const key = email + phone; // Unique key for deduplication
 
