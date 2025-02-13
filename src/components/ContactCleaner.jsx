@@ -42,7 +42,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
         invalidEmails.push(originalEmail);
       }
 
-      const key = email + phone; // Unique key for deduplication
+      const key = firstName + lastName + email + phone; // Unique key for deduplication
 
       if (!seenContacts.has(key)) {
         seenContacts.set(key, { firstName, lastName, email, phone });
