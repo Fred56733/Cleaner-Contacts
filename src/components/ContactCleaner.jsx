@@ -1,7 +1,7 @@
 // Used to clean and format raw contacts data
 import React, { useState } from "react";
 
-const ContactCleaner = ({ rawContacts, onCleaned }) => {
+const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Format phone numbers
@@ -28,11 +28,19 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
     setIsProcessing(true);
 
     const seenContacts = new Map();
+    const invalidEmails = [];
+    const duplicates = [];
     const cleaned = rawContacts.map((contact) => {
       const firstName = contact.fn || "N/A";
       const lastName = contact.ln || "N/A";
-      const email = formatEmail((contact.email || "N/A").toLowerCase().trim());
+      const originalEmail = contact.email || "N/A";
+      const email = formatEmail(originalEmail.toLowerCase().trim());
       const phone = formatPhoneNumber(contact.phone || "N/A");
+
+      // Check for invalid email
+      if (email === "N/A" && originalEmail !== "N/A") {
+        invalidEmails.push(originalEmail);
+      }
 
       const key = email + phone; // Unique key for deduplication
 
@@ -42,6 +50,7 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
       } else {
         // Duplicate handling
         console.log("Duplicate found:", { firstName, lastName, email, phone });
+        duplicates.push({ firstName, lastName, email, phone });
         return null; // Skips duplicates
       }
     });
@@ -51,6 +60,7 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
 
     // Pass cleaned contacts to the parent
     onCleaned(filteredCleaned);
+    onSummary({invalidEmails, duplicates});
   };
 
   // Reveils the button to clean contacts

@@ -4,10 +4,13 @@ import Papa from "papaparse";
 import FileInput from "../components/FileInput.jsx";
 import ContactsDisplay from "../components/ContactsDisplay.jsx";
 import ContactCleaner from "../components/ContactCleaner.jsx";
+import CleaningModal from "../components/CleaningModal.jsx";
 
 const ContactManagerPage = () => {
   const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
+  const [summary, setSummary] = useState({ duplicates: [], invalidEmails: []}); // Store summary of cleaning process
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
 
   // Function to parse uploaded file
   const handleFileParsed = (parsedData) => {
@@ -24,6 +27,12 @@ const ContactManagerPage = () => {
   // Function to handle cleaned contacts from ContactCleaner
   const handleCleanedContacts = (cleanedData) => {
     setCleanedContacts(cleanedData);
+  };
+
+  // Function to handle summary from ContactCleaner
+  const handleSummary = (summaryData) => {
+    setSummary(summaryData);
+    setIsModalOpen(true); // Open modal to show summary
   };
 
   // Function to download contacts as a CSV
@@ -49,10 +58,11 @@ const ContactManagerPage = () => {
           Download CSV
         </button>
         {rawContacts.length > 0 && (
-          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} />
+          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
         )}
       </div>
       <ContactsDisplay contacts={cleanedContacts.length > 0 ? cleanedContacts : rawContacts} />
+      <CleaningModal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} summary={summary} />
     </div>
   );
 };
