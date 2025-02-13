@@ -14,6 +14,7 @@ const ContactCleaner = ({ rawContacts, onCleaned }) => {
 
   const formatEmail = (email) => {
     if (email !== "N/A" && !email.includes("@")) {
+      console.log("Invalid email format:", email);
       return "N/A";
     }
 
