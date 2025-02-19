@@ -1,11 +1,10 @@
-// Used to upload a CSV file and parse it using PapaParse
-import React from "react";
+import React, { useState } from "react";
 import Papa from "papaparse";
 
 const FileInput = ({ onFileParsed }) => {
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const [isDragging, setIsDragging] = useState(false);
 
+  const handleFile = (file) => {
     if (!file) {
       alert("Please select a file to upload.");
       return;
@@ -21,7 +20,7 @@ const FileInput = ({ onFileParsed }) => {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            onFileParsed(results.data); // Pass parsed data to parent
+            onFileParsed(results.data);
           },
           error: (err) => {
             console.error("Error parsing CSV:", err);
@@ -35,8 +34,50 @@ const FileInput = ({ onFileParsed }) => {
     reader.readAsText(file);
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    handleFile(file);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files[0];
+    handleFile(file);
+  };
+
   return (
-    <input type="file" accept=".csv" onChange={handleFileChange} />
+    <div
+      className={`drop-area ${isDragging ? "dragging" : ""}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={() => document.getElementById("fileInput").click()}
+      style={{
+        border: "2px dashed #ccc",
+        padding: "20px",
+        textAlign: "center",
+        cursor: "pointer",
+      }}
+    >
+      <p>Drag & Drop your CSV file here or <span style={{ color: "blue", textDecoration: "underline" }}>click to browse</span></p>
+      <input
+        id="fileInput"
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        hidden
+      />
+    </div>
   );
 };
 
