@@ -16,9 +16,10 @@ body {
 }
 
 
+
 /* Layout Container */
 .app-container {
-  width: 95%;
+  width: 100%;
   max-width: 1400px; 
   background: rgba(0, 0, 0, 0.6);
   padding: 40px;
@@ -56,6 +57,7 @@ body {
   background: rgba(255, 165, 0, 0.3);
   border-color: rgba(255, 165, 0, 0.8);
 }
+
 
 
 /* Header */
