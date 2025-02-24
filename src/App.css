@@ -15,7 +15,6 @@ body {
   width: 100vw;
 }
 
-
 /* Layout Container */
 .app-container {
   width: 100%;
@@ -24,7 +23,16 @@ body {
   padding: 40px;
   border-radius: 12px;
   text-align: center;
-  margin-top: 40px;
+  margin-top: 85px;
+}
+
+/* Styling for action buttons (clean and download)  */
+.action-buttons {
+  margin-top: 20px;
+  justify-content: center;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; 
 }
 
 .drop-area {
