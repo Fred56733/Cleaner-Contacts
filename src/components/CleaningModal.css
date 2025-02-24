@@ -1,0 +1,17 @@
+.ReactModal__Overlay {
+    margin-top: 85px;
+    border-radius: 12px;
+  }
+  
+  .ReactModal__Content {
+    background: rgb(44, 113, 126) !important; 
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Add depth */
+    width: 50%;
+    max-width: 500px;
+    text-align: center;
+  }
+  .ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important; /* Adjust background darkness */
+  }
