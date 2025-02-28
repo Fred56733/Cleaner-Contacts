@@ -53,7 +53,7 @@ const ContactManagerPage = () => {
   return (
     <div>
       <FileInput onFileParsed={handleFileParsed} />
-      <div style={{ margin: "10px 0" }}>
+      <div className="action-buttons">
         <button onClick={downloadCSV} disabled={!rawContacts.length}>
           Download CSV
         </button>

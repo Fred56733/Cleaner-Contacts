@@ -7,6 +7,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
   // Format phone numbers
   const formatPhoneNumber = (phone) => {
     const cleaned = phone.replace(/\D/g, ""); // Remove non-digits
+    console.log("Format phone number:", phone, "=>", cleaned);
     return cleaned.length === 10
       ? `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
       : phone;

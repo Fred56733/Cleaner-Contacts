@@ -15,8 +15,6 @@ body {
   width: 100vw;
 }
 
-
-
 /* Layout Container */
 .app-container {
   width: 100%;
@@ -25,7 +23,16 @@ body {
   padding: 40px;
   border-radius: 12px;
   text-align: center;
+  margin-top: 85px;
+}
+
+/* Styling for action buttons (clean and download)  */
+.action-buttons {
   margin-top: 20px;
+  justify-content: center;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; 
 }
 
 .drop-area {
@@ -124,40 +131,6 @@ button:disabled {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Navigation Bar */
-nav {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 1rem;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-nav ul li a:hover {
-  background-color: rgba(255, 165, 0, 0.8);
-  color: black;
-}
-
 /* Table */
 table {
   width: 100%;
@@ -200,20 +173,6 @@ tr:hover td {
 .table-container {
   overflow-x: auto;
 }
-
-.ReactModal__Content {
-  background: rgb(44, 113, 126) !important; 
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Add depth */
-  width: 50%;
-  max-width: 500px;
-  text-align: center;
-}
-.ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.5) !important; /* Adjust background darkness */
-}
-
 
 @media (max-width: 768px) {
   .app-container {
