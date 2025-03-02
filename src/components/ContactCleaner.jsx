@@ -1,60 +1,88 @@
+// ContactCleaner.jsx
 import React, { useState } from "react";
-import "./ContactCleaner.css"; 
 
-const ContactCleaner = ({ rawContacts, onCleaned }) => {
+const ContactCleaner = ({
+  rawContacts,
+  onCleaned,
+  onSummary,
+  isModalOpen 
+}) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isCleaned, setIsCleaned] = useState(false); // Tracks if data has been cleaned
+  const [isCleaned, setIsCleaned] = useState(false);
 
-  // Format phone numbers
   const formatPhoneNumber = (phone) => {
-    const cleaned = phone.replace(/\D/g, ""); // Remove non-digits
+    const cleaned = phone.replace(/\D/g, "");
     return cleaned.length === 10
       ? `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
       : phone;
   };
 
-  // Handle the cleaning process
+  const formatEmail = (email) => {
+    if (email !== "N/A" && !email.includes("@")) {
+      console.log("Invalid email format:", email);
+      return "N/A";
+    }
+    return email;
+  };
+
   const cleanContacts = () => {
     setIsProcessing(true);
 
-    const seenContacts = new Set();
+    const seenContacts = new Map();
+    const invalidEmails = [];
+    const duplicates = [];
+
     const cleaned = rawContacts.map((contact) => {
-      const formattedContact = { ...contact }; // Keep all fields intact
+      const firstName = contact["First Name"] || "N/A";
+      const lastName = contact["Last Name"] || "N/A";
+      const originalEmail = contact["E-mail Address"] || "N/A";
+      const rawPhone = contact["Mobile Phone"] || "N/A";
 
-      // Format all phone fields
-      Object.keys(formattedContact).forEach((key) => {
-        if (key.toLowerCase().includes("phone")) {
-          formattedContact[key] = formattedContact[key]
-            ? formatPhoneNumber(formattedContact[key])
-            : ""; // Format phone numbers
-        }
-      });
+      const email = formatEmail(originalEmail.trim().toLowerCase());
+      const phone = formatPhoneNumber(rawPhone);
 
-      const uniqueKey = JSON.stringify(formattedContact); // Unique identifier for duplicates
-
-      if (!seenContacts.has(uniqueKey)) {
-        seenContacts.add(uniqueKey);
-        return formattedContact; // Keep the full contact
+      if (email === "N/A" && originalEmail !== "N/A") {
+        invalidEmails.push(originalEmail);
       }
-      return null; // Skip duplicates
+
+      const key = `${firstName}-${lastName}-${email}-${phone}`;
+      if (!seenContacts.has(key)) {
+        seenContacts.set(key, true);
+        return {
+          ...contact,
+          firstName,
+          lastName,
+          email,
+          phone,
+        };
+      } else {
+        console.log("Duplicate found:", { firstName, lastName, email, phone });
+        duplicates.push({ firstName, lastName, email, phone });
+        return null;
+      }
     });
 
-    const filteredCleaned = cleaned.filter(Boolean); // Remove null duplicates
-    setIsProcessing(false);
-    setIsCleaned(true); // Mark as cleaned
+    const filteredCleaned = cleaned.filter(Boolean);
 
-    // Pass cleaned contacts to parent
+    setIsProcessing(false);
+    setIsCleaned(true);
+
     onCleaned(filteredCleaned);
+    onSummary({ invalidEmails, duplicates });
   };
 
   return (
     <div>
       <button
-        className="clean-button"
         onClick={cleanContacts}
-        disabled={isProcessing || isCleaned} // Disable button if processing or already cleaned
+        // disable if cleaning is in progress, data is already cleaned, or the summary modal is open
+        disabled={isProcessing || isCleaned || isModalOpen}
       >
-        {isProcessing ? "Cleaning..." : isCleaned ? "Data Cleaned" : "Clean Contacts"}
+        {isProcessing
+          ? "Cleaning..."
+          : isCleaned
+          ? "Data Cleaned"
+          : "Clean Contacts"}
       </button>
     </div>
   );

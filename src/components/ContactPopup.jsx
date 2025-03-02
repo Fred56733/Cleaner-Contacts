@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ContactPopup.css";  // ✅ Import from the same folder
+import "./ContactPopup.css";  
 
 const POSSIBLE_FIELDS = [
   "First Name", "Last Name", "Middle Name", "Suffix", "Company",
@@ -13,10 +13,30 @@ const POSSIBLE_FIELDS = [
 const ContactPopup = ({ contact, onClose, onSave }) => {
   if (!contact) return null;
 
+  // Create initial state for editing. 
+  // For each possible field, try to get the value from:
+  // 1. The original key (e.g., "First Name")
+  // 2. Fallback to normalized key (e.g., contact.firstName)
+  // 3. Default to empty string if neither exists.
   const [editableContact, setEditableContact] = useState(() => {
     const filledContact = {};
     POSSIBLE_FIELDS.forEach((field) => {
-      filledContact[field] = contact[field] || "";
+      let value = contact[field];
+      if (!value) {
+        if (field === "First Name" && contact.firstName) {
+          value = contact.firstName;
+        }
+        if (field === "Last Name" && contact.lastName) {
+          value = contact.lastName;
+        }
+        if (field === "E-mail Address" && contact.email) {
+          value = contact.email;
+        }
+        if (field === "Mobile Phone" && contact.phone) {
+          value = contact.phone;
+        }
+      }
+      filledContact[field] = value || "";
     });
     return filledContact;
   });
@@ -57,7 +77,9 @@ const ContactPopup = ({ contact, onClose, onSave }) => {
                       onChange={(e) => handleChange(e, key)}
                     />
                   ) : (
-                    <span onDoubleClick={toggleEditing}>{editableContact[key] || "—"}</span>
+                    <span onDoubleClick={toggleEditing}>
+                      {editableContact[key] || "—"}
+                    </span>
                   )}
                 </td>
               </tr>

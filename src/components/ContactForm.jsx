@@ -30,7 +30,7 @@ const ContactForm = ({ contact = {}, onSave, onCancel }) => {
       "Last Name": "",
       "E-mail Address": "",
       "Mobile Phone": "",
-    }); // Reset form after saving
+    }); 
   };
 
   return (
