@@ -33,6 +33,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
     const duplicates = [];
     
     const flaggedContacts = {
+      incomplete: [],
       invalid: [],
       similar: [],
     };
@@ -48,6 +49,13 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
       if (email.toUpperCase() !== "N/A" && !email.includes("@")) {
         flaggedContacts.invalid.push(contact);
         console.log("Invalid email found:", { firstName, lastName, email, phone });
+      }
+
+      // Check for incomplete contact
+      if (firstName === "N/A" && lastName === "N/A") {
+        flaggedContacts.incomplete.push(contact);
+        console.log("Incomplete contact found:", { firstName, lastName, email, phone });
+        return null; // Skip further processing for incomplete contacts
       }
 
       const key = `${firstName}-${lastName}-${email}-${phone}`; // Unique key for exact duplicates
@@ -78,7 +86,8 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
         return { firstName, lastName, email, phone };
       } else {
         // Duplicate handling
-        console.log("Duplicate found:", { firstName, lastName, email, phone });
+        const duplicateContact = seenContacts.get(key);
+        console.log("Duplicate found:", { firstName, lastName, email, phone }, "is duplicate of", duplicateContact);
         duplicates.push({ firstName, lastName, email, phone });
         return null; // Skips duplicates
       }
