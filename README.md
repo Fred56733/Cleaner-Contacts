@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+# Contact-Management-Project
+=======
 <table>
   <tr>
     <td><img src="Need to put" alt="Contact-Manager-logo" height="220" width="1000"></td>
@@ -106,3 +109,4 @@ The development of **Contact Manager** focused on creating an intuitive interfac
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+>>>>>>> Fred-React

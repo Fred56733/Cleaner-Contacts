@@ -1,0 +1,17 @@
+/* ContactCleaner.css */
+.clean-button {
+    cursor: pointer;
+    background-color: grey;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.2s, cursor 0.2s;
+  }
+  
+  .clean-button:disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
+    color: #666;
+  }
+  

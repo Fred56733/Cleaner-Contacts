@@ -11,7 +11,20 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
     return (
         <>
             {!isMinimized ? (
-                <Modal isOpen={isOpen} onRequestClose={onRequestClose} contentLabel="Cleaning Modal">
+                <Modal isOpen={isOpen} onRequestClose={onRequestClose} contentLabel="Cleaning Summary"
+                    style={{
+                        content: {
+                            width: "400px",
+                            margin: "auto",
+                            padding: "20px",
+                            borderRadius: "8px",
+                            background: "#fff",
+                        },
+                        overlay: {
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        },
+                    }}
+                >
                     <button onClick={() => setIsMinimized(true)} style={{ position: "absolute", top: 10, right: 10 }}>
                         Minimize
                     </button>
@@ -27,6 +40,7 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
                         <h3>Incomplete Contacts</h3>
                         <p>{flaggedContacts.incomplete.length}</p>
                     </div>
+                    <button onClick={onRequestClose} style={{ marginTop: "10px" }}>Close</button>
                 </Modal>
             ) : (
                 <div
@@ -40,7 +54,7 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
                         borderRadius: "8px",
                         cursor: "pointer",
                         fontWeight: "bold",
-                        color: "#333", // Darker text for visibility
+                        color: "#333",
                     }}
                     onClick={() => setIsMinimized(false)}
                 >
