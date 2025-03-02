@@ -52,7 +52,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary }) => {
       }
 
       // Check for incomplete contact
-      if (firstName === "N/A" && lastName === "N/A") {
+      if (firstName === "N/A" || lastName === "N/A") {
         flaggedContacts.incomplete.push(contact);
         console.log("Incomplete contact found:", { firstName, lastName, email, phone });
         return null; // Skip further processing for incomplete contacts
