@@ -6,7 +6,7 @@ Modal.setAppElement("#root");
 
 const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
     const [isMinimized, setIsMinimized] = useState(false);
-    const { duplicates = [], flaggedContacts = { invalid: [], similar: [] } } = summary || {};
+    const { duplicates = [], flaggedContacts = { invalid: [], similar: [], incomplete: [] } } = summary || {};
 
     return (
         <>
@@ -24,6 +24,8 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
                         <p>{flaggedContacts.invalid.length}</p>
                         <h3>Similar Contacts</h3>
                         <p>{flaggedContacts.similar.length}</p>
+                        <h3>Incomplete Contacts</h3>
+                        <p>{flaggedContacts.incomplete.length}</p>
                     </div>
                 </Modal>
             ) : (
