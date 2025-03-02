@@ -1,11 +1,14 @@
-// Code to render the Home page of the application.
-import React from 'react';
+import React from "react";
 
 function HomePage() {
-  console.log("Rendering HomePage");
   return (
-    <div className="container">
-      <p>This is a simple application to manage your contacts.</p>
+    <div className="relative w-screen h-screen overflow-hidden">
+      {/* Fullscreen GIF */}
+      <img
+        src="/homepage.gif"
+        alt="Demo of Contact Manager"
+        className="absolute top-0 left-0 w-full h-full object-cover"
+      />
     </div>
   );
 }

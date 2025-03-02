@@ -4,37 +4,38 @@ import Papa from "papaparse";
 import FileInput from "../components/FileInput.jsx";
 import ContactsDisplay from "../components/ContactsDisplay.jsx";
 import ContactCleaner from "../components/ContactCleaner.jsx";
-import ContactPopup from "../components/ContactPopup.jsx";
 import CleaningModal from "../components/CleaningModal.jsx";
+import ContactPopup from "../components/ContactPopup.jsx";
 
-function ContactManagerPage() {
+const ContactManagerPage = () => {
+  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [contacts, setContacts] = useState([]);
   const [cleanedContacts, setCleanedContacts] = useState([]);
+  const [summary, setSummary] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
 
-  // For cleaning summary
-  const [summary, setSummary] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // parse CSV
+  // Parse CSV
   const handleFileParsed = (parsedData) => {
+    setRawContacts(parsedData);
     setContacts(parsedData);
     setCleanedContacts([]);
   };
 
-  // cleaning results
+  // Cleaning results
   const handleCleanedContacts = (cleanedData) => {
     setCleanedContacts(cleanedData);
   };
 
-  // summary (duplicates, invalid emails)
-  const handleCleaningSummary = (data) => {
-    setSummary(data);
+  // Handle cleaning summary
+  const handleSummary = (summaryData) => {
+    setSummary(summaryData);
     setIsModalOpen(true);
   };
 
+  // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSummary(null);
@@ -48,7 +49,7 @@ function ContactManagerPage() {
     setSelectedContact(null);
   };
 
-  // filter logic
+  // Filter logic
   const getFilteredContacts = () => {
     let filtered = cleanedContacts.length > 0 ? cleanedContacts : contacts;
 
@@ -84,21 +85,31 @@ function ContactManagerPage() {
     return filtered;
   };
 
+  // Download contacts as CSV
+  const downloadCSV = () => {
+    const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : rawContacts;
+    const csvData = Papa.unparse(dataToDownload);
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "contacts.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <FileInput onFileParsed={handleFileParsed} />
 
-      {/* Clean contacts button if we have any */}
-      {contacts.length > 0 && (
-        <ContactCleaner
-          rawContacts={contacts}
-          onCleaned={handleCleanedContacts}
-          onSummary={handleCleaningSummary}
-          isModalOpen={isModalOpen} // to disable button while summary is open
-        />
-      )}
+      <div className="action-buttons">
+        <button onClick={downloadCSV} disabled={!rawContacts.length}>Download CSV</button>
+        {rawContacts.length > 0 && (
+          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
+        )}
+      </div>
 
-      {/* search input */}
       <div>
         <input
           type="text"
@@ -108,13 +119,8 @@ function ContactManagerPage() {
         />
       </div>
 
-      {/* Pass the filtered array to ContactsDisplay for sorting */}
-      <ContactsDisplay
-        contacts={getFilteredContacts()}
-        onSelectContact={setSelectedContact}
-      />
+      <ContactsDisplay contacts={getFilteredContacts()} onSelectContact={setSelectedContact} />
 
-      {/* If a contact is selected, show the popup for editing */}
       {selectedContact && (
         <ContactPopup
           contact={selectedContact}
@@ -123,14 +129,9 @@ function ContactManagerPage() {
         />
       )}
 
-      {/* Show the cleaning summary popup if isModalOpen */}
-      <CleaningModal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        summary={summary}
-      />
+      <CleaningModal isOpen={isModalOpen} onRequestClose={handleCloseModal} summary={summary} />
     </div>
   );
-}
+};
 
 export default ContactManagerPage;

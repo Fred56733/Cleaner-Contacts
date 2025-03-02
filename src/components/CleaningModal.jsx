@@ -1,42 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
+import "./CleaningModal.css";
 
+Modal.setAppElement("#root");
 
 const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
-  if (!summary) return null; // If no summary, no data to show
+    const [isMinimized, setIsMinimized] = useState(false);
+    const { duplicates = [], flaggedContacts = { invalid: [], similar: [], incomplete: [] } } = summary || {};
 
-  return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      contentLabel="Cleaning Summary"
-      style={{
-        content: {
-          width: "400px",
-          margin: "auto",
-          padding: "20px",
-          borderRadius: "8px",
-          background: "#fff",
-        },
-        overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        },
-      }}
-    >
-      <h2>Cleaning Summary</h2>
-      <p>Your contacts have been cleaned successfully!</p>
-
-      <h3>Duplicate Contacts</h3>
-      <p>{summary.duplicates.length}</p>
-
-      <h3>Invalid Emails Cleaned</h3>
-      <p>{summary.invalidEmails.length}</p>
-
-      <button onClick={onRequestClose} style={{ marginTop: "10px" }}>
-        Close
-      </button>
-    </Modal>
-  );
+    return (
+        <>
+            {!isMinimized ? (
+                <Modal isOpen={isOpen} onRequestClose={onRequestClose} contentLabel="Cleaning Summary"
+                    style={{
+                        content: {
+                            width: "400px",
+                            margin: "auto",
+                            padding: "20px",
+                            borderRadius: "8px",
+                            background: "#fff",
+                        },
+                        overlay: {
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        },
+                    }}
+                >
+                    <button onClick={() => setIsMinimized(true)} style={{ position: "absolute", top: 10, right: 10 }}>
+                        Minimize
+                    </button>
+                    <h2>Cleaning Summary</h2>
+                    <p>Your contacts have been cleaned successfully!</p>
+                    <div>
+                        <h3>Duplicate Contacts</h3>
+                        <p>{duplicates.length}</p>
+                        <h3>Invalid Contacts</h3>
+                        <p>{flaggedContacts.invalid.length}</p>
+                        <h3>Similar Contacts</h3>
+                        <p>{flaggedContacts.similar.length}</p>
+                        <h3>Incomplete Contacts</h3>
+                        <p>{flaggedContacts.incomplete.length}</p>
+                    </div>
+                    <button onClick={onRequestClose} style={{ marginTop: "10px" }}>Close</button>
+                </Modal>
+            ) : (
+                <div
+                    style={{
+                        position: "fixed",
+                        bottom: 20,
+                        right: 20,
+                        background: "#f8f9fa",
+                        padding: "10px 20px",
+                        border: "1px solid #ccc",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                        color: "#333",
+                    }}
+                    onClick={() => setIsMinimized(false)}
+                >
+                    🔍 Cleaning Summary (Click to Expand)
+                </div>
+            )}
+        </>
+    );
 };
 
 export default CleaningModal;
