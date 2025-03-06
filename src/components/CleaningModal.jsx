@@ -6,7 +6,7 @@ Modal.setAppElement("#root");
 
 const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
     const [isMinimized, setIsMinimized] = useState(false);
-
+    const { duplicates = [], flaggedContacts = { invalid: [], similar: [], incomplete: [] } } = summary || {};
     return (
         <>
             {!isMinimized ? (
