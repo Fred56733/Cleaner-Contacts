@@ -112,6 +112,7 @@ const ContactManagerPage = () => {
 
       <div>
         <input
+          className="contact-search"
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
