@@ -65,7 +65,11 @@ body {
   border-color: rgba(255, 165, 0, 0.8);
 }
 
-
+.contact-search {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+}
 
 /* Header */
 header h1 {
