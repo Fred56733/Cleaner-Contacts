@@ -48,6 +48,9 @@ const ContactManagerPage = () => {
     setContacts(
       contacts.map((c) => (c === selectedContact ? updatedContact : c))
     );
+    setCleanedContacts(
+      cleanedContacts.map((c) => (c === selectedContact ? updatedContact : c))
+    );
     setSelectedContact(null);
   };
 
@@ -95,7 +98,8 @@ const ContactManagerPage = () => {
 
   // Download contacts as CSV
   const downloadCSV = () => {
-    const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : rawContacts;
+    console.log(cleanedContacts.length);
+    const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : contacts;
     const csvData = Papa.unparse(dataToDownload);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
     const url = window.URL.createObjectURL(blob);
