@@ -10,7 +10,8 @@ import ContactPopup from "../components/ContactPopup.jsx";
 const ContactManagerPage = () => {
   const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [contacts, setContacts] = useState([]);
-  const [cleanedContacts, setCleanedContacts] = useState([]);
+  const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
+  const [deletedContacts, setDeletedContacts] = useState([]); // Store deleted contacts
   const [summary, setSummary] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -27,6 +28,7 @@ const ContactManagerPage = () => {
   // Cleaning results
   const handleCleanedContacts = (cleanedData) => {
     setCleanedContacts(cleanedData);
+    setSearchQuery(""); // Clear search query
   };
 
   // Handle cleaning summary
@@ -47,6 +49,12 @@ const ContactManagerPage = () => {
       contacts.map((c) => (c === selectedContact ? updatedContact : c))
     );
     setSelectedContact(null);
+  };
+
+  const deletedContact = (contactToDelete) => {
+    setDeletedContacts([...deletedContacts, contactToDelete]);
+    setContacts(contacts.filter(contact => contact !== contactToDelete));
+    setCleanedContacts(cleanedContacts.filter(contact => contact !== contactToDelete));
   };
 
   // Filter logic
@@ -106,7 +114,9 @@ const ContactManagerPage = () => {
       <div className="action-buttons">
         <button onClick={downloadCSV} disabled={!rawContacts.length}>Download CSV</button>
         {rawContacts.length > 0 && (
-          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
+          <>
+            <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
+          </>
         )}
       </div>
 
