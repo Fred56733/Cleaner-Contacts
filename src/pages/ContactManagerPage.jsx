@@ -8,11 +8,16 @@ import CleaningModal from "../components/CleaningModal.jsx";
 import ContactPopup from "../components/ContactPopup.jsx";
 
 const ContactManagerPage = () => {
-  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [contacts, setContacts] = useState([]);
+  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
   const [deletedContacts, setDeletedContacts] = useState([]); // Store deleted contacts
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState({
+    duplicates: [],
+    invalid: [],
+    similar: [],
+    incomplete: [],
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +45,12 @@ const ContactManagerPage = () => {
   // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSummary(null);
+    setSummary({
+      duplicates: [],
+      invalid: [],
+      similar: [],
+      incomplete: [],
+    });
   };
 
   // Update contact from popup
@@ -55,9 +65,45 @@ const ContactManagerPage = () => {
   };
 
   const deletedContact = (contactToDelete) => {
-    setDeletedContacts([...deletedContacts, contactToDelete]);
-    setContacts(contacts.filter(contact => contact !== contactToDelete));
-    setCleanedContacts(cleanedContacts.filter(contact => contact !== contactToDelete));
+    console.log("Deleting contact:", contactToDelete);
+    const isSameContact = (a, b) => {
+      return (
+        (a.firstName || a["First Name"]) === (b.firstName || b["First Name"]) &&
+        (a.lastName || a["Last Name"]) === (b.lastName || b["Last Name"]) &&
+        (a.email || a["E-mail Address"]) === (b.email || b["E-mail Address"]) &&
+        (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
+      );
+    };
+
+    setDeletedContacts((prevDeleted) => {
+      if (!prevDeleted.some((c) => isSameContact(c, contactToDelete))) {
+        return [...prevDeleted, contactToDelete];
+      }
+      return prevDeleted;
+    });
+
+    setContacts((prev) =>
+      prev.filter((c) => !isSameContact(c, contactToDelete))
+    );
+
+    setCleanedContacts((prev) =>
+      prev.filter((c) => !isSameContact(c, contactToDelete))
+    );
+
+    setSummary((prevSummary) => {
+      const filterCategory = (list) =>
+        list.filter((c) => !isSameContact(c, contactToDelete));
+
+      const updatedSummary = {
+        duplicates: filterCategory(prevSummary.duplicates),
+        invalid: filterCategory(prevSummary.invalid),
+        similar: filterCategory(prevSummary.similar),
+        incomplete: filterCategory(prevSummary.incomplete),
+      };
+
+      console.log("Updated summary:", updatedSummary);
+      return updatedSummary;
+    });
   };
 
   // Filter logic
@@ -143,8 +189,16 @@ const ContactManagerPage = () => {
           onSave={updateContact}
         />
       )}
-
-      <CleaningModal isOpen={isModalOpen} onRequestClose={handleCloseModal} summary={summary} />
+      <CleaningModal
+        key={JSON.stringify(summary)}
+        isOpen={isModalOpen}
+        onRequestClose={handleCloseModal}
+        summary={summary}
+        deletedContacts={deletedContacts}
+        setDeletedContacts={setDeletedContacts}
+        setSummary={setSummary}
+        deletedContact={deletedContact}
+      />
     </div>
   );
 };

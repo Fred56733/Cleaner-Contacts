@@ -4,21 +4,22 @@ import "./CleaningModal.css";
 
 Modal.setAppElement("#root");
 
-const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
+const CleaningModal = ({ isOpen, onRequestClose, summary, deletedContacts, setDeletedContacts, setSummary, deletedContact }) => {
     const [isMinimized, setIsMinimized] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [deletedContacts, setDeletedContacts] = useState([]); // NEW: Track deleted contacts
 
-    const { duplicates = [], flaggedContacts = { invalid: [], similar: [], incomplete: [] } } = summary || {};
+    const { duplicates = [], invalid = [], similar = [], incomplete = [] } = summary || {};
 
-    const categoryData = {
-        "Duplicate Contacts": duplicates,
-        "Invalid Contacts": flaggedContacts.invalid,
-        "Similar Contacts": flaggedContacts.similar,
-        "Incomplete Contacts": flaggedContacts.incomplete,
-        "Recently Deleted": deletedContacts, // NEW: Display deleted contacts
-    };
+    const getCategoryData = () => ({
+        "Duplicate Contacts": summary.duplicates,
+        "Invalid Contacts": summary.invalid,
+        "Similar Contacts": summary.similar,
+        "Incomplete Contacts": summary.incomplete,
+        "Recently Deleted": deletedContacts,
+      });
+      
+      const categoryData = getCategoryData(); // always fresh          
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
@@ -38,23 +39,56 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
     };
 
     const handleDeleteContact = () => {
-        const updatedContacts = [...categoryData[selectedCategory]];
-        const deletedContact = updatedContacts.splice(currentIndex, 1)[0]; // Remove and save deleted contact
-
-        setDeletedContacts((prevDeleted) => [...prevDeleted, deletedContact]); // Add to deleted category
-
-        // Update the relevant category
-        if (selectedCategory === "Duplicate Contacts") {
-            summary.duplicates = updatedContacts;
-        } else {
-            summary.flaggedContacts[selectedCategory.toLowerCase().replace(" ", "")] = updatedContacts;
+        const contactToDelete = categoryData[selectedCategory][currentIndex];
+        console.log("Deleting contact from:", selectedCategory);
+        console.log("Contact to delete:", contactToDelete);
+      
+        // Remove the contact from the selected category view
+        const updatedCategory = categoryData[selectedCategory].filter(
+          (c) => c !== contactToDelete
+        );
+      
+        // Make sure we create NEW arrays for all summary fields (forces React to notice changes)
+        const updatedSummary = {
+          duplicates: [...summary.duplicates.filter((c) => c !== contactToDelete)],
+          invalid: [...summary.invalid.filter((c) => c !== contactToDelete)],
+          similar: [...summary.similar.filter((c) => c !== contactToDelete)],
+          incomplete: [...summary.incomplete.filter((c) => c !== contactToDelete)],
+        };
+      
+        // Correct key mapping from UI labels to summary object keys
+        const summaryKeyMap = {
+          "Duplicate Contacts": "duplicates",
+          "Invalid Contacts": "invalid",
+          "Similar Contacts": "similar",
+          "Incomplete Contacts": "incomplete",
+        };
+      
+        // Update the selected category’s array directly as well
+        if (summaryKeyMap[selectedCategory]) {
+          updatedSummary[summaryKeyMap[selectedCategory]] = [...updatedCategory];
         }
+      
+        // Final log to verify everything changed
+        console.log("Updated summary after deletion:", updatedSummary);
 
-        // Adjust index if last contact was deleted
-        if (currentIndex >= updatedContacts.length) {
-            setCurrentIndex(Math.max(0, updatedContacts.length - 1));
-        }
-    };
+        // Update state
+        setSummary(updatedSummary);
+
+        // Check if the contact is already in the recently deleted list
+        setDeletedContacts((prev) => {
+            if (!prev.some((c) => c === contactToDelete)) {
+            return [...prev, contactToDelete];
+            return prev;
+            }
+        });
+
+        deletedContact(contactToDelete);
+      
+        // Move to next available contact or back if at end
+        const newIndex = Math.max(0, updatedCategory.length - 1);
+        setCurrentIndex(newIndex);
+      };          
 
     return (
         <>
