@@ -7,8 +7,6 @@ Modal.setAppElement("#root");
 const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
     const [isMinimized, setIsMinimized] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [deletedContacts, setDeletedContacts] = useState([]); // NEW: Track deleted contacts
 
     const { duplicates = [], flaggedContacts = { invalid: [], similar: [], incomplete: [] } } = summary || {};
 
@@ -17,44 +15,9 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
         "Invalid Contacts": flaggedContacts.invalid,
         "Similar Contacts": flaggedContacts.similar,
         "Incomplete Contacts": flaggedContacts.incomplete,
-        "Recently Deleted": deletedContacts, // NEW: Display deleted contacts
     };
 
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(category);
-        setCurrentIndex(0);
-    };
-
-    const handleNext = () => {
-        if (currentIndex < categoryData[selectedCategory].length - 1) {
-            setCurrentIndex((prevIndex) => prevIndex + 1);
-        }
-    };
-
-    const handlePrevious = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex((prevIndex) => prevIndex - 1);
-        }
-    };
-
-    const handleDeleteContact = () => {
-        const updatedContacts = [...categoryData[selectedCategory]];
-        const deletedContact = updatedContacts.splice(currentIndex, 1)[0]; // Remove and save deleted contact
-
-        setDeletedContacts((prevDeleted) => [...prevDeleted, deletedContact]); // Add to deleted category
-
-        // Update the relevant category
-        if (selectedCategory === "Duplicate Contacts") {
-            summary.duplicates = updatedContacts;
-        } else {
-            summary.flaggedContacts[selectedCategory.toLowerCase().replace(" ", "")] = updatedContacts;
-        }
-
-        // Adjust index if last contact was deleted
-        if (currentIndex >= updatedContacts.length) {
-            setCurrentIndex(Math.max(0, updatedContacts.length - 1));
-        }
-    };
+    const handleCategoryClick = (category) => setSelectedCategory(category);
 
     return (
         <>
@@ -65,7 +28,7 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
                     contentLabel="Cleaning Summary"
                     style={{
                         content: {
-                            width: "600px",
+                            width: "800px",
                             margin: "auto",
                             padding: "20px",
                             borderRadius: "8px",
@@ -85,46 +48,13 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
                     <h2>Cleaning Summary</h2>
                     <p>Your contacts have been cleaned successfully!</p>
 
-                    {/* Category Selection */}
                     <div>
                         {Object.keys(categoryData).map((category) => (
                             <div key={category} style={{ marginBottom: "10px" }}>
-                                <h3
+                                <button
                                     onClick={() => handleCategoryClick(category)}
                                     style={{
-                                        cursor: "pointer",
-                                        color: "blue",
-                                        textDecoration: "underline",
-                                    }}
-                                >
-                                    {category}
-                                </h3>
-                                <p>{categoryData[category].length}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Contact Viewer */}
-                    {selectedCategory && categoryData[selectedCategory].length > 0 && (
-                        <div>
-                            <h4>{selectedCategory}</h4>
-                            <p>
-                                Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
-                            </p>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "10px",
-                                }}
-                            >
-                                <p>
-                                    {JSON.stringify(categoryData[selectedCategory][currentIndex], null, 2)}
-                                </p>
-                                <button
-                                    onClick={handleDeleteContact}
-                                    style={{
-                                        background: "red",
+                                        background: "#007bff",
                                         color: "white",
                                         border: "none",
                                         borderRadius: "4px",
@@ -132,22 +62,45 @@ const CleaningModal = ({ isOpen, onRequestClose, summary }) => {
                                         cursor: "pointer",
                                     }}
                                 >
-                                    🗑️ Delete
+                                    {category} ({categoryData[category].length})
                                 </button>
                             </div>
+                        ))}
+                    </div>
 
-                            {/* Navigation Buttons */}
-                            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                                <button onClick={handlePrevious} disabled={currentIndex === 0}>
-                                    ⬅️ Previous
-                                </button>
-                                <button
-                                    onClick={handleNext}
-                                    disabled={currentIndex === categoryData[selectedCategory].length - 1}
-                                >
-                                    Next ➡️
-                                </button>
-                            </div>
+                    {selectedCategory && categoryData[selectedCategory].length > 0 && (
+                        <div style={{ maxHeight: "400px", overflowY: "auto", marginTop: "10px" }}>
+                            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: "1px solid #ddd", padding: "8px" }}>Contact</th>
+                                        <th style={{ border: "1px solid #ddd", padding: "8px" }}>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {categoryData[selectedCategory].map((contact, index) => (
+                                        <tr key={index}>
+                                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                                                {JSON.stringify(contact, null, 2)}
+                                            </td>
+                                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                                                <button
+                                                    style={{
+                                                        background: "red",
+                                                        color: "white",
+                                                        border: "none",
+                                                        borderRadius: "4px",
+                                                        padding: "5px 10px",
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    🗑️ Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
 
