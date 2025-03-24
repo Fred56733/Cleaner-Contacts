@@ -75,6 +75,10 @@ function ContactsDisplay({ contacts, onSelectContact }) {
     setIsAscendingPhone(!isAscendingPhone);
   };
 
+  const isFlagged = (contact) => {
+    return contact.isDuplicate || contact.isInvalid || contact.isSimilar || contact.isIncomplete;
+  };
+
   return (
     <table className="contacts-table">
       <thead>
@@ -97,6 +101,7 @@ function ContactsDisplay({ contacts, onSelectContact }) {
         {sortedContacts.map((contact, index) => (
           <tr
             key={index}
+            className={isFlagged(contact) ? "flagged" : ""}
             style={{ cursor: onSelectContact ? "pointer" : "auto" }}
             onClick={() => onSelectContact && onSelectContact(contact)}
           >

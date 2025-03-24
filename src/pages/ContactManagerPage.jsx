@@ -180,7 +180,12 @@ const ContactManagerPage = () => {
         />
       </div>
 
-      <ContactsDisplay contacts={getFilteredContacts()} onSelectContact={setSelectedContact} />
+      <ContactsDisplay
+        contacts={getFilteredContacts()}
+        onSelectContact={setSelectedContact}
+        filter={filter}
+        searchQuery={searchQuery}
+      />
 
       {selectedContact && (
         <ContactPopup
@@ -189,6 +194,7 @@ const ContactManagerPage = () => {
           onSave={updateContact}
         />
       )}
+
       <CleaningModal
         key={JSON.stringify(summary)}
         isOpen={isModalOpen}

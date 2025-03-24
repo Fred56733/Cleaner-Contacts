@@ -25,4 +25,7 @@
   .contact-item:hover {
     background-color: #222; 
   }
-  
+
+.flagged {
+  background-color: rgba(106, 106, 0, 0.57);
+}

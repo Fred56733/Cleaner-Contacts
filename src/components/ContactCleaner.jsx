@@ -50,13 +50,15 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
 
       // Flag as invalid if email is badly formatted
       if (email.toUpperCase() !== "N/A" && !email.includes("@")) {
+        cleanedContact.isInvalid = true;
         invalid.push(cleanedContact);
       }
 
       // Flag as incomplete if first/last name missing
       if (firstName === "N/A" || lastName === "N/A") {
+        cleanedContact.isIncomplete = true;
         incomplete.push(cleanedContact);
-        return null;
+        return cleanedContact;
       }
 
       // Check for duplicate
@@ -79,6 +81,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
           }
 
           if (reason) {
+            cleanedContact.isSimilar = true;
             cleanedContact.similarityReason = reason;
             similar.push(cleanedContact);
           }
@@ -88,8 +91,9 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
 
         return cleanedContact;
       } else {
+        cleanedContact.isDuplicate = true;
         duplicates.push(cleanedContact);
-        return null;
+        return cleanedContact;
       }
     });
 
