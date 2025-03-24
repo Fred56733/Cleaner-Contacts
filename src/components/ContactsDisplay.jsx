@@ -76,7 +76,7 @@ function ContactsDisplay({ contacts, onSelectContact }) {
   };
 
   const isFlagged = (contact) => {
-    return contact.isDuplicate || contact.isInvalid || contact.isSimilar || contact.isIncomplete;
+    return contact.isDuplicate || contact.isInvalid || contact.isSimilar || contact.isIncomplete || contact.isFlagged;
   };
 
   return (

@@ -12,6 +12,7 @@ const ContactManagerPage = () => {
   const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
   const [deletedContacts, setDeletedContacts] = useState([]); // Store deleted contacts
+  const [flaggedContacts, setFlaggedContacts] = useState([]); // Store flagged contacts
   const [summary, setSummary] = useState({
     duplicates: [],
     invalid: [],
@@ -62,6 +63,24 @@ const ContactManagerPage = () => {
       cleanedContacts.map((c) => (c === selectedContact ? updatedContact : c))
     );
     setSelectedContact(null);
+  };
+
+  const flagContact = (contactToFlag, isFlagged) => {
+    setFlaggedContacts((prevFlagged) => {
+      if (isFlagged) {
+        return [...prevFlagged, contactToFlag];
+      } else {
+        return prevFlagged.filter((c) => c !== contactToFlag);
+      }
+    });
+
+    setContacts((prev) =>
+      prev.map((c) => (c === contactToFlag ? { ...c, isFlagged } : c))
+    );
+
+    setCleanedContacts((prev) =>
+      prev.map((c) => (c === contactToFlag ? { ...c, isFlagged } : c))
+    );
   };
 
   const deletedContact = (contactToDelete) => {
@@ -192,6 +211,7 @@ const ContactManagerPage = () => {
           contact={selectedContact}
           onClose={() => setSelectedContact(null)}
           onSave={updateContact}
+          onFlag={flagContact}
         />
       )}
 
@@ -200,6 +220,7 @@ const ContactManagerPage = () => {
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
         summary={summary}
+        flaggedContacts={flaggedContacts}
         deletedContacts={deletedContacts}
         setDeletedContacts={setDeletedContacts}
         setSummary={setSummary}

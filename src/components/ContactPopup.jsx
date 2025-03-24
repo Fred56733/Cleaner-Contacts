@@ -10,7 +10,7 @@ const POSSIBLE_FIELDS = [
   "Notes"
 ];
 
-const ContactPopup = ({ contact, onClose, onSave }) => {
+const ContactPopup = ({ contact, onClose, onSave, onFlag }) => {
   if (!contact) return null;
 
   // Create initial state for editing. 
@@ -42,6 +42,7 @@ const ContactPopup = ({ contact, onClose, onSave }) => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isFlagged, setIsFlagged] = useState(contact.isFlagged || false);
 
   const handleChange = (e, key) => {
     setEditableContact({ ...editableContact, [key]: e.target.value });
@@ -52,6 +53,11 @@ const ContactPopup = ({ contact, onClose, onSave }) => {
   const handleSave = () => {
     onSave(editableContact);
     setIsEditing(false);
+  };
+
+  const handleFlag = () => {
+    setIsFlagged(!isFlagged);
+    onFlag(contact, !isFlagged);
   };
 
   const displayName =
@@ -93,7 +99,12 @@ const ContactPopup = ({ contact, onClose, onSave }) => {
       {isEditing ? (
         <button className="save-button" onClick={handleSave}>Save Changes</button>
       ) : (
-        <button className="edit-button" onClick={toggleEditing}>Edit Contact</button>
+        <>
+          <button className="edit-button" onClick={toggleEditing}>Edit Contact</button>
+          <button className="flag-button" onClick={handleFlag}>
+            {isFlagged ? "Unflag" : "Flag"}
+          </button>
+        </>
       )}
     </div>
   );
