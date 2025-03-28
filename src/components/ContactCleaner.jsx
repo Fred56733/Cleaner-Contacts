@@ -27,12 +27,11 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
 
     const seenContacts = new Map();
     const similarMap = new Map();
+
     const duplicates = [];
-    const flaggedContacts = {
-      incomplete: [],
-      invalid: [],
-      similar: [],
-    };
+    const invalid = [];
+    const incomplete = [];
+    const similar = [];
 
     const cleaned = rawContacts.map((contact) => {
       const firstName = formatName(contact["First Name"] || contact.fn || "N/A");
@@ -41,49 +40,71 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
       const email = formatEmail(originalEmail);
       const phone = formatPhoneNumber(contact["Mobile Phone"] || contact.phone || "N/A");
 
+      const cleanedContact = {
+        ...contact, // Preserve all original fields
+        firstName,
+        lastName,
+        email,
+        phone,
+      };
+
+      // Flag as invalid if email is badly formatted
       if (email.toUpperCase() !== "N/A" && !email.includes("@")) {
-        flaggedContacts.invalid.push(contact);
+        cleanedContact.isInvalid = true;
+        invalid.push(cleanedContact);
       }
 
+      // Flag as incomplete if first/last name missing
       if (firstName === "N/A" || lastName === "N/A") {
-        flaggedContacts.incomplete.push(contact);
-        return null;
+        cleanedContact.isIncomplete = true;
+        incomplete.push(cleanedContact);
+        return cleanedContact;
       }
 
+      // Check for duplicate
       const key = `${firstName}-${lastName}-${email}-${phone}`;
       if (!seenContacts.has(key)) {
-        seenContacts.set(key, { firstName, lastName, email, phone });
-        
+        seenContacts.set(key, cleanedContact);
+
+        // Check for similarity
         const nameKey = `${firstName}-${lastName}`;
         if (similarMap.has(nameKey)) {
           const prevContact = similarMap.get(nameKey);
-          let similarityReason = "";
+          let reason = "";
+
           if (prevContact.phone !== phone && prevContact.email !== email) {
-            similarityReason = "Different phone and email";
+            reason = "Different phone and email";
           } else if (prevContact.phone !== phone) {
-            similarityReason = "Different phone";
+            reason = "Different phone";
           } else if (prevContact.email !== email) {
-            similarityReason = "Different email";
+            reason = "Different email";
           }
-          if (similarityReason) {
-            flaggedContacts.similar.push({ ...contact, similarityReason });
+
+          if (reason) {
+            cleanedContact.isSimilar = true;
+            cleanedContact.similarityReason = reason;
+            similar.push(cleanedContact);
           }
         } else {
-          similarMap.set(nameKey, { firstName, lastName, email, phone });
+          similarMap.set(nameKey, cleanedContact);
         }
-        
-        return { firstName, lastName, email, phone };
+
+        return cleanedContact;
       } else {
-        duplicates.push({ firstName, lastName, email, phone });
-        return null;
+        cleanedContact.isDuplicate = true;
+        duplicates.push(cleanedContact);
+        return cleanedContact;
       }
     });
 
     const filteredCleaned = cleaned.filter(Boolean);
+
     setIsProcessing(false);
     setIsCleaned(true);
+
+    // Send full contact objects in all categories
     onCleaned(filteredCleaned);
-    onSummary({ duplicates, flaggedContacts });
+    onSummary({ duplicates, invalid, incomplete, similar });
   };
 
   return (

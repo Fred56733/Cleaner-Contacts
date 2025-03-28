@@ -75,6 +75,28 @@ function ContactsDisplay({ contacts, onSelectContact }) {
     setIsAscendingPhone(!isAscendingPhone);
   };
 
+  const isFlagged = (contact) => {
+    return contact.isDuplicate || contact.isInvalid || contact.isSimilar || contact.isIncomplete || contact.isFlagged;
+  };
+
+  // Displays all phone numbers in contacts-tabe
+  const getAllPhoneNumbers = (contact) => {
+    const phoneFields = ["Business Phone","Mobile Phone", "Home Phone", "Work Phone", "Other Phone"];
+    return phoneFields
+      .map((field) => contact[field] || contact[field.toLowerCase().replace(" ", "")])
+      .filter(Boolean)
+      .join(", ");
+  };
+
+  // Displays all email addresses in contacts-table
+  const getAllEmails = (contact) => {
+    const emailFields = ["Email", "E-mail Address", "E-mail 2 Address", "E-mail 3 Address"];
+    return emailFields
+      .map((field) => contact[field] || contact[field.toLowerCase().replace(" ", "")])
+      .filter(Boolean)
+      .join(", ");
+  }
+
   return (
     <table className="contacts-table">
       <thead>
@@ -97,13 +119,14 @@ function ContactsDisplay({ contacts, onSelectContact }) {
         {sortedContacts.map((contact, index) => (
           <tr
             key={index}
+            className={isFlagged(contact) ? "flagged" : ""}
             style={{ cursor: onSelectContact ? "pointer" : "auto" }}
             onClick={() => onSelectContact && onSelectContact(contact)}
           >
             <td>{contact["First Name"] || contact.firstName || "N/A"}</td>
             <td>{contact["Last Name"] || contact.lastName || "N/A"}</td>
             <td>{contact["E-mail Address"] || contact.email || "N/A"}</td>
-            <td>{contact["Mobile Phone"] || contact.phone || "N/A"}</td>
+            <td>{getAllPhoneNumbers(contact) || "N/A"}</td>
           </tr>
         ))}
       </tbody>

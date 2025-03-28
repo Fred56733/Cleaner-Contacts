@@ -8,10 +8,17 @@ import CleaningModal from "../components/CleaningModal.jsx";
 import ContactPopup from "../components/ContactPopup.jsx";
 
 const ContactManagerPage = () => {
-  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
   const [contacts, setContacts] = useState([]);
-  const [cleanedContacts, setCleanedContacts] = useState([]);
-  const [summary, setSummary] = useState(null);
+  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
+  const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
+  const [deletedContacts, setDeletedContacts] = useState([]); // Store deleted contacts
+  const [flaggedContacts, setFlaggedContacts] = useState([]); // Store flagged contacts
+  const [summary, setSummary] = useState({
+    duplicates: [],
+    invalid: [],
+    similar: [],
+    incomplete: [],
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,6 +34,7 @@ const ContactManagerPage = () => {
   // Cleaning results
   const handleCleanedContacts = (cleanedData) => {
     setCleanedContacts(cleanedData);
+    setSearchQuery(""); // Clear search query
   };
 
   // Handle cleaning summary
@@ -38,7 +46,12 @@ const ContactManagerPage = () => {
   // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSummary(null);
+    setSummary({
+      duplicates: [],
+      invalid: [],
+      similar: [],
+      incomplete: [],
+    });
   };
 
   // Update contact from popup
@@ -46,7 +59,70 @@ const ContactManagerPage = () => {
     setContacts(
       contacts.map((c) => (c === selectedContact ? updatedContact : c))
     );
+    setCleanedContacts(
+      cleanedContacts.map((c) => (c === selectedContact ? updatedContact : c))
+    );
     setSelectedContact(null);
+  };
+
+  const flagContact = (contactToFlag, isFlagged) => {
+    setFlaggedContacts((prevFlagged) => {
+      if (isFlagged) {
+        return [...prevFlagged, contactToFlag];
+      } else {
+        return prevFlagged.filter((c) => c !== contactToFlag);
+      }
+    });
+
+    setContacts((prev) =>
+      prev.map((c) => (c === contactToFlag ? { ...c, isFlagged } : c))
+    );
+
+    setCleanedContacts((prev) =>
+      prev.map((c) => (c === contactToFlag ? { ...c, isFlagged } : c))
+    );
+  };
+
+  const deletedContact = (contactToDelete) => {
+    console.log("Deleting contact:", contactToDelete);
+    const isSameContact = (a, b) => {
+      return (
+        (a.firstName || a["First Name"]) === (b.firstName || b["First Name"]) &&
+        (a.lastName || a["Last Name"]) === (b.lastName || b["Last Name"]) &&
+        (a.email || a["E-mail Address"]) === (b.email || b["E-mail Address"]) &&
+        (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
+      );
+    };
+
+    setDeletedContacts((prevDeleted) => {
+      if (!prevDeleted.some((c) => isSameContact(c, contactToDelete))) {
+        return [...prevDeleted, contactToDelete];
+      }
+      return prevDeleted;
+    });
+
+    setContacts((prev) =>
+      prev.filter((c) => !isSameContact(c, contactToDelete))
+    );
+
+    setCleanedContacts((prev) =>
+      prev.filter((c) => !isSameContact(c, contactToDelete))
+    );
+
+    setSummary((prevSummary) => {
+      const filterCategory = (list) =>
+        list.filter((c) => !isSameContact(c, contactToDelete));
+
+      const updatedSummary = {
+        duplicates: filterCategory(prevSummary.duplicates),
+        invalid: filterCategory(prevSummary.invalid),
+        similar: filterCategory(prevSummary.similar),
+        incomplete: filterCategory(prevSummary.incomplete),
+      };
+
+      console.log("Updated summary:", updatedSummary);
+      return updatedSummary;
+    });
   };
 
   // Filter logic
@@ -87,7 +163,8 @@ const ContactManagerPage = () => {
 
   // Download contacts as CSV
   const downloadCSV = () => {
-    const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : rawContacts;
+    console.log(cleanedContacts.length);
+    const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : contacts;
     const csvData = Papa.unparse(dataToDownload);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
     const url = window.URL.createObjectURL(blob);
@@ -106,12 +183,15 @@ const ContactManagerPage = () => {
       <div className="action-buttons">
         <button onClick={downloadCSV} disabled={!rawContacts.length}>Download CSV</button>
         {rawContacts.length > 0 && (
-          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
+          <>
+            <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
+          </>
         )}
       </div>
 
       <div>
         <input
+          className="contact-search"
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,17 +199,33 @@ const ContactManagerPage = () => {
         />
       </div>
 
-      <ContactsDisplay contacts={getFilteredContacts()} onSelectContact={setSelectedContact} />
+      <ContactsDisplay
+        contacts={getFilteredContacts()}
+        onSelectContact={setSelectedContact}
+        filter={filter}
+        searchQuery={searchQuery}
+      />
 
       {selectedContact && (
         <ContactPopup
           contact={selectedContact}
           onClose={() => setSelectedContact(null)}
           onSave={updateContact}
+          onFlag={flagContact}
         />
       )}
 
-      <CleaningModal isOpen={isModalOpen} onRequestClose={handleCloseModal} summary={summary} />
+      <CleaningModal
+        key={JSON.stringify(summary)}
+        isOpen={isModalOpen}
+        onRequestClose={handleCloseModal}
+        summary={summary}
+        flaggedContacts={flaggedContacts}
+        deletedContacts={deletedContacts}
+        setDeletedContacts={setDeletedContacts}
+        setSummary={setSummary}
+        deletedContact={deletedContact}
+      />
     </div>
   );
 };

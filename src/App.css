@@ -65,7 +65,11 @@ body {
   border-color: rgba(255, 165, 0, 0.8);
 }
 
-
+.contact-search {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+}
 
 /* Header */
 header h1 {
@@ -160,8 +164,12 @@ td {
   background-color: var(--card-background);
 }
 
+tr {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.05); /* Softer alternate row color */
+  background: rgba(0, 0, 0, 0.404); /* Softer alternate row color */
 }
 
 tr:hover td {
@@ -173,6 +181,17 @@ tr:hover td {
 .table-container {
   overflow-x: auto;
 }
+
+.contact-search {
+  background-color: #3f3d3d;      /* Black background */
+  color: #fff;                 /* White text for contrast */
+  border: 1px solid #ccc;      /* Optional border */
+  padding: 8px;                /* Space inside the input */
+  border-radius: 4px;          /* Rounded corners */
+  width: 100%;                 /* Full width if desired */
+  box-sizing: border-box;      /* Prevents padding from increasing width */
+}
+
 
 @media (max-width: 768px) {
   .app-container {
