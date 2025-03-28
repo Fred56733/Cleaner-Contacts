@@ -125,7 +125,7 @@ function ContactsDisplay({ contacts, onSelectContact }) {
           >
             <td>{contact["First Name"] || contact.firstName || "N/A"}</td>
             <td>{contact["Last Name"] || contact.lastName || "N/A"}</td>
-            <td>{contact["E-mail Address"] || contact.email || "N/A"}</td>
+            <td>{getAllEmails(contact) || "N/A"}</td>
             <td>{getAllPhoneNumbers(contact) || "N/A"}</td>
           </tr>
         ))}
