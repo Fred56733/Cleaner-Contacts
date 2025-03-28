@@ -4,7 +4,7 @@ import "./CleaningModal.css";
 
 Modal.setAppElement("#root");
 
-const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact }) => {
+const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,12 +43,12 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, delet
     const contactToDelete = categoryData[selectedCategory][currentIndex];
     console.log("Deleting contact from:", selectedCategory);
     console.log("Contact to delete:", contactToDelete);
-
+  
     // Remove the contact from the selected category view
     const updatedCategory = categoryData[selectedCategory].filter(
       (c) => c !== contactToDelete
     );
-
+  
     // Make sure we create NEW arrays for all summary fields (forces React to notice changes)
     const updatedSummary = {
       duplicates: [...summary.duplicates.filter((c) => c !== contactToDelete)],
@@ -56,7 +56,7 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, delet
       similar: [...summary.similar.filter((c) => c !== contactToDelete)],
       incomplete: [...summary.incomplete.filter((c) => c !== contactToDelete)],
     };
-
+  
     // Correct key mapping from UI labels to summary object keys
     const summaryKeyMap = {
       "Duplicate Contacts": "duplicates",
@@ -64,18 +64,26 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, delet
       "Similar Contacts": "similar",
       "Incomplete Contacts": "incomplete",
     };
-
+  
     // Update the selected category’s array directly as well
     if (summaryKeyMap[selectedCategory]) {
       updatedSummary[summaryKeyMap[selectedCategory]] = [...updatedCategory];
     }
-
+  
+    // Handle "User Flagged" category
+    if (selectedCategory === "User Flagged") {
+      const updatedFlaggedContacts = flaggedContacts.filter(
+        (c) => c !== contactToDelete
+      );
+      setFlaggedContacts(updatedFlaggedContacts);
+    }
+  
     // Final log to verify everything changed
     console.log("Updated summary after deletion:", updatedSummary);
-
+  
     // Update state
     setSummary(updatedSummary);
-
+  
     // Check if the contact is already in the recently deleted list
     setDeletedContacts((prev) => {
       if (!prev.some((c) => c === contactToDelete)) {
@@ -83,11 +91,33 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, delet
       }
       return prev;
     });
-
+  
     deletedContact(contactToDelete);
-
+  
     // Move to next available contact or back if at end
     const newIndex = Math.max(0, updatedCategory.length - 1);
+    setCurrentIndex(newIndex);
+  };
+
+  const handleRestoreContact = () => {
+    const contactToRestore = categoryData[selectedCategory][currentIndex];
+    console.log("Restoring contact:", contactToRestore);
+
+    // Remove the contact from the "Recently Deleted" category
+    const updatedDeletedContacts = deletedContacts.filter(
+      (c) => c !== contactToRestore
+    );
+
+    // Update the deletedContacts state
+    setDeletedContacts(updatedDeletedContacts);
+
+    // Notify the parent component to add the contact back to the main table
+    if (onRestoreContact) {
+      onRestoreContact(contactToRestore);
+    }
+
+    // Move to the next available contact or back if at the end
+    const newIndex = Math.max(0, updatedDeletedContacts.length - 1);
     setCurrentIndex(newIndex);
   };
 
@@ -156,19 +186,35 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, delet
                 <p>
                   {JSON.stringify(categoryData[selectedCategory][currentIndex], null, 2)}
                 </p>
-                <button
-                  onClick={handleDeleteContact}
-                  style={{
-                    background: "red",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "5px 10px",
-                    cursor: "pointer",
-                  }}
-                >
-                  🗑️ Delete
-                </button>
+                {selectedCategory === "Recently Deleted" ? (
+                  <button
+                    onClick={handleRestoreContact}
+                    style={{
+                      background: "green",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ♻️ Restore
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleDeleteContact}
+                    style={{
+                      background: "red",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    🗑️ Delete
+                  </button>
+                )}
               </div>
 
               {/* Navigation Buttons */}

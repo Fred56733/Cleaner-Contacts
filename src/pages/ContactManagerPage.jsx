@@ -125,6 +125,28 @@ const ContactManagerPage = () => {
     });
   };
 
+    const restoreContact = (contactToRestore) => {
+    console.log("Restoring contact:", contactToRestore);
+  
+    // Add the contact back to the main contacts list
+    setContacts((prevContacts) => [...prevContacts, contactToRestore]);
+  
+    // Add the contact back to the cleaned contacts list (if applicable)
+    setCleanedContacts((prevCleaned) => [...prevCleaned, contactToRestore]);
+  
+    // Remove the contact from the deleted contacts list
+    setDeletedContacts((prevDeleted) =>
+      prevDeleted.filter((c) => c !== contactToRestore)
+    );
+  
+    // Optionally update the summary if needed
+    setSummary((prevSummary) => {
+      const updatedSummary = { ...prevSummary };
+      // Add logic here if the restored contact needs to be added to a specific category
+      return updatedSummary;
+    });
+  };
+
   // Filter logic
   const getFilteredContacts = () => {
     let filtered = cleanedContacts.length > 0 ? cleanedContacts : contacts;
@@ -221,10 +243,12 @@ const ContactManagerPage = () => {
         onRequestClose={handleCloseModal}
         summary={summary}
         flaggedContacts={flaggedContacts}
+        setFlaggedContacts={setFlaggedContacts}
         deletedContacts={deletedContacts}
         setDeletedContacts={setDeletedContacts}
         setSummary={setSummary}
         deletedContact={deletedContact}
+        onRestoreContact={restoreContact}
       />
     </div>
   );
