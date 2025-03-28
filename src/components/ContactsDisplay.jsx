@@ -81,7 +81,7 @@ function ContactsDisplay({ contacts, onSelectContact }) {
 
   // Displays all phone numbers in contacts-tabe
   const getAllPhoneNumbers = (contact) => {
-    const phoneFields = ["Business Phone","Mobile Phone", "Home Phone", "Work Phone", "Other Phone"];
+    const phoneFields = ["Business Phone", "Business Phone 2", "Car Phone", "Company Main Phone", "Home Phone", "Home Phone 2", "Mobile Phone", "Work Phone", "Primary Phone", "Other Phone"];
     return phoneFields
       .map((field) => contact[field] || contact[field.toLowerCase().replace(" ", "")])
       .filter(Boolean)
