@@ -17,15 +17,17 @@
   "description": "",
   "dependencies": {
     "debug": "^4.4.0",
+    "file-saver": "^2.0.5",
     "gensync": "^1.0.0-beta.2",
-    "papaparse": "^5.4.1",
+    "papaparse": "^5.5.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.1.1",
     "tsparticles": "^3.8.1",
-    "vcard-parser": "^1.0.0"
+    "vcard-parser": "^1.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
