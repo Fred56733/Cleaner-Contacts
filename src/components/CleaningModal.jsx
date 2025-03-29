@@ -4,12 +4,18 @@ import "./CleaningModal.css";
 
 Modal.setAppElement("#root");
 
-// Utility function for pagination
-const paginate = (array, page_size, page_number) => {
-  return array.slice((page_number - 1) * page_size, page_number * page_size);
-};
-
-const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact }) => {
+const CleaningModal = ({
+  isOpen,
+  onRequestClose,
+  summary,
+  flaggedContacts,
+  setFlaggedContacts,
+  deletedContacts,
+  setDeletedContacts,
+  setSummary,
+  deletedContact,
+  onRestoreContact,
+}) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -46,82 +52,56 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFl
 
   const handleDeleteContact = () => {
     const contactToDelete = categoryData[selectedCategory][currentIndex];
-    console.log("Deleting contact from:", selectedCategory);
-    console.log("Contact to delete:", contactToDelete);
-  
-    // Remove the contact from the selected category view
-    const updatedCategory = categoryData[selectedCategory].filter(
-      (c) => c !== contactToDelete
-    );
-  
-    // Make sure we create NEW arrays for all summary fields (forces React to notice changes)
+
+    const updatedCategory = categoryData[selectedCategory].filter((c) => c !== contactToDelete);
+
     const updatedSummary = {
       duplicates: [...summary.duplicates.filter((c) => c !== contactToDelete)],
       invalid: [...summary.invalid.filter((c) => c !== contactToDelete)],
       similar: [...summary.similar.filter((c) => c !== contactToDelete)],
       incomplete: [...summary.incomplete.filter((c) => c !== contactToDelete)],
     };
-  
-    // Correct key mapping from UI labels to summary object keys
+
     const summaryKeyMap = {
       "Duplicate Contacts": "duplicates",
       "Invalid Contacts": "invalid",
       "Similar Contacts": "similar",
       "Incomplete Contacts": "incomplete",
     };
-  
-    // Update the selected category’s array directly as well
+
     if (summaryKeyMap[selectedCategory]) {
       updatedSummary[summaryKeyMap[selectedCategory]] = [...updatedCategory];
     }
-  
-    // Handle "User Flagged" category
+
     if (selectedCategory === "User Flagged") {
-      const updatedFlaggedContacts = flaggedContacts.filter(
-        (c) => c !== contactToDelete
-      );
+      const updatedFlaggedContacts = flaggedContacts.filter((c) => c !== contactToDelete);
       setFlaggedContacts(updatedFlaggedContacts);
     }
-  
-    // Final log to verify everything changed
-    console.log("Updated summary after deletion:", updatedSummary);
-  
-    // Update state
+
     setSummary(updatedSummary);
-  
-    // Check if the contact is already in the recently deleted list
+
     setDeletedContacts((prev) => {
       if (!prev.some((c) => c === contactToDelete)) {
         return [...prev, contactToDelete];
       }
       return prev;
     });
-  
+
     deletedContact(contactToDelete);
-  
-    // Move to next available contact or back if at end
+
     const newIndex = Math.max(0, updatedCategory.length - 1);
     setCurrentIndex(newIndex);
   };
 
   const handleRestoreContact = () => {
     const contactToRestore = categoryData[selectedCategory][currentIndex];
-    console.log("Restoring contact:", contactToRestore);
-
-    // Remove the contact from the "Recently Deleted" category
-    const updatedDeletedContacts = deletedContacts.filter(
-      (c) => c !== contactToRestore
-    );
-
-    // Update the deletedContacts state
+    const updatedDeletedContacts = deletedContacts.filter((c) => c !== contactToRestore);
     setDeletedContacts(updatedDeletedContacts);
 
-    // Notify the parent component to add the contact back to the main table
     if (onRestoreContact) {
       onRestoreContact(contactToRestore);
     }
 
-    // Move to the next available contact or back if at the end
     const newIndex = Math.max(0, updatedDeletedContacts.length - 1);
     setCurrentIndex(newIndex);
   };
@@ -155,7 +135,6 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFl
           <h2>Cleaning Summary</h2>
           <p>Your contacts have been cleaned successfully!</p>
 
-          {/* Category Selection */}
           <div>
             {Object.keys(categoryData).map((category) => (
               <div key={category} style={{ marginBottom: "10px" }}>
@@ -174,74 +153,107 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFl
             ))}
           </div>
 
-          {/* Contact Viewer */}
           {selectedCategory && categoryData[selectedCategory].length > 0 && (
-  <div>
-    <h4>{selectedCategory}</h4>
+            <div>
+              <h4>{selectedCategory}</h4>
+              <p>
+                Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
+              </p>
 
-    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "10px" }}>
-      <thead>
-        <tr>
-          {Object.keys(categoryData[selectedCategory][0]).map((key) => (
-            <th key={key} style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
-              {key}
-            </th>
-          ))}
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {paginate(categoryData[selectedCategory], 10, currentIndex + 1).map((contact, index) => (
-          <tr key={index}>
-            {Object.values(contact).map((value, i) => (
-              <td key={i} style={{ borderBottom: "1px solid #eee", padding: "8px" }}>
-                {value}
-              </td>
-            ))}
-            <td style={{ padding: "8px" }}>
-              {selectedCategory === "Recently Deleted" ? (
-                <button onClick={() => {
-                  setCurrentIndex(0);
-                  onRestoreContact(contact);
-                }}>
-                  ♻️ Restore
-                </button>
-              ) : (
-                <button onClick={() => {
-                  setCurrentIndex(0);
-                  deletedContact(contact);
-                  handleDeleteContact();
-                }}>
-                  🗑️ Delete
-                </button>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+              {(() => {
+  const categoryColors = {
+    "Duplicate Contacts": "#fef6f6",
+    "Invalid Contacts": "#fff3cd",
+    "Similar Contacts": "#e3fcef",
+    "Incomplete Contacts": "#f0f4f8",
+    "User Flagged": "#fdf0ff",
+    "Recently Deleted": "#f8f9fa",
+  };
 
-    {/* Pagination */}
-    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-      <button onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))} disabled={currentIndex === 0}>
-        ⬅️ Prev Page
-      </button>
-      <button
-        onClick={() =>
-          setCurrentIndex(
-            currentIndex + 1 < Math.ceil(categoryData[selectedCategory].length / 10)
-              ? currentIndex + 1
-              : currentIndex
-          )
-        }
-        disabled={(currentIndex + 1) * 10 >= categoryData[selectedCategory].length}
+  const bgColor = categoryColors[selectedCategory] || "#f9f9f9";
+
+  return (
+    <>
+      {/* Contact Card */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+          padding: "15px",
+          backgroundColor: bgColor,
+          color: "#2c3e50",
+          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+          width: "100%",
+          marginBottom: "15px",
+        }}
       >
-        Next Page ➡️
-      </button>
-    </div>
-  </div>
-)}
+        {Object.entries(categoryData[selectedCategory][currentIndex]).map(
+          ([key, value]) => (
+            <div key={key}>
+              <strong
+                style={{ display: "block", color: "#34495e", fontSize: "14px" }}
+              >
+                {key}:
+              </strong>
+              <span>{value || <em style={{ color: "#7f8c8d" }}>N/A</em>}</span>
+            </div>
+          )
+        )}
+      </div>
 
+      {/* Delete / Restore Button */}
+      <div style={{ textAlign: "center", marginBottom: "10px" }}>
+        {selectedCategory === "Recently Deleted" ? (
+          <button
+            onClick={handleRestoreContact}
+            style={{
+              background: "green",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              padding: "10px 20px",
+              cursor: "pointer",
+            }}
+          >
+            ♻️ Restore
+          </button>
+        ) : (
+          <button
+            onClick={handleDeleteContact}
+            style={{
+              background: "red",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              padding: "10px 20px",
+              cursor: "pointer",
+            }}
+          >
+            🗑️ Delete
+          </button>
+        )}
+      </div>
+    </>
+  );
+})()}
+
+
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                <button onClick={handlePrevious} disabled={currentIndex === 0}>
+                  ⬅️ Previous
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={currentIndex === categoryData[selectedCategory].length - 1}
+                >
+                  Next ➡️
+                </button>
+              </div>
+            </div>
+          )}
 
           {selectedCategory && categoryData[selectedCategory].length === 0 && (
             <p>No contacts found in this category.</p>

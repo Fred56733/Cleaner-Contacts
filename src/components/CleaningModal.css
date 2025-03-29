@@ -82,4 +82,25 @@
   tr:hover {
     background-color: #f9f9f9;
   }
+.contact-card {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px;
+  color: #f1f1f1;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.contact-field {
+  margin-bottom: 8px;
+}
+
+.contact-field strong {
+  color: #ccc;
+}
+
+.contact-field em {
+  color: #888;
+}
   

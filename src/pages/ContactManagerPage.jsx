@@ -1,4 +1,3 @@
-// ContactManagerPage.jsx
 import React, { useState } from "react";
 import Papa from "papaparse";
 import FileInput from "../components/FileInput.jsx";
@@ -9,41 +8,40 @@ import ContactPopup from "../components/ContactPopup.jsx";
 
 const ContactManagerPage = () => {
   const [contacts, setContacts] = useState([]);
-  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
-  const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
-  const [deletedContacts, setDeletedContacts] = useState([]); // Store deleted contacts
-  const [flaggedContacts, setFlaggedContacts] = useState([]); // Store flagged contacts
+  const [rawContacts, setRawContacts] = useState([]);
+  const [cleanedContacts, setCleanedContacts] = useState([]);
+  const [deletedContacts, setDeletedContacts] = useState([]);
+  const [flaggedContacts, setFlaggedContacts] = useState([]);
   const [summary, setSummary] = useState({
     duplicates: [],
     invalid: [],
     similar: [],
     incomplete: [],
   });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
 
-  // Parse CSV
+  // File upload
   const handleFileParsed = (parsedData) => {
     setRawContacts(parsedData);
     setContacts(parsedData);
     setCleanedContacts([]);
   };
 
-  // Cleaning results
+  // Clean results
   const handleCleanedContacts = (cleanedData) => {
     setCleanedContacts(cleanedData);
-    setSearchQuery(""); // Clear search query
+    setSearchQuery("");
   };
 
-  // Handle cleaning summary
   const handleSummary = (summaryData) => {
     setSummary(summaryData);
     setIsModalOpen(true);
   };
 
-  // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSummary({
@@ -54,37 +52,37 @@ const ContactManagerPage = () => {
     });
   };
 
-  // Update contact from popup
+  // Save updated contact
   const updateContact = (updatedContact) => {
-    setContacts(
-      contacts.map((c) => (c === selectedContact ? updatedContact : c))
+    setContacts((prev) =>
+      prev.map((c) => (c === selectedContact ? updatedContact : c))
     );
-    setCleanedContacts(
-      cleanedContacts.map((c) => (c === selectedContact ? updatedContact : c))
+    setCleanedContacts((prev) =>
+      prev.map((c) => (c === selectedContact ? updatedContact : c))
     );
     setSelectedContact(null);
   };
 
+  // Flag contact
   const flagContact = (contactToFlag, isFlagged) => {
-    setFlaggedContacts((prevFlagged) => {
-      if (isFlagged) {
-        return [...prevFlagged, contactToFlag];
-      } else {
-        return prevFlagged.filter((c) => c !== contactToFlag);
-      }
-    });
+    setFlaggedContacts((prev) =>
+      isFlagged
+        ? [...prev, contactToFlag]
+        : prev.filter((c) => c !== contactToFlag)
+    );
 
     setContacts((prev) =>
       prev.map((c) => (c === contactToFlag ? { ...c, isFlagged } : c))
     );
-
     setCleanedContacts((prev) =>
       prev.map((c) => (c === contactToFlag ? { ...c, isFlagged } : c))
     );
   };
 
-  const deletedContact = (contactToDelete) => {
+  // Delete contact
+  const handleDeleteContact = (contactToDelete) => {
     console.log("Deleting contact:", contactToDelete);
+
     const isSameContact = (a, b) => {
       return (
         (a.firstName || a["First Name"]) === (b.firstName || b["First Name"]) &&
@@ -94,38 +92,34 @@ const ContactManagerPage = () => {
       );
     };
 
-    setDeletedContacts((prevDeleted) => {
-      if (!prevDeleted.some((c) => isSameContact(c, contactToDelete))) {
-        return [...prevDeleted, contactToDelete];
-      }
-      return prevDeleted;
-    });
+    setDeletedContacts((prev) =>
+      prev.some((c) => isSameContact(c, contactToDelete))
+        ? prev
+        : [...prev, contactToDelete]
+    );
 
     setContacts((prev) =>
       prev.filter((c) => !isSameContact(c, contactToDelete))
     );
-
     setCleanedContacts((prev) =>
       prev.filter((c) => !isSameContact(c, contactToDelete))
     );
+    setSelectedContact(null);
 
-    setSummary((prevSummary) => {
-      const filterCategory = (list) =>
+    setSummary((prev) => {
+      const filterOut = (list) =>
         list.filter((c) => !isSameContact(c, contactToDelete));
 
-      const updatedSummary = {
-        duplicates: filterCategory(prevSummary.duplicates),
-        invalid: filterCategory(prevSummary.invalid),
-        similar: filterCategory(prevSummary.similar),
-        incomplete: filterCategory(prevSummary.incomplete),
+      return {
+        duplicates: filterOut(prev.duplicates),
+        invalid: filterOut(prev.invalid),
+        similar: filterOut(prev.similar),
+        incomplete: filterOut(prev.incomplete),
       };
-
-      console.log("Updated summary:", updatedSummary);
-      return updatedSummary;
     });
   };
 
-  // Filter logic
+  // Search + Filter
   const getFilteredContacts = () => {
     let filtered = cleanedContacts.length > 0 ? cleanedContacts : contacts;
 
@@ -146,24 +140,19 @@ const ContactManagerPage = () => {
     }
 
     if (searchQuery.trim()) {
-      filtered = filtered.filter((contact) => {
-        const s = searchQuery.toLowerCase();
-        return (
-          (contact["First Name"] &&
-            contact["First Name"].toLowerCase().includes(s)) ||
-          (contact["Last Name"] &&
-            contact["Last Name"].toLowerCase().includes(s)) ||
-          (contact["Mobile Phone"] &&
-            contact["Mobile Phone"].toLowerCase().includes(s))
-        );
-      });
+      const s = searchQuery.toLowerCase();
+      filtered = filtered.filter((contact) =>
+        (contact["First Name"] && contact["First Name"].toLowerCase().includes(s)) ||
+        (contact["Last Name"] && contact["Last Name"].toLowerCase().includes(s)) ||
+        (contact["Mobile Phone"] && contact["Mobile Phone"].toLowerCase().includes(s))
+      );
     }
+
     return filtered;
   };
 
-  // Download contacts as CSV
+  // Export CSV
   const downloadCSV = () => {
-    console.log(cleanedContacts.length);
     const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : contacts;
     const csvData = Papa.unparse(dataToDownload);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
@@ -181,11 +170,15 @@ const ContactManagerPage = () => {
       <FileInput onFileParsed={handleFileParsed} />
 
       <div className="action-buttons">
-        <button onClick={downloadCSV} disabled={!rawContacts.length}>Download CSV</button>
+        <button onClick={downloadCSV} disabled={!rawContacts.length}>
+          Download CSV
+        </button>
         {rawContacts.length > 0 && (
-          <>
-            <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
-          </>
+          <ContactCleaner
+            rawContacts={rawContacts}
+            onCleaned={handleCleanedContacts}
+            onSummary={handleSummary}
+          />
         )}
       </div>
 
@@ -212,6 +205,7 @@ const ContactManagerPage = () => {
           onClose={() => setSelectedContact(null)}
           onSave={updateContact}
           onFlag={flagContact}
+          onDelete={handleDeleteContact} // ✅ wired in
         />
       )}
 
@@ -224,7 +218,7 @@ const ContactManagerPage = () => {
         deletedContacts={deletedContacts}
         setDeletedContacts={setDeletedContacts}
         setSummary={setSummary}
-        deletedContact={deletedContact}
+        deletedContact={handleDeleteContact}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ContactPopup.css";  
+import "./ContactPopup.css";
 
 const POSSIBLE_FIELDS = [
   "First Name", "Last Name", "Middle Name", "Suffix", "Company",
@@ -10,31 +10,18 @@ const POSSIBLE_FIELDS = [
   "Notes"
 ];
 
-const ContactPopup = ({ contact, onClose, onSave, onFlag }) => {
+const ContactPopup = ({ contact, onClose, onSave, onFlag, onDelete }) => {
   if (!contact) return null;
 
-  // Create initial state for editing. 
-  // For each possible field, try to get the value from:
-  // 1. The original key (e.g., "First Name")
-  // 2. Fallback to normalized key (e.g., contact.firstName)
-  // 3. Default to empty string if neither exists.
   const [editableContact, setEditableContact] = useState(() => {
     const filledContact = {};
     POSSIBLE_FIELDS.forEach((field) => {
       let value = contact[field];
       if (!value) {
-        if (field === "First Name" && contact.firstName) {
-          value = contact.firstName;
-        }
-        if (field === "Last Name" && contact.lastName) {
-          value = contact.lastName;
-        }
-        if (field === "E-mail Address" && contact.email) {
-          value = contact.email;
-        }
-        if (field === "Mobile Phone" && contact.phone) {
-          value = contact.phone;
-        }
+        if (field === "First Name" && contact.firstName) value = contact.firstName;
+        if (field === "Last Name" && contact.lastName) value = contact.lastName;
+        if (field === "E-mail Address" && contact.email) value = contact.email;
+        if (field === "Mobile Phone" && contact.phone) value = contact.phone;
       }
       filledContact[field] = value || "";
     });
@@ -48,7 +35,9 @@ const ContactPopup = ({ contact, onClose, onSave, onFlag }) => {
     setEditableContact({ ...editableContact, [key]: e.target.value });
   };
 
-  const toggleEditing = () => setIsEditing(!isEditing);
+  const toggleEditing = () => {
+    setIsEditing(!isEditing);
+  };
 
   const handleSave = () => {
     onSave(editableContact);
@@ -56,12 +45,20 @@ const ContactPopup = ({ contact, onClose, onSave, onFlag }) => {
   };
 
   const handleFlag = () => {
-    setIsFlagged(!isFlagged);
-    onFlag(contact, !isFlagged);
+    const newFlag = !isFlagged;
+    setIsFlagged(newFlag);
+    onFlag(contact, newFlag);
+  };
+
+  const handleDelete = () => {
+    const confirmed = window.confirm("Are you sure you want to delete this contact?");
+    if (confirmed) {
+      onDelete(contact);
+    }
   };
 
   const displayName =
-    (editableContact["First Name"]?.trim() || editableContact["Last Name"]?.trim()) 
+    (editableContact["First Name"]?.trim() || editableContact["Last Name"]?.trim())
       ? `${editableContact["First Name"] || ""} ${editableContact["Last Name"] || ""}`.trim()
       : editableContact["Company"] || "Unknown";
 
@@ -94,18 +91,23 @@ const ContactPopup = ({ contact, onClose, onSave, onFlag }) => {
         </table>
       </div>
 
-      <button className="close-button" onClick={onClose}>✖</button>
+      <div className="popup-buttons">
+        <button className="close-button" onClick={onClose}>✖</button>
 
-      {isEditing ? (
-        <button className="save-button" onClick={handleSave}>Save Changes</button>
-      ) : (
-        <>
-          <button className="edit-button" onClick={toggleEditing}>Edit Contact</button>
-          <button className="flag-button" onClick={handleFlag}>
-            {isFlagged ? "Unflag" : "Flag"}
-          </button>
-        </>
-      )}
+        {isEditing ? (
+          <button className="save-button" onClick={handleSave}>Save Changes</button>
+        ) : (
+          <>
+            <button className="edit-button" onClick={toggleEditing}>Edit Contact</button>
+            <button className="flag-button" onClick={handleFlag}>
+              {isFlagged ? "Unflag" : "Flag"}
+            </button>
+            <button className="delete-button" onClick={handleDelete}>
+              🗑 Delete
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 };
