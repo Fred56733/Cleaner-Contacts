@@ -222,7 +222,7 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
             <div>
               <h4>{selectedCategory}</h4>
               <p>
-                Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
+                Contact {currentIndex + 1} of {categoryData[selectedCategory].length || 0}
               </p>
               <div
                 style={{
@@ -232,8 +232,19 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
                 }}
               >
                 <p>
-                  {JSON.stringify(categoryData[selectedCategory][currentIndex], null, 2)}
+                  {JSON.stringify(categoryData[selectedCategory]?.[currentIndex] || {}, null, 2)}
                 </p>
+                
+                {categoryData[selectedCategory]?.[currentIndex]?.reason?.length > 0 && (
+                  <ul>
+                    {categoryData[selectedCategory][currentIndex].reason.map(
+                      (reason, index) => (
+                        <li key={index}>{reason}</li>
+                      )
+                    )}
+                  </ul>
+                )}
+
                 {selectedCategory === "Recently Deleted" ? (
                   <button
                     onClick={handleRestoreContact}

@@ -50,17 +50,21 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
         ...contact, // Preserve all original fields
       };
 
+      // Add reasons for summary
+      const reasons = [];
+
       // Flag as invalid if email is badly formatted
       if (email.toUpperCase() !== "N/A" && !email.includes("@")) {
-        cleanedContact.isInvalid = true;
-        invalid.push(cleanedContact);
+        reasons.push("Invalid email format");
+        invalid.push({ ...cleanedContact, reasons});
       }
 
       // Flag as incomplete if first/last name missing
       if (firstName === "N/A" || lastName === "N/A") {
         cleanedContact.isIncomplete = true;
-        incomplete.push(cleanedContact);
-        return cleanedContact;
+        reasons.push("Missing first or last name");
+        incomplete.push({ ...cleanedContact, reasons});
+        return { ...cleanedContact, reasons}; 
       }
 
       // Check for duplicate
@@ -83,18 +87,17 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
           }
 
           if (reason) {
-            cleanedContact.isSimilar = true;
-            cleanedContact.similarityReason = reason;
-            similar.push(cleanedContact);
+            reasons.push(reason);
+            similar.push( { ...cleanedContact, reasons});
           }
         } else {
           similarMap.set(nameKey, cleanedContact);
         }
 
-        return cleanedContact;
+        return { ...cleanedContact, reasons};
       } else {
-        cleanedContact.isDuplicate = true;
-        duplicates.push(cleanedContact);
+        reasons.push("Duplicate contact");
+        duplicates.push({ ...cleanedContact, reasons});
         return null; // Mark as null to filter out later
       }
     });
