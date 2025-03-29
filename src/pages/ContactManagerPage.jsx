@@ -27,9 +27,15 @@ const ContactManagerPage = () => {
 
   // Parse CSV
   const handleFileParsed = (parsedData) => {
-    setRawContacts(parsedData);
-    setContacts(parsedData);
-    setCleanedContacts([]);
+    setRawContacts(parsedData); // Update raw contact
+    setContacts(parsedData); // Update contacts with raw data
+    setCleanedContacts([]); // Clear cleaned contacts
+    setSummary({
+      duplicates: [],
+      invalid: [],
+      similar: [],
+      incomplete: [],
+    }); //Reset summary
   };
 
   // Cleaning results

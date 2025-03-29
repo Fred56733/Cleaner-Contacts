@@ -1,9 +1,15 @@
 // ContactCleaner.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCleaned, setIsCleaned] = useState(false);
+
+  // Reset states when raw contacts change
+  useEffect(() => {
+    setIsProcessing(false);
+    setIsCleaned(false);
+  }, [rawContacts]);
 
   const formatPhoneNumber = (phone) => {
     const cleaned = phone.replace(/\D/g, "");
