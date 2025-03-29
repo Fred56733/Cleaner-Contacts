@@ -324,6 +324,7 @@ const ContactManagerPage = () => {
           onSave={updateContact}
           onFlag={flagContact}
           isFlagged={isFlagged}
+          isCleaned={cleanedContacts.length > 0}
         />
       )}
 
