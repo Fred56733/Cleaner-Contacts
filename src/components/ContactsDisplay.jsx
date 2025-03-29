@@ -1,8 +1,8 @@
 // ContactsDisplay.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import "./ContactsDisplay.css"; // optional styling
 
-function ContactsDisplay({ contacts, onSelectContact }) {
+const ContactsDisplay = memo(function ContactsDisplay({ contacts, onSelectContact, forceUpdate, isFlagged }) {
   const [sortedContacts, setSortedContacts] = useState(contacts);
 
   // Track sorting states
@@ -22,9 +22,9 @@ function ContactsDisplay({ contacts, onSelectContact }) {
   // Update contacts when props change
   useEffect(() => {
     setSortedContacts(contacts);
-  }, [contacts]);
+  }, [contacts, forceUpdate]);
 
-  const sortFirstNames = () => {
+  const sortFirstNames = useCallback(() => {
     resetSortStates("first");
     const sorted = [...sortedContacts].sort((a, b) => {
       const nameA = (a["First Name"] || a.firstName || "").toLowerCase();
@@ -33,9 +33,9 @@ function ContactsDisplay({ contacts, onSelectContact }) {
     });
     setSortedContacts(sorted);
     setIsAscendingFirst(!isAscendingFirst);
-  };
+  }, [sortedContacts, isAscendingFirst]);
 
-  const sortLastNames = () => {
+  const sortLastNames = useCallback(() => {
     resetSortStates("last");
     const sorted = [...sortedContacts].sort((a, b) => {
       const nameA = (a["Last Name"] || a.lastName || "").toLowerCase();
@@ -44,9 +44,9 @@ function ContactsDisplay({ contacts, onSelectContact }) {
     });
     setSortedContacts(sorted);
     setIsAscendingLast(!isAscendingLast);
-  };
+  }, [sortedContacts, isAscendingLast]);
 
-  const sortEmails = () => {
+  const sortEmails = useCallback(() => {
     resetSortStates("email");
     const sorted = [...sortedContacts].sort((a, b) => {
       const emailA = (a["E-mail Address"] || a.email || "").toLowerCase();
@@ -55,14 +55,14 @@ function ContactsDisplay({ contacts, onSelectContact }) {
     });
     setSortedContacts(sorted);
     setIsAscendingEmail(!isAscendingEmail);
-  };
+  }, [sortedContacts, isAscendingEmail]);
 
   const extractAreaCode = (phone) => {
     const match = phone.match(/\d{3}/);
     return match ? parseInt(match[0]) : 0;
   };
 
-  const sortPhones = () => {
+  const sortPhones = useCallback(() => {
     resetSortStates("phone");
     const sorted = [...sortedContacts].sort((a, b) => {
       const phoneA = a["Mobile Phone"] || a.phone || "";
@@ -73,11 +73,7 @@ function ContactsDisplay({ contacts, onSelectContact }) {
     });
     setSortedContacts(sorted);
     setIsAscendingPhone(!isAscendingPhone);
-  };
-
-  const isFlagged = (contact) => {
-    return contact.isDuplicate || contact.isInvalid || contact.isSimilar || contact.isIncomplete || contact.isFlagged;
-  };
+  }, [sortedContacts, isAscendingPhone]);
 
   // Displays all phone numbers in contacts-tabe
   const getAllPhoneNumbers = (contact) => {
@@ -132,6 +128,6 @@ function ContactsDisplay({ contacts, onSelectContact }) {
       </tbody>
     </table>
   );
-}
+});
 
 export default ContactsDisplay;

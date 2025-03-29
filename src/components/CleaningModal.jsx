@@ -4,8 +4,7 @@ import "./CleaningModal.css";
 
 Modal.setAppElement("#root");
 
-const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact }) => {
-  const [isMinimized, setIsMinimized] = useState(false);
+const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact, }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -128,6 +127,9 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFl
           isOpen={isOpen}
           onRequestClose={onRequestClose}
           contentLabel="Cleaning Summary"
+          shouldCloseOnOverlayClick={false}
+          shouldCloseOnEsc={false}
+          ariaHideApp={false}
           style={{
             content: {
               width: "600px",
@@ -142,7 +144,7 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFl
           }}
         >
           <button
-            onClick={() => setIsMinimized(true)}
+            onClick={() => setIsModalMinimized(true)}
             style={{ position: "absolute", top: 10, right: 10 }}
           >
             Minimize
@@ -250,7 +252,7 @@ const CleaningModal = ({ isOpen, onRequestClose, summary, flaggedContacts, setFl
             fontWeight: "bold",
             color: "#333",
           }}
-          onClick={() => setIsMinimized(false)}
+          onClick={() => setIsModalMinimized(false)}
         >
           🔍 Cleaning Summary (Click to Expand)
         </div>
