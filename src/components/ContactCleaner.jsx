@@ -89,7 +89,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
       } else {
         cleanedContact.isDuplicate = true;
         duplicates.push(cleanedContact);
-        return cleanedContact;
+        return null; // Mark as null to filter out later
       }
     });
 

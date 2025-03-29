@@ -335,6 +335,7 @@ const ContactManagerPage = () => {
         setSummary={setSummary}
         deletedContact={deletedContact}
         onRestoreContact={restoreContact}
+        setSelectedContact={setSelectedContact}
         ariaHideApp={false}
       />
     </div>
