@@ -185,26 +185,35 @@ const ContactManagerPage = () => {
         (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
       );
     };
-
+  
+    // Update rawContacts
+    setRawContacts((prevRawContacts) =>
+      prevRawContacts.filter((c) => !isSameContact(c, contactToDelete))
+    );
+  
+    // Update deletedContacts
     setDeletedContacts((prevDeleted) => {
       if (!prevDeleted.some((c) => isSameContact(c, contactToDelete))) {
         return [...prevDeleted, contactToDelete];
       }
       return prevDeleted;
     });
-
+  
+    // Update contacts
     setContacts((prev) =>
       prev.filter((c) => !isSameContact(c, contactToDelete))
     );
-
+  
+    // Update cleanedContacts
     setCleanedContacts((prev) =>
       prev.filter((c) => !isSameContact(c, contactToDelete))
     );
-
+  
+    // Update summary
     setSummary((prevSummary) => {
       const filterCategory = (list) =>
         list.filter((c) => !isSameContact(c, contactToDelete));
-
+  
       return {
         duplicates: filterCategory(prevSummary.duplicates),
         invalid: filterCategory(prevSummary.invalid),
