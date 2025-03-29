@@ -103,6 +103,12 @@ const ContactManagerPage = () => {
       )
     );
 
+    // Ensure the popup re-renders by updating the selected contact
+    setSelectedContact((prevSelected) =>
+      isSameContact(prevSelected, contactToFlag)
+        ? { ...prevSelected, isFlagged, isUserFlagged: isFlagged } : prevSelected
+    );
+
     // Update the summary when unflagging
     if (!isFlagged) {
       setSummary((prevSummary) => {
