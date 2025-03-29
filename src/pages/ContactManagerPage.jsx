@@ -59,15 +59,39 @@ const ContactManagerPage = () => {
 
   // Update contact from popup
   const updateContact = (updatedContact) => {
-    setContacts(
-      contacts.map((c) => (c === selectedContact ? updatedContact : c))
+    const isSameContact = (a, b) => {
+      return (
+        (a.firstName || a["First Name"]) === (b.firstName || b["First Name"]) &&
+        (a.lastName || a["Last Name"]) === (b.lastName || b["Last Name"]) &&
+        (a.email || a["E-mail Address"]) === (b.email || b["E-mail Address"]) &&
+        (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
+      );
+    };
+  
+    // Update rawContacts
+    setRawContacts((prevRawContacts) =>
+      prevRawContacts.map((c) =>
+        isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
+      )
     );
-    setCleanedContacts(
-      cleanedContacts.map((c) => (c === selectedContact ? updatedContact : c))
+  
+    // Update contacts
+    setContacts((prevContacts) =>
+      prevContacts.map((c) =>
+        isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
+      )
     );
+  
+    // Update cleanedContacts
+    setCleanedContacts((prevCleanedContacts) =>
+      prevCleanedContacts.map((c) =>
+        isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
+      )
+    );
+  
+    // Clear the selected contact
     setSelectedContact(null);
   };
-
   // Flag or unflag a contact
   const flagContact = (contactToFlag, isFlagged) => {
     const isSameContact = (a, b) => {

@@ -42,10 +42,6 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
 
       const cleanedContact = {
         ...contact, // Preserve all original fields
-        firstName,
-        lastName,
-        email,
-        phone,
       };
 
       // Flag as invalid if email is badly formatted
