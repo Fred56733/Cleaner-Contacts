@@ -1,137 +1,153 @@
-// ContactManagerPage.jsx
 import React, { useState } from "react";
 import Papa from "papaparse";
-import FileInput from "../components/FileInput.jsx";
-import ContactsDisplay from "../components/ContactsDisplay.jsx";
-import ContactCleaner from "../components/ContactCleaner.jsx";
-import CleaningModal from "../components/CleaningModal.jsx";
-import ContactPopup from "../components/ContactPopup.jsx";
+import ContactsNewDisplay from "../components/ContactNewDisplay.jsx"; // Import ContactsDisplay
 
-const ContactManagerPage = () => {
-  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
-  const [contacts, setContacts] = useState([]);
-  const [cleanedContacts, setCleanedContacts] = useState([]);
-  const [summary, setSummary] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("all");
+const MergePage = () => {
+  const [csvDataFirst, setCsvDataFirst] = useState([]); // First upload data
+  const [csvDataSecond, setCsvDataSecond] = useState([]); // Second upload data
+  const [mergedCsv, setMergedCsv] = useState(""); // Merged CSV data
+  const [mergedContacts, setMergedContacts] = useState([]); // Merged contacts for ContactsDisplay
 
-  // Parse CSV
-  const handleFileParsed = (parsedData) => {
-    setRawContacts(parsedData);
-    setContacts(parsedData);
-    setCleanedContacts([]);
+  const [filesProcessed, setFilesProcessed] = useState({ first: false, second: false }); // Track if both files are processed
+
+  // Handle file input for the first upload
+  const handleFileChangeFirst = (event) => {
+    const files = event.target.files;
+    let mergedDataFirst = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        Papa.parse(e.target.result, {
+          header: true,  
+          skipEmptyLines: true, 
+          complete: (result) => {
+            console.log("Parsed Data from First CSV", result.data); 
+            mergedDataFirst = mergedDataFirst.concat(result.data);
+            if (i === files.length - 1) {
+              setCsvDataFirst(mergedDataFirst);
+              setFilesProcessed((prev) => ({ ...prev, first: true }));
+            }
+          },
+        });
+      };
+
+      reader.readAsText(file);
+    }
   };
 
-  // Cleaning results
-  const handleCleanedContacts = (cleanedData) => {
-    setCleanedContacts(cleanedData);
+  const handleFileChangeSecond = (event) => {
+    const files = event.target.files;
+    let mergedDataSecond = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        // Parse the CSV file
+        Papa.parse(e.target.result, {
+          header: true,  // Use header row for key-value mapping
+          skipEmptyLines: true,  // Skip empty lines
+          complete: (result) => {
+            console.log("Parsed Data from Second CSV", result.data); // Log the parsed data to debug
+            mergedDataSecond = mergedDataSecond.concat(result.data);
+            if (i === files.length - 1) {
+              setCsvDataSecond(mergedDataSecond);
+              setFilesProcessed((prev) => ({ ...prev, second: true }));
+            }
+          },
+        });
+      };
+
+      reader.readAsText(file);
+    }
   };
 
-  // Handle cleaning summary
-  const handleSummary = (summaryData) => {
-    setSummary(summaryData);
-    setIsModalOpen(true);
-  };
-
-  // Close modal
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSummary(null);
-  };
-
-  // Update contact from popup
-  const updateContact = (updatedContact) => {
-    setContacts(
-      contacts.map((c) => (c === selectedContact ? updatedContact : c))
-    );
-    setSelectedContact(null);
-  };
-
-  // Filter logic
-  const getFilteredContacts = () => {
-    let filtered = cleanedContacts.length > 0 ? cleanedContacts : contacts;
-
-    if (filter === "phone") {
-      filtered = filtered.filter((contact) =>
-        Object.keys(contact).some(
-          (key) => key.toLowerCase().includes("phone") && contact[key]?.trim()
-        )
-      );
+  // Combine and map data to the expected structure for contacts
+  const combineData = () => {
+    if (!filesProcessed.first || !filesProcessed.second) {
+      return; // Don't merge until both files have been processed
     }
 
-    if (filter === "alphabetical") {
-      filtered.sort((a, b) => {
-        const aName = `${a["First Name"]?.[0] || ""}${a["Last Name"]?.[0] || ""}`.toUpperCase();
-        const bName = `${b["First Name"]?.[0] || ""}${b["Last Name"]?.[0] || ""}`.toUpperCase();
-        return aName.localeCompare(bName);
-      });
-    }
+    const combinedData = [...csvDataFirst, ...csvDataSecond];
+    console.log("Combined Data:", combinedData); // Log the combined data to debug
 
-    if (searchQuery.trim()) {
-      filtered = filtered.filter((contact) => {
-        const s = searchQuery.toLowerCase();
-        return (
-          (contact["First Name"] &&
-            contact["First Name"].toLowerCase().includes(s)) ||
-          (contact["Last Name"] &&
-            contact["Last Name"].toLowerCase().includes(s)) ||
-          (contact["Mobile Phone"] &&
-            contact["Mobile Phone"].toLowerCase().includes(s))
-        );
-      });
-    }
-    return filtered;
+    // Map to the contact format
+    const formattedContacts = combinedData.map((contact) => ({
+      fn: contact["First Name"] || "N/A",
+      ln: contact["Last Name"] || "N/A",
+      email: [
+        contact["E-mail Address"],
+        contact["E-mail 2 Address"],
+        contact["E-mail 3 Address"],
+      ]
+        .filter(Boolean)
+        .join(", ") || "N/A",
+      phone: [
+        contact["Business Phone"],
+        contact["Business Phone 2"],
+        contact["Car Phone"],
+        contact["Company Main Phone"],
+        contact["Home Phone"],
+        contact["Home Phone 2"],
+        contact["Mobile Phone"],
+        contact["Primary Phone"],
+        contact["Other Phone"],
+      ]
+        .filter(Boolean)
+        .join(", ") || "N/A",
+    }));
+
+    setMergedCsv(Papa.unparse(combinedData)); // Convert merged data to CSV format
+    setMergedContacts(formattedContacts); // Set formatted contacts for display
   };
 
-  // Download contacts as CSV
-  const downloadCSV = () => {
-    const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : rawContacts;
-    const csvData = Papa.unparse(dataToDownload);
-    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-    const url = window.URL.createObjectURL(blob);
+  // Handle file download for the merged CSV
+  const handleDownload = () => {
+    const blob = new Blob([mergedCsv], { type: "text/csv" });
     const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "contacts.csv");
-    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = "merged.csv"; // One merged file download
     link.click();
-    document.body.removeChild(link);
   };
+
+  // Trigger combineData when both files are processed
+  React.useEffect(() => {
+    if (filesProcessed.first && filesProcessed.second) {
+      combineData();
+    }
+  }, [filesProcessed]);
 
   return (
     <div>
-      <FileInput onFileParsed={handleFileParsed} />
+      <h2>CSV File Merger</h2>
 
-      <div className="action-buttons">
-        <button onClick={downloadCSV} disabled={!rawContacts.length}>Download CSV</button>
-        {rawContacts.length > 0 && (
-          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={handleSummary} />
-        )}
-      </div>
+      {/* First Upload Button */}
+      <h3>Upload First CSV Files</h3>
+      <input type="file" accept=".csv" multiple onChange={handleFileChangeFirst} />
+      <br />
+
+      {/* Second Upload Button */}
+      <h3>Upload Second CSV Files</h3>
+      <input type="file" accept=".csv" multiple onChange={handleFileChangeSecond} />
+      <br />
+
+      {/* Download Button for Merged CSV */}
+      <button onClick={handleDownload} disabled={!mergedCsv}>
+        Download Merged CSV
+      </button>
 
       <div>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search contacts..."
-        />
+        <h4>View Merged Contacts</h4>
+
+        {/* Pass the merged contacts to ContactsDisplay */}
+        <ContactsNewDisplay contacts={mergedContacts} />
       </div>
-
-      <ContactsDisplay contacts={getFilteredContacts()} onSelectContact={setSelectedContact} />
-
-      {selectedContact && (
-        <ContactPopup
-          contact={selectedContact}
-          onClose={() => setSelectedContact(null)}
-          onSave={updateContact}
-        />
-      )}
-
-      <CleaningModal isOpen={isModalOpen} onRequestClose={handleCloseModal} summary={summary} />
     </div>
   );
 };
 
-export default ContactManagerPage;
+export default MergePage;
