@@ -64,13 +64,13 @@ const CleaningModal = ({
 
   const handleDeleteContact = () => {
     const contactToDelete = categoryData[selectedCategory][currentIndex];
-    const updatedCategory = categoryData[selectedCategory].filter(c => c !== contactToDelete);
+    const updatedCategory = categoryData[selectedCategory].filter((c) => c !== contactToDelete);
 
     const updatedSummary = {
-      duplicates: [...duplicates.filter(c => c !== contactToDelete)],
-      invalid: [...invalid.filter(c => c !== contactToDelete)],
-      similar: [...similar.filter(c => c !== contactToDelete)],
-      incomplete: [...incomplete.filter(c => c !== contactToDelete)],
+      duplicates: [...duplicates.filter((c) => c !== contactToDelete)],
+      invalid: [...invalid.filter((c) => c !== contactToDelete)],
+      similar: [...similar.filter((c) => c !== contactToDelete)],
+      incomplete: [...incomplete.filter((c) => c !== contactToDelete)],
     };
 
     const summaryKeyMap = {
@@ -85,14 +85,14 @@ const CleaningModal = ({
     }
 
     if (selectedCategory === "User Flagged") {
-      const updatedFlaggedContacts = flaggedContacts.filter(c => c !== contactToDelete);
+      const updatedFlaggedContacts = flaggedContacts.filter((c) => c !== contactToDelete);
       setFlaggedContacts(updatedFlaggedContacts);
     }
 
     setSummary(updatedSummary);
 
-    setDeletedContacts(prev => {
-      if (!prev.some(c => c === contactToDelete)) {
+    setDeletedContacts((prev) => {
+      if (!prev.some((c) => c === contactToDelete)) {
         return [...prev, contactToDelete];
       }
       return prev;
@@ -105,11 +105,109 @@ const CleaningModal = ({
 
   const handleRestoreContact = () => {
     const contactToRestore = categoryData[selectedCategory][currentIndex];
-    const updatedDeletedContacts = deletedContacts.filter(c => c !== contactToRestore);
+    const updatedDeletedContacts = deletedContacts.filter((c) => c !== contactToRestore);
     setDeletedContacts(updatedDeletedContacts);
     if (onRestoreContact) onRestoreContact(contactToRestore);
     const newIndex = Math.max(0, updatedDeletedContacts.length - 1);
     setCurrentIndex(newIndex);
+  };
+
+  const handleResolved = () => {
+    const contactToResolve = categoryData[selectedCategory][currentIndex];
+
+    // Remove the contact from the selected category view
+    const updatedCategory = categoryData[selectedCategory].filter((c) => c !== contactToResolve);
+
+    // Update the summary fields
+    const updatedSummary = {
+      duplicates: [...duplicates.filter((c) => c !== contactToResolve)],
+      invalid: [...invalid.filter((c) => c !== contactToResolve)],
+      similar: [...similar.filter((c) => c !== contactToResolve)],
+      incomplete: [...incomplete.filter((c) => c !== contactToResolve)],
+    };
+
+    const summaryKeyMap = {
+      "Duplicate Contacts": "duplicates",
+      "Invalid Contacts": "invalid",
+      "Similar Contacts": "similar",
+      "Incomplete Contacts": "incomplete",
+    };
+
+    if (summaryKeyMap[selectedCategory]) {
+      updatedSummary[summaryKeyMap[selectedCategory]] = [...updatedCategory];
+    }
+
+    if (selectedCategory === "User Flagged") {
+      const updatedFlaggedContacts = flaggedContacts.filter((c) => c !== contactToResolve);
+      setFlaggedContacts(updatedFlaggedContacts);
+    }
+
+    setSummary(updatedSummary);
+
+    const newIndex = Math.max(0, updatedCategory.length - 1);
+    setCurrentIndex(newIndex);
+  };
+
+  const mergeContacts = (contactsToMerge) => {
+    if (!contactsToMerge || contactsToMerge.length === 0) return null;
+
+    const merged = { ...contactsToMerge[0] };
+
+    contactsToMerge.slice(1).forEach((contact) => {
+      Object.keys(contact).forEach((key) => {
+        if ((!merged[key] || merged[key] === "N/A") && contact[key] && contact[key] !== "N/A") {
+          merged[key] = contact[key];
+        } else if (
+          (key.toLowerCase().includes("phone") || key.toLowerCase().includes("email")) &&
+          contact[key] &&
+          contact[key] !== "N/A"
+        ) {
+          if (merged[key] && !merged[key].includes(contact[key])) {
+            merged[key] = merged[key] + ", " + contact[key];
+          }
+        }
+      });
+    });
+
+    return merged;
+  };
+
+  const normalizeName = (contact) => {
+    const first = (contact["First Name"] || contact.firstName || "").trim().toLowerCase();
+    const last = (contact["Last Name"] || contact.lastName || "").trim().toLowerCase();
+    return `${first}-${last}`;
+  };
+
+  const handleMergeSimilar = () => {
+    const currentContact = categoryData[selectedCategory][currentIndex];
+    const currentKey = normalizeName(currentContact);
+
+    const similarGroup = categoryData[selectedCategory].filter((contact) => {
+      return normalizeName(contact) === currentKey;
+    });
+
+    if (similarGroup.length < 2) {
+      alert("Not enough similar contacts to merge.");
+      return;
+    }
+
+    const mergedContact = mergeContacts(similarGroup);
+
+    if (onMergeSimilar) {
+      onMergeSimilar(mergedContact, similarGroup);
+    }
+
+    const updatedCategory = categoryData[selectedCategory].filter(
+      (contact) => !similarGroup.includes(contact)
+    );
+
+    const updatedSummary = {
+      ...summary,
+      similar: updatedCategory,
+    };
+
+    setSummary(updatedSummary);
+    setSelectedCategory(null);
   };
 
   return (
@@ -169,6 +267,28 @@ const CleaningModal = ({
                 Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
               </p>
 
+              {/* Navigation Buttons */}
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+                <button onClick={handlePrevious} disabled={currentIndex === 0}>
+                  ⬅️ Previous
+                </button>
+                <button
+                  onClick={() => {
+                    const contactToEdit = categoryData[selectedCategory][currentIndex];
+                    setIsModalMinimized(true);
+                    setSelectedContact(contactToEdit);
+                  }}
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={currentIndex === categoryData[selectedCategory].length - 1}
+                >
+                  Next ➡️
+                </button>
+              </div>
+
               {/* Card Display */}
               <div
                 style={{
@@ -202,7 +322,7 @@ const CleaningModal = ({
                 )}
               </div>
 
-              {/* Delete / Restore Buttons */}
+              {/* Delete / Restore / Resolved Buttons */}
               <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {selectedCategory === "Recently Deleted" ? (
                   <button
@@ -219,43 +339,55 @@ const CleaningModal = ({
                     ♻️ Restore
                   </button>
                 ) : (
-                  
-                  <button
-                    onClick={handleDeleteContact}
-                    style={{
-                      background: "red",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      padding: "10px 20px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    🗑️ Delete
-                  </button>
+                  <>
+                    <button
+                      onClick={handleResolved}
+                      style={{
+                        background: "green",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        padding: "10px 20px",
+                        cursor: "pointer",
+                        marginRight: "10px",
+                      }}
+                    >
+                      ✅ Resolved
+                    </button>
+                    <button
+                      onClick={handleDeleteContact}
+                      style={{
+                        background: "red",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        padding: "10px 20px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      🗑️ Delete
+                    </button>
+                  </>
                 )}
               </div>
 
-              {/* Navigation Buttons */}
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                <button onClick={handlePrevious} disabled={currentIndex === 0}>
-                  ⬅️ Previous
-                </button>
-                <button onClick={() => {
-                  const contactToEdit = categoryData[selectedCategory][currentIndex];
-                  console.log("Editing contact:", contactToEdit);
-                  setIsModalMinimized(true); // Minimize the modal to allow editing
-                  setSelectedContact(contactToEdit); // 
-                }}>
-                  ✏️ Edit
-                </button>
+              {/* Merge For Similar Button */}
+              {selectedCategory === "Similar Contacts" && categoryData[selectedCategory].length > 1 && (
                 <button
-                  onClick={handleNext}
-                  disabled={currentIndex === categoryData[selectedCategory].length - 1}
+                  onClick={handleMergeSimilar}
+                  style={{
+                    background: "blue",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    marginTop: "10px",
+                  }}
                 >
-                  Next ➡️
+                  🔗 Merge
                 </button>
-              </div>
+              )}
             </div>
           )}
 
