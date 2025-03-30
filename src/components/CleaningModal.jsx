@@ -162,12 +162,12 @@ const CleaningModal = ({
 
               {(() => {
   const categoryColors = {
-    "Duplicate Contacts": "#fef6f6",
-    "Invalid Contacts": "#fff3cd",
-    "Similar Contacts": "#e3fcef",
-    "Incomplete Contacts": "#f0f4f8",
-    "User Flagged": "#fdf0ff",
-    "Recently Deleted": "#f8f9fa",
+    "Duplicate Contacts": "#cce5ff",
+    "Invalid Contacts": "#cce5ff",
+    "Similar Contacts": "#cce5ff",
+    "Incomplete Contacts": "#cce5ff",
+    "User Flagged": "#cce5ff",
+    "Recently Deleted": "#cce5ff",
   };
 
   const bgColor = categoryColors[selectedCategory] || "#f9f9f9";
@@ -176,20 +176,23 @@ const CleaningModal = ({
     <>
       {/* Contact Card */}
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "10px",
-          border: "1px solid #ccc",
-          borderRadius: "10px",
-          padding: "15px",
-          backgroundColor: bgColor,
-          color: "#2c3e50",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-          width: "100%",
-          marginBottom: "15px",
-        }}
-      >
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "10px",
+    padding: "15px",
+    backgroundColor: bgColor,
+    color: "#2c3e50",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+    width: "100%",
+    marginBottom: "15px",
+    wordBreak: "break-word",      // ✅ handle long words
+    whiteSpace: "pre-wrap",       // ✅ preserve formatting + wrap text
+    overflowWrap: "anywhere",     // ✅ force breaks on long chunks
+  }}
+>
         {Object.entries(categoryData[selectedCategory][currentIndex]).map(
           ([key, value]) => (
             <div key={key}>
