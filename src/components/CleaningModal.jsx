@@ -219,6 +219,7 @@ const CleaningModal = ({
                     ♻️ Restore
                   </button>
                 ) : (
+                  
                   <button
                     onClick={handleDeleteContact}
                     style={{
@@ -235,12 +236,23 @@ const CleaningModal = ({
                 )}
               </div>
 
-              {/* Navigation */}
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              {/* Navigation Buttons */}
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
                 <button onClick={handlePrevious} disabled={currentIndex === 0}>
                   ⬅️ Previous
                 </button>
-                <button onClick={handleNext} disabled={currentIndex === categoryData[selectedCategory].length - 1}>
+                <button onClick={() => {
+                  const contactToEdit = categoryData[selectedCategory][currentIndex];
+                  console.log("Editing contact:", contactToEdit);
+                  setIsModalMinimized(true); // Minimize the modal to allow editing
+                  setSelectedContact(contactToEdit); // 
+                }}>
+                  ✏️ Edit
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={currentIndex === categoryData[selectedCategory].length - 1}
+                >
                   Next ➡️
                 </button>
               </div>
