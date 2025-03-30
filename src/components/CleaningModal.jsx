@@ -4,7 +4,7 @@ import "./CleaningModal.css";
 
 Modal.setAppElement("#root");
 
-const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact, onMergeSimilar}) => {
+const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact, onMergeSimilar, setSelectedContact, }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -170,6 +170,52 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
       return normalizeName(contact) === normalizeName(categoryData[selectedCategory][currentIndex]);
     }) : [];
 
+    const handleResolved = () => {
+    const contactToResolve = categoryData[selectedCategory][currentIndex];
+    console.log("Marking contact as resolved:", contactToResolve);
+  
+    // Remove the contact from the selected category view
+    const updatedCategory = categoryData[selectedCategory].filter(
+      (c) => c !== contactToResolve
+    );
+  
+    // Update the summary fields
+    const updatedSummary = {
+      duplicates: [...summary.duplicates.filter((c) => c !== contactToResolve)],
+      invalid: [...summary.invalid.filter((c) => c !== contactToResolve)],
+      similar: [...summary.similar.filter((c) => c !== contactToResolve)],
+      incomplete: [...summary.incomplete.filter((c) => c !== contactToResolve)],
+    };
+  
+    // Correct key mapping from UI labels to summary object keys
+    const summaryKeyMap = {
+      "Duplicate Contacts": "duplicates",
+      "Invalid Contacts": "invalid",
+      "Similar Contacts": "similar",
+      "Incomplete Contacts": "incomplete",
+    };
+  
+    // Update the selected category’s array directly as well
+    if (summaryKeyMap[selectedCategory]) {
+      updatedSummary[summaryKeyMap[selectedCategory]] = [...updatedCategory];
+    }
+  
+    // Handle "User Flagged" category
+    if (selectedCategory === "User Flagged") {
+      const updatedFlaggedContacts = flaggedContacts.filter(
+        (c) => c !== contactToResolve
+      );
+      setFlaggedContacts(updatedFlaggedContacts);
+    }
+  
+    // Update the summary state
+    setSummary(updatedSummary);
+  
+    // Move to the next available contact or back if at the end
+    const newIndex = Math.max(0, updatedCategory.length - 1);
+    setCurrentIndex(newIndex);
+  };
+
   return (
     <>
       {!isMinimized ? (
@@ -226,7 +272,7 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
             <div>
               <h4>{selectedCategory}</h4>
               <p>
-                Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
+                Contact {currentIndex + 1} of {categoryData[selectedCategory].length || 0}
               </p>
               <div
                 style={{
@@ -236,8 +282,19 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
                 }}
               >
                 <p>
-                  {JSON.stringify(categoryData[selectedCategory][currentIndex], null, 2)}
+                  {JSON.stringify(categoryData[selectedCategory]?.[currentIndex] || {}, null, 2)}
                 </p>
+                
+                {categoryData[selectedCategory]?.[currentIndex]?.reason?.length > 0 && (
+                  <ul>
+                    {categoryData[selectedCategory][currentIndex].reason.map(
+                      (reason, index) => (
+                        <li key={index}>{reason}</li>
+                      )
+                    )}
+                  </ul>
+                )}
+
                 {selectedCategory === "Recently Deleted" ? (
                   <button
                     onClick={handleRestoreContact}
@@ -253,6 +310,21 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
                     ♻️ Restore
                   </button>
                 ) : (
+                  <>
+                  <button
+                    onClick={handleResolved}
+                    style={{
+                      background: "green",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ✅ Resolved
+                  </button>
+
                   <button
                     onClick={handleDeleteContact}
                     style={{
@@ -266,6 +338,7 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
                   >
                     🗑️ Delete
                   </button>
+                </>
                 )}
               </div>
 
@@ -287,6 +360,14 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
                 <button onClick={handlePrevious} disabled={currentIndex === 0}>
                   ⬅️ Previous
+                </button>
+                <button onClick={() => {
+                  const contactToEdit = categoryData[selectedCategory][currentIndex];
+                  console.log("Editing contact:", contactToEdit);
+                  setIsModalMinimized(true); // Minimize the modal to allow editing
+                  setSelectedContact(contactToEdit); // 
+                }}>
+                  ✏️ Edit
                 </button>
                 <button
                   onClick={handleNext}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./ContactPopup.css";  
 
-const ContactPopup = ({ contact, onClose, onSave, onFlag, isFlagged }) => {
+const ContactPopup = ({ contact, onClose, onSave, onFlag, isFlagged, isCleaned }) => {
   if (!contact) return null;
 
   const [editableContact, setEditableContact] = useState(() => ({
@@ -66,9 +66,11 @@ const ContactPopup = ({ contact, onClose, onSave, onFlag, isFlagged }) => {
       ) : (
         <>
           <button className="edit-button" onClick={toggleEditing}>Edit Contact</button>
-          <button className="flag-button" onClick={handleFlag}>
+          {isCleaned && (
+            <button className="flag-button" onClick={handleFlag}>
             {isFlagged(contact) ? "Unflag" : "Flag"}
           </button>
+          )}
         </>
       )}
     </div>
