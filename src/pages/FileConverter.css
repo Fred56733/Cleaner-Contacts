@@ -1,0 +1,68 @@
+.file-converter-page {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .file-converter-page h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .file-input-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .file-input-wrapper input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  
+  .custom-file-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .custom-file-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .file-converter-page button {
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    padding: 0.6rem 1.2rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .file-converter-page button:hover {
+    background-color: #218838;
+  }
+  
+  .file-converter-page pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+  }
+  
