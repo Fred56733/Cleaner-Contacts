@@ -238,6 +238,46 @@ const ContactManagerPage = () => {
     );
   };
 
+
+  const mergeSimilarContacts = (mergedContact, similarGroup) => {
+    const isSameContact = (a, b) => {
+      return (
+        (a.firstName || a["First Name"]) === (b.firstName || b["First Name"]) &&
+        (a.lastName || a["Last Name"]) === (b.lastName || b["Last Name"]) &&
+        (a.email || a["E-mail Address"]) === (b.email || b["E-mail Address"]) &&
+        (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
+      );
+    };
+
+    // Remove the merged contacts from contacts, cleanedContacts, and rawContacts; then add the merged contact.
+    setContacts((prev) => {
+      const filtered = prev.filter(
+        (contact) => !similarGroup.some((sim) => isSameContact(contact, sim))
+      );
+      return [...filtered, mergedContact];
+    });
+    setCleanedContacts((prev) => {
+      const filtered = prev.filter(
+        (contact) => !similarGroup.some((sim) => isSameContact(contact, sim))
+      );
+      return [...filtered, mergedContact];
+    });
+    setRawContacts((prev) => {
+      const filtered = prev.filter(
+        (contact) => !similarGroup.some((sim) => isSameContact(contact, sim))
+      );
+      return [...filtered, mergedContact];
+    });
+    // Also update summary to remove these contacts from the "Similar Contacts" category.
+    setSummary((prevSummary) => {
+      const updatedSimilar = prevSummary.similar.filter(
+        (contact) => !similarGroup.some((sim) => isSameContact(contact, sim))
+      );
+      return { ...prevSummary, similar: updatedSimilar };
+    });
+  };
+
+
   // Filter logic
   const getFilteredContacts = () => {
     let filtered = cleanedContacts.length > 0 ? cleanedContacts : contacts;
@@ -342,6 +382,7 @@ const ContactManagerPage = () => {
         setSummary={setSummary}
         deletedContact={deletedContact}
         onRestoreContact={restoreContact}
+        onMergeSimilar={mergeSimilarContacts}
         setSelectedContact={setSelectedContact}
         ariaHideApp={false}
       />

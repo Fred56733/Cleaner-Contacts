@@ -4,7 +4,7 @@ import "./CleaningModal.css";
 
 Modal.setAppElement("#root");
 
-const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact, setSelectedContact, }) => {
+const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClose, summary, flaggedContacts, setFlaggedContacts, deletedContacts, setDeletedContacts, setSummary, deletedContact, onRestoreContact, onMergeSimilar, setSelectedContact, }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -119,6 +119,56 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
     const newIndex = Math.max(0, updatedDeletedContacts.length - 1);
     setCurrentIndex(newIndex);
   };
+
+  const mergeContacts = (contactsToMerge) => {
+    if (!contactsToMerge || contactsToMerge.length === 0) return null;
+    const merged = { ...contactsToMerge[0] };
+    contactsToMerge.slice(1).forEach((contact) => {
+      Object.keys(contact).forEach((key) => {
+        if ((!merged[key] || merged[key] === "N/A") && contact[key] && contact[key] !== "N/A") {
+          merged[key] = contact[key];
+        } else if (
+          (key.toLowerCase().includes("phone") || key.toLowerCase().includes("email")) &&
+          contact[key] &&
+          contact[key] !== "N/A"
+        ) {
+          if (merged[key] && !merged[key].includes(contact[key])) {
+            merged[key] = merged[key] + ", " + contact[key];
+          }
+        }
+      });
+    });
+    return merged;
+  };
+
+  const normalizeName = (contact) =>{
+    const first = (contact["First Name"] || contact.firstName || "").trim().toLowerCase();
+    const last = (contact["Last Name"] || contact.lastName || "").trim().toLowerCase();
+    return `${first}-${last}`;
+  }
+
+  const handleMergeSimilar = () => {
+    const currentContact = categoryData[selectedCategory][currentIndex];
+    const currentKey = normalizeName(currentContact);
+    const nameKey = `${currentContact["First Name"] || currentContact.firstName}=${currentContact["Last Name"] || currentContact.lastName}`;
+    const similarGroup = categoryData[selectedCategory].filter((contact)=>{
+      return normalizeName(contact) === currentKey;
+    });
+    if(similarGroup.length < 2){
+      alert("Not enough similar contacts to merge.");
+      return;
+    }
+    const mergedContact = mergeContacts(similarGroup);
+    if(onMergeSimilar){
+      onMergeSimilar(mergedContact, similarGroup);
+    }
+    setSelectedCategory(null);
+  };
+
+  const similarGroupForComparison = 
+    selectedCategory === "Similar Contacts" ? categoryData[selectedCategory].filter((contact)=>{
+      return normalizeName(contact) === normalizeName(categoryData[selectedCategory][currentIndex]);
+    }) : [];
 
     const handleResolved = () => {
     const contactToResolve = categoryData[selectedCategory][currentIndex];
@@ -291,6 +341,20 @@ const CleaningModal = ({ isOpen, isMinimized, setIsModalMinimized, onRequestClos
                 </>
                 )}
               </div>
+
+              {/* Merge For Similar Button*/}
+              {selectedCategory === "Similar Contacts" && categoryData[selectedCategory].length > 1 && (
+                <button
+                  onClick={handleMergeSimilar}
+                  style={{background: "blue",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    marginTop: "10px",
+                  }}
+                >🔗 Merge</button>)}
 
               {/* Navigation Buttons */}
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
