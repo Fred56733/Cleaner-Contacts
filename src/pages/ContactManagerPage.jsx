@@ -365,6 +365,8 @@ const ContactManagerPage = () => {
           onFlag={flagContact}
           isFlagged={isFlagged}
           isCleaned={cleanedContacts.length > 0}
+          deletedContact={deletedContact}
+          setDeletedContacts={setDeletedContacts}
         />
       )}
 

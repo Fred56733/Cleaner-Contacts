@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import "./ContactPopup.css";  
 
-const ContactPopup = ({ contact, onClose, onSave, onFlag, isFlagged, isCleaned }) => {
+const ContactPopup = ({ 
+    contact, 
+    onClose, 
+    onSave,
+    onFlag, 
+    isFlagged, 
+    isCleaned,
+    deletedContact,
+  }) => {
   if (!contact) return null;
 
   const [editableContact, setEditableContact] = useState(() => ({
@@ -23,6 +31,11 @@ const ContactPopup = ({ contact, onClose, onSave, onFlag, isFlagged, isCleaned }
 
   const handleFlag = () => {
     onFlag(contact, !isFlagged(contact));
+  };
+
+  const handleDelete = () => {
+    deletedContact(contact); // Call the function to delete the contact
+    onClose(); // Close the popup after deletion
   };
 
   const displayName =
@@ -70,7 +83,8 @@ const ContactPopup = ({ contact, onClose, onSave, onFlag, isFlagged, isCleaned }
             <button className="flag-button" onClick={handleFlag}>
             {isFlagged(contact) ? "Unflag" : "Flag"}
           </button>
-          )}
+          )}          
+          <button className="delete-button" onClick={handleDelete}></button>
         </>
       )}
     </div>
