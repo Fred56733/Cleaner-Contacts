@@ -182,6 +182,16 @@ tr:hover td {
   overflow-x: auto;
 }
 
+input[type="text"] {
+  background-color: #76777e; /* background for text*/
+  color: #fffefe; /* text */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+
 @media (max-width: 768px) {
   .app-container {
     padding: 20px; /* prev was 10 px */

@@ -84,7 +84,24 @@ const ContactPopup = ({
             {isFlagged(contact) ? "Unflag" : "Flag"}
           </button>
           )}          
-          <button className="delete-button" onClick={handleDelete}></button>
+        <button
+  onClick={handleDelete}
+  style={{
+    background: "red",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    marginLeft: "0px",
+    marginTop: "10px",
+  }}
+>
+  🗑️ Delete
+</button>
+
+
         </>
       )}
     </div>
