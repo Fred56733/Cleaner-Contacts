@@ -1,0 +1,31 @@
+/* ContactsDisplay.css */
+.contacts-container {
+    padding: 20px;
+  }
+  
+  .contacts-container h2 {
+    color: white;
+    text-align: center;
+  }
+  
+  .contacts-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .contact-item {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+    color: white;
+    text-decoration: underline;
+    transition: background-color 0.2s;
+  }
+  
+  .contact-item:hover {
+    background-color: #222; 
+  }
+
+.flagged {
+  background-color: rgba(106, 106, 0, 0.57);
+}

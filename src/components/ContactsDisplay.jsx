@@ -1,101 +1,133 @@
-//Used to display cleaned contacts data
-import React, { useEffect, useState } from "react";
+// ContactsDisplay.jsx
+import React, { useEffect, useState, useCallback, memo } from "react";
+import "./ContactsDisplay.css"; // optional styling
 
-const ContactsDisplay = ({ contacts }) => {
+const ContactsDisplay = memo(function ContactsDisplay({ contacts, onSelectContact, forceUpdate, isFlagged }) {
   const [sortedContacts, setSortedContacts] = useState(contacts);
-  
-  useEffect (( ) => {
-    setSortedContacts(contacts);
-  }, [contacts]);
 
+  // Track sorting states
   const [isAscendingFirst, setIsAscendingFirst] = useState(true);
   const [isAscendingLast, setIsAscendingLast] = useState(true);
   const [isAscendingEmail, setIsAscendingEmail] = useState(true);
   const [isAscendingPhone, setIsAscendingPhone] = useState(true);
 
-  const resetAscending=()=>{
-    setIsAscendingFirst(true)
-    setIsAscendingLast(true)
-    setIsAscendingEmail(true)
-  }
+  // Reset sorting states except the one being sorted
+  const resetSortStates = (col) => {
+    if (col !== "first") setIsAscendingFirst(true);
+    if (col !== "last") setIsAscendingLast(true);
+    if (col !== "email") setIsAscendingEmail(true);
+    if (col !== "phone") setIsAscendingPhone(true);
+  };
 
-  const sortFirstNames=()=>{
-    resetAscending()
+  // Update contacts when props change
+  useEffect(() => {
+    setSortedContacts(contacts);
+  }, [contacts, forceUpdate]);
 
-    const sorted = [...sortedContacts].sort((a,b)=>{
-      const nameA=(a.firstName || a.fn || "").toLowerCase();
-      const nameB=(b.firstName || b.fn || "").toLowerCase();   
+  const sortFirstNames = useCallback(() => {
+    resetSortStates("first");
+    const sorted = [...sortedContacts].sort((a, b) => {
+      const nameA = (a["First Name"] || a.firstName || "").toLowerCase();
+      const nameB = (b["First Name"] || b.firstName || "").toLowerCase();
       return isAscendingFirst ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
     });
-
     setSortedContacts(sorted);
     setIsAscendingFirst(!isAscendingFirst);
-  };
+  }, [sortedContacts, isAscendingFirst]);
 
-  const sortLastNames=()=>{
-    resetAscending()
-
-    const sorted = [...sortedContacts].sort((a,b)=>{
-      const nameA=(a.lastName || a.ln || "").toLowerCase();
-      const nameB=(b.lastName || b.ln || "").toLowerCase();   
+  const sortLastNames = useCallback(() => {
+    resetSortStates("last");
+    const sorted = [...sortedContacts].sort((a, b) => {
+      const nameA = (a["Last Name"] || a.lastName || "").toLowerCase();
+      const nameB = (b["Last Name"] || b.lastName || "").toLowerCase();
       return isAscendingLast ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
     });
-    
     setSortedContacts(sorted);
     setIsAscendingLast(!isAscendingLast);
-  };
+  }, [sortedContacts, isAscendingLast]);
 
-  const sortEmailAddresses=()=>{
-    resetAscending()
-
-    const sorted = [...sortedContacts].sort((a,b)=>{
-      const nameA=(a.email || "").toLowerCase();
-      const nameB=(b.email || "").toLowerCase();   
-      return isAscendingEmail ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+  const sortEmails = useCallback(() => {
+    resetSortStates("email");
+    const sorted = [...sortedContacts].sort((a, b) => {
+      const emailA = (a["E-mail Address"] || a.email || "").toLowerCase();
+      const emailB = (b["E-mail Address"] || b.email || "").toLowerCase();
+      return isAscendingEmail ? emailA.localeCompare(emailB) : emailB.localeCompare(emailA);
     });
-    
     setSortedContacts(sorted);
     setIsAscendingEmail(!isAscendingEmail);
-  };
+  }, [sortedContacts, isAscendingEmail]);
 
-  const extractAreaCode=(phone)=>{
+  const extractAreaCode = (phone) => {
     const match = phone.match(/\d{3}/);
     return match ? parseInt(match[0]) : 0;
   };
 
-  const sortPhoneNumbers=()=>{
-    const sorted = [...sortedContacts].sort((a,b)=>{
-      const areaCodeA = extractAreaCode(a.phone || "");
-      const areaCodeB = extractAreaCode(b.phone || "");
-      return isAscendingPhone ? areaCodeA - areaCodeB : areaCodeB - areaCodeA;
+  const sortPhones = useCallback(() => {
+    resetSortStates("phone");
+    const sorted = [...sortedContacts].sort((a, b) => {
+      const phoneA = a["Mobile Phone"] || a.phone || "";
+      const phoneB = b["Mobile Phone"] || b.phone || "";
+      const areaA = extractAreaCode(phoneA);
+      const areaB = extractAreaCode(phoneB);
+      return isAscendingPhone ? areaA - areaB : areaB - areaA;
     });
-
     setSortedContacts(sorted);
     setIsAscendingPhone(!isAscendingPhone);
+  }, [sortedContacts, isAscendingPhone]);
+
+  // Displays all phone numbers in contacts-tabe
+  const getAllPhoneNumbers = (contact) => {
+    const phoneFields = ["Business Phone", "Business Phone 2", "Car Phone", "Company Main Phone", "Home Phone", "Home Phone 2", "Mobile Phone", "Work Phone", "Primary Phone", "Other Phone"];
+    return phoneFields
+      .map((field) => contact[field] || contact[field.toLowerCase().replace(" ", "")])
+      .filter(Boolean)
+      .join(", ");
+  };
+
+  // Displays all email addresses in contacts-table
+  const getAllEmails = (contact) => {
+    const emailFields = ["Email", "E-mail Address", "E-mail 2 Address", "E-mail 3 Address"];
+    return emailFields
+      .map((field) => contact[field] || contact[field.toLowerCase().replace(" ", "")])
+      .filter(Boolean)
+      .join(", ");
   }
 
   return (
-    <table>
+    <table className="contacts-table">
       <thead>
         <tr>
-          <th onClick={sortFirstNames} style={{cursor: "pointer"}}>First Name {isAscendingFirst ? "▼" : "▲"}</th>
-          <th onClick={sortLastNames} style={{cursor: "pointer"}}>Last Name {isAscendingLast ? "▼" : "▲"}</th>
-          <th onClick={sortEmailAddresses} style={{cursor: "pointer"}}>Email {isAscendingEmail ? "▼" : "▲"}</th>
-          <th onClick={sortPhoneNumbers} style={{cursor: "pointer"}}>Phone {isAscendingPhone ? "▼" : "▲"}</th>
+          <th onClick={sortFirstNames} style={{ cursor: "pointer" }}>
+            First Name {isAscendingFirst ? "▼" : "▲"}
+          </th>
+          <th onClick={sortLastNames} style={{ cursor: "pointer" }}>
+            Last Name {isAscendingLast ? "▼" : "▲"}
+          </th>
+          <th onClick={sortEmails} style={{ cursor: "pointer" }}>
+            Email {isAscendingEmail ? "▼" : "▲"}
+          </th>
+          <th onClick={sortPhones} style={{ cursor: "pointer" }}>
+            Phone {isAscendingPhone ? "▼" : "▲"}
+          </th>
         </tr>
       </thead>
       <tbody>
         {sortedContacts.map((contact, index) => (
-          <tr key={`${contact.email}-${contact.phone}-${index}`}>
-            <td>{contact.firstName || contact.fn || "N/A"}</td>
-            <td>{contact.lastName || contact.ln || "N/A"}</td>
-            <td>{contact.email || "N/A"}</td>
-            <td>{contact.phone || "N/A"}</td>
+          <tr
+            key={index}
+            className={isFlagged(contact) ? "flagged" : ""}
+            style={{ cursor: onSelectContact ? "pointer" : "auto" }}
+            onClick={() => onSelectContact && onSelectContact(contact)}
+          >
+            <td>{contact["First Name"] || contact.firstName || "N/A"}</td>
+            <td>{contact["Last Name"] || contact.lastName || "N/A"}</td>
+            <td>{getAllEmails(contact) || "N/A"}</td>
+            <td>{getAllPhoneNumbers(contact) || "N/A"}</td>
           </tr>
         ))}
       </tbody>
     </table>
   );
-};
+});
 
 export default ContactsDisplay;

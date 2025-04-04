@@ -1,13 +1,74 @@
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='0' x2='0' y1='0' y2='100%25' gradientTransform='rotate(240)'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%234FE'/%3E%3C/linearGradient%3E%3Cpattern patternUnits='userSpaceOnUse' id='b' width='540' height='450' x='0' y='0' viewBox='0 0 1080 900'%3E%3Cg fill-opacity='0.1'%3E%3Cpolygon fill='%23444' points='90 150 0 300 180 300'/%3E%3Cpolygon points='90 150 180 0 0 0'/%3E%3Cpolygon fill='%23AAA' points='270 150 360 0 180 0'/%3E%3Cpolygon fill='%23DDD' points='450 150 360 300 540 300'/%3E%3Cpolygon fill='%23999' points='450 150 540 0 360 0'/%3E%3Cpolygon points='630 150 540 300 720 300'/%3E%3Cpolygon fill='%23DDD' points='630 150 720 0 540 0'/%3E%3Cpolygon fill='%23444' points='810 150 720 300 900 300'/%3E%3Cpolygon fill='%23FFF' points='810 150 900 0 720 0'/%3E%3Cpolygon fill='%23DDD' points='990 150 900 300 1080 300'/%3E%3Cpolygon fill='%23444' points='990 150 1080 0 900 0'/%3E%3Cpolygon fill='%23DDD' points='90 450 0 600 180 600'/%3E%3Cpolygon points='90 450 180 300 0 300'/%3E%3Cpolygon fill='%23666' points='270 450 180 600 360 600'/%3E%3Cpolygon fill='%23AAA' points='270 450 360 300 180 300'/%3E%3Cpolygon fill='%23DDD' points='450 450 360 600 540 600'/%3E%3Cpolygon fill='%23999' points='450 450 540 300 360 300'/%3E%3Cpolygon fill='%23999' points='630 450 540 600 720 600'/%3E%3Cpolygon fill='%23FFF' points='630 450 720 300 540 300'/%3E%3Cpolygon points='810 450 720 600 900 600'/%3E%3Cpolygon fill='%23DDD' points='810 450 900 300 720 300'/%3E%3Cpolygon fill='%23AAA' points='990 450 900 600 1080 600'/%3E%3Cpolygon fill='%23444' points='990 450 1080 300 900 300'/%3E%3Cpolygon fill='%23222' points='90 750 0 900 180 900'/%3E%3Cpolygon points='270 750 180 900 360 900'/%3E%3Cpolygon fill='%23DDD' points='270 750 360 600 180 600'/%3E%3Cpolygon points='450 750 540 600 360 600'/%3E%3Cpolygon points='630 750 540 900 720 900'/%3E%3Cpolygon fill='%23444' points='630 750 720 600 540 600'/%3E%3Cpolygon fill='%23AAA' points='810 750 720 900 900 900'/%3E%3Cpolygon fill='%23666' points='810 750 900 600 720 600'/%3E%3Cpolygon fill='%23999' points='990 750 900 900 1080 900'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect x='0' y='0' fill='url(%23a)' width='100%25' height='100%25'/%3E%3Crect x='0' y='0' fill='url(%23b)' width='100%25' height='100%25'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: cover;
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+}
+
 /* Layout Container */
 .app-container {
   width: 100%;
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  max-width: 1400px; 
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 12px;
   text-align: center;
+  margin-top: 85px;
+}
+
+/* Styling for action buttons (clean and download)  */
+.action-buttons {
+  margin-top: 20px;
+  justify-content: center;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; 
+}
+
+.drop-area {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin: auto;
+}
+
+.drop-area p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.drop-area span {
+  color: #4b8edb;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.drop-area.dragging {
+  background: rgba(255, 165, 0, 0.3);
+  border-color: rgba(255, 165, 0, 0.8);
+}
+
+.contact-search {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
 }
 
 /* Header */
@@ -21,56 +82,99 @@ header h1 {
 /* Buttons and Input */
 button,
 input[type="file"] {
-  background-color: var(--primary-color);
-  color: var(--heading-color);
+  background: linear-gradient(135deg, #669cd3, #4b8edb);
+  color: white;
   border: none;
-  border-radius: 8px;
-  padding: 10px 15px;
-  margin: 10px 5px;
+  border-radius: 8px; 
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(33, 113, 204, 0.3);
 }
 
+/* Button Hover Effect  make sure to round the edges of buttons 2-7-25 */
 button:hover,
 input[type="file"]:hover {
-  background-color: var(--primary-hover);
+  background: linear-gradient(135deg, #347994, #27616b);
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(14, 40, 88, 0.5);
+}
+
+/* Button Click Effect */
+button:active,
+input[type="file"]:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 5px rgba(17, 16, 15, 0.2);
+}
+
+/* Disabled Button */
+button:disabled {
+  background: gray;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Modern Floating Button */
+.floating-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #4CAF50, #2E8B57);
+  color: white;
+  padding: 15px 20px;
+  font-size: 1rem;
+  border-radius: 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.floating-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Table */
 table {
   width: 100%;
   margin-top: 20px;
-  table-layout: fixed;
   border-collapse: collapse;
-  table-layout: fixed
+  table-layout: fixed;
+  background: rgba(255, 255, 255, 0.1); /* New background */
+  border-radius: 8px; /* New rounded corners */
+  overflow: hidden; /* Ensure clean edges */
 }
 
-th,
-td {
-  padding: 10px 15px;
-  border: 1px solid var(--border-color);
+th, td {
+  padding: 12px; /* Increased padding */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
   text-align: left;
   word-wrap: break-word;
+  color: var(--text-color);
 }
 
 th {
-  background-color: var(--primary-color);
-  color: var(--heading-color);
+  background: rgba(228, 227, 227, 0.8); /* Updated background */
+  color: #000;
   text-transform: uppercase;
 }
 
 td {
   background-color: var(--card-background);
-  color: var(--text-color);
+}
+
+tr {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 tr:nth-child(even) td {
-  background-color: #2a2a2a;
+  background: rgba(0, 0, 0, 0.404); /* Softer alternate row color */
 }
 
 tr:hover td {
-  background-color: var(--primary-hover);
+  background: rgba(255, 165, 0, 0.5);
+  transition: background 0.3s ease;
 }
 
 /* Ensure the table fits in smaller screens */
@@ -78,9 +182,19 @@ tr:hover td {
   overflow-x: auto;
 }
 
+input[type="text"] {
+  background-color: #76777e; /* background for text*/
+  color: #fffefe; /* text */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+
 @media (max-width: 768px) {
   .app-container {
-    padding: 10px;
+    padding: 20px; /* prev was 10 px */
   }
 
   button,
@@ -88,7 +202,16 @@ tr:hover td {
     width: 100%;
     margin: 10px 0;
   }
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
 
+  nav ul li a {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+  }
   table {
     font-size: 0.9rem;
   }

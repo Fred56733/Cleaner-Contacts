@@ -1,8 +1,43 @@
 {
-  "hash": "757b5400",
-  "configHash": "f3bb7985",
-  "lockfileHash": "685063f8",
-  "browserHash": "cc6a6f03",
-  "optimized": {},
-  "chunks": {}
+  "hash": "9c791b87",
+  "configHash": "bdc4d771",
+  "lockfileHash": "30007acb",
+  "browserHash": "59be3099",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "0885cd4b",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "b1055239",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "b608495c",
+      "needsInterop": false
+    },
+    "papaparse": {
+      "src": "../../node_modules/papaparse/papaparse.min.js",
+      "file": "papaparse.js",
+      "fileHash": "fe49bb72",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-IPYILTUR": {
+      "file": "chunk-IPYILTUR.js"
+    },
+    "chunk-4SFRHSJ3": {
+      "file": "chunk-4SFRHSJ3.js"
+    },
+    "chunk-EQCVQC35": {
+      "file": "chunk-EQCVQC35.js"
+    }
+  }
 }
