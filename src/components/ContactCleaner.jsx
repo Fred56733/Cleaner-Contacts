@@ -1,23 +1,52 @@
 // ContactCleaner.jsx
 import React, { useEffect, useState } from "react";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCleaned, setIsCleaned] = useState(false);
 
-  // Reset states when raw contacts change
   useEffect(() => {
     setIsProcessing(false);
     setIsCleaned(false);
   }, [rawContacts]);
 
   const formatPhoneNumber = (phone) => {
-    const cleaned = phone.replace(/\D/g, "");
-    return cleaned.length === 10
-      ? `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
-      : phone;
+    if (!phone) return phone;
+  
+    const extPattern = /(ext\.?|x|#)\s?(\d{1,6})/i;
+    const match = phone.match(extPattern);
+  
+    // Capture extension (e.g., "ext 1234", "x456", "#789")
+    const extension = match ? match[2] : null;
+  
+    // Remove extension part before parsing
+    const cleanedPhone = phone.replace(extPattern, "").replace(/[\s()-]/g, "").trim();
+  
+    let parsed = parsePhoneNumberFromString(cleanedPhone) || parsePhoneNumberFromString(cleanedPhone, 'US');
+  
+    if (parsed && parsed.isValid()) {
+      let formatted = "";
+  
+      if (parsed.country === "US" || parsed.country === "CA") {
+        const national = parsed.nationalNumber;
+        formatted = `+1 (${national.slice(0, 3)}) ${national.slice(3, 6)}-${national.slice(6)}`;
+      } else {
+        formatted = parsed.formatInternational(); 
+      }
+  
+      // Re-append the extension
+      if (extension) {
+        formatted += ` ext. ${extension}`;
+      }
+  
+      return formatted;
+    }
+  
+    console.warn(`Invalid phone number: "${phone}"`);
+    return phone;
   };
-
+  
   const formatEmail = (email) => {
     if (email.toUpperCase() === "N/A") return email;
     return email.toLowerCase().trim();
@@ -30,84 +59,108 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
 
   const imputeContactDetails = (contact) => {
     let { "First Name": firstName, "Last Name": lastName, Company: company } = contact;
-  
+
     if (company && (firstName === "N/A" || !firstName)) {
-      firstName = company; // Use company name if first name is missing
+      firstName = company;
     }
     if (company && (lastName === "N/A" || !lastName)) {
-      lastName = company; // Use company name if last name is missing
+      lastName = company;
     }
-  
+
     return { ...contact, "First Name": firstName, "Last Name": lastName };
   };
 
-    const cleanContacts = () => {
+  const cleanContacts = () => {
     setIsProcessing(true);
-  
+
     const seenContacts = new Map();
     const similarMap = new Map();
-  
+
     const duplicates = [];
     const invalid = [];
     const incomplete = [];
     const similar = [];
-  
+
+    const phoneFields = [
+      "Mobile Phone",
+      "Home Phone",
+      "Home Phone 2",
+      "Business Phone",
+      "Business Phone 2",
+      "Company Main Phone",
+      "Car Phone",
+      "Other Phone",
+      "Callback",
+      "Primary Phone",
+      "Radio Phone",
+    ];
+
     const cleaned = rawContacts.map((contact) => {
-      // Apply imputation logic to update First Name and Last Name
       const imputedContact = imputeContactDetails(contact);
-  
-      // Format and normalize fields
+
       const firstName = formatName(imputedContact["First Name"] || "N/A");
       const lastName = formatName(imputedContact["Last Name"] || "N/A");
       const email = formatEmail(imputedContact["E-mail Address"] || "N/A");
-      const phone = imputedContact["Mobile Phone"]
-        ? formatPhoneNumber(imputedContact["Mobile Phone"])
-        : undefined;
-  
-      // Construct the cleaned contact by updating only the necessary fields
+
+      // Normalize all phone fields
+      const normalizedPhones = {};
+      phoneFields.forEach((field) => {
+        if (imputedContact[field]) {
+          normalizedPhones[field] = formatPhoneNumber(imputedContact[field]);
+        }
+      });
+
       const cleanedContact = {
-        ...imputedContact, // Preserve all original fields
+        ...imputedContact,
         "First Name": firstName,
         "Last Name": lastName,
         "E-mail Address": email,
-        "Mobile Phone": phone,
+        ...normalizedPhones,
       };
-  
-      // Add reasons for summary
+
       const reasons = [];
-  
-      // Flag as invalid if email is badly formatted
-      if (cleanedContact["E-mail Address"].toUpperCase() !== "N/A" && !cleanedContact["E-mail Address"].includes("@")) {
+
+      if (
+        cleanedContact["E-mail Address"].toUpperCase() !== "N/A" &&
+        !cleanedContact["E-mail Address"].includes("@")
+      ) {
         reasons.push("Invalid email format");
         invalid.push({ ...cleanedContact, reasons });
       }
-  
-      // Flag as incomplete if first/last name is missing
-      if (cleanedContact["First Name"] === "N/A" || cleanedContact["Last Name"] === "N/A") {
+
+      if (
+        cleanedContact["First Name"] === "N/A" ||
+        cleanedContact["Last Name"] === "N/A"
+      ) {
         reasons.push("Missing first or last name");
         incomplete.push({ ...cleanedContact, reasons });
         return { ...cleanedContact, reasons };
       }
-  
-      // Check for duplicate
-      const key = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}-${cleanedContact["E-mail Address"]}-${cleanedContact["Mobile Phone"]}`;
+
+      const key = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}-${cleanedContact["E-mail Address"]}-${cleanedContact["Mobile Phone"] || ""}`;
       if (!seenContacts.has(key)) {
         seenContacts.set(key, cleanedContact);
-  
-        // Check for similarity
+
         const nameKey = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}`;
         if (similarMap.has(nameKey)) {
           const prevContact = similarMap.get(nameKey);
           let reason = "";
-  
-          if (prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"] && prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]) {
+
+          if (
+            prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"] &&
+            prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]
+          ) {
             reason = "Different phone and email";
-          } else if (prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"]) {
+          } else if (
+            prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"]
+          ) {
             reason = "Different phone";
-          } else if (prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]) {
+          } else if (
+            prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]
+          ) {
             reason = "Different email";
           }
-  
+
           if (reason) {
             if (!prevContact.isSimilar) {
               prevContact.similarityReason = reason;
@@ -120,21 +173,20 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
         } else {
           similarMap.set(nameKey, cleanedContact);
         }
-  
+
         return { ...cleanedContact, reasons };
       } else {
         reasons.push("Duplicate contact");
         duplicates.push({ ...cleanedContact, reasons });
-        return null; // Mark as null to filter out later
+        return null;
       }
     });
-  
+
     const filteredCleaned = cleaned.filter(Boolean);
-  
+
     setIsProcessing(false);
     setIsCleaned(true);
-  
-    // Send full contact objects in all categories
+
     onCleaned(filteredCleaned);
     onSummary({ duplicates, invalid, incomplete, similar });
   };
