@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./CleaningModal.css";
 
@@ -22,6 +22,7 @@ const CleaningModal = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [categoryData, setCategoryData] = useState({});
 
   const { duplicates = [], invalid = [], similar = [], incomplete = [] } = summary || {};
 
@@ -34,7 +35,10 @@ const CleaningModal = ({
     "Recently Deleted": deletedContacts,
   });
 
-  const categoryData = getCategoryData();
+  useEffect(() => {
+    // Refresh category data whenever the modal is reopened or summary changes
+    setCategoryData(getCategoryData());
+  }, [summary, flaggedContacts, deletedContacts]);
 
   const categoryColors = {
     "Duplicate Contacts": "#fef6f6",
@@ -51,7 +55,7 @@ const CleaningModal = ({
   };
 
   const handleNext = () => {
-    if (currentIndex < categoryData[selectedCategory].length - 1) {
+    if (currentIndex < categoryData[selectedCategory]?.length - 1) {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
@@ -255,16 +259,16 @@ const CleaningModal = ({
                 >
                   {category}
                 </h3>
-                <p>{categoryData[category].length}</p>
+                <p>{categoryData[category]?.length || 0}</p>
               </div>
             ))}
           </div>
 
-          {selectedCategory && categoryData[selectedCategory].length > 0 && (
+          {selectedCategory && categoryData[selectedCategory]?.length > 0 && (
             <div>
               <h4>{selectedCategory}</h4>
               <p>
-                Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
+                Contact {currentIndex + 1} of {categoryData[selectedCategory]?.length}
               </p>
 
               {/* Navigation Buttons */}
@@ -283,7 +287,7 @@ const CleaningModal = ({
                 </button>
                 <button
                   onClick={handleNext}
-                  disabled={currentIndex === categoryData[selectedCategory].length - 1}
+                  disabled={currentIndex === categoryData[selectedCategory]?.length - 1}
                 >
                   Next ➡️
                 </button>
@@ -372,7 +376,7 @@ const CleaningModal = ({
               </div>
 
               {/* Merge For Similar Button */}
-              {selectedCategory === "Similar Contacts" && categoryData[selectedCategory].length > 1 && (
+              {selectedCategory === "Similar Contacts" && categoryData[selectedCategory]?.length > 1 && (
                 <button
                   onClick={handleMergeSimilar}
                   style={{
@@ -391,7 +395,7 @@ const CleaningModal = ({
             </div>
           )}
 
-          {selectedCategory && categoryData[selectedCategory].length === 0 && (
+          {selectedCategory && categoryData[selectedCategory]?.length === 0 && (
             <p>No contacts found in this category.</p>
           )}
         </Modal>

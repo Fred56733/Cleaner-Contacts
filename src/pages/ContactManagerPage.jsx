@@ -73,31 +73,49 @@ const ContactManagerPage = () => {
         (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
       );
     };
-  
+
     // Update rawContacts
     setRawContacts((prevRawContacts) =>
       prevRawContacts.map((c) =>
         isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
       )
     );
-  
+
     // Update contacts
     setContacts((prevContacts) =>
       prevContacts.map((c) =>
         isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
       )
     );
-  
+
     // Update cleanedContacts
     setCleanedContacts((prevCleanedContacts) =>
       prevCleanedContacts.map((c) =>
         isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
       )
     );
-  
+
+    // Recalculate the summary
+    setSummary((prevSummary) => {
+      const updatedSummary = { ...prevSummary };
+
+      const updateCategory = (category) =>
+        category.map((c) =>
+          isSameContact(c, selectedContact) ? { ...c, ...updatedContact } : c
+        );
+
+      updatedSummary.duplicates = updateCategory(prevSummary.duplicates);
+      updatedSummary.invalid = updateCategory(prevSummary.invalid);
+      updatedSummary.similar = updateCategory(prevSummary.similar);
+      updatedSummary.incomplete = updateCategory(prevSummary.incomplete);
+
+      return updatedSummary;
+    });
+
     // Clear the selected contact
     setSelectedContact(null);
   };
+
   // Flag or unflag a contact
   const flagContact = (contactToFlag, isFlagged) => {
     const isSameContact = (a, b) => {
