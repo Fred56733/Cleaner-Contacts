@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import "./CleaningModal.css";
 
@@ -22,7 +22,6 @@ const CleaningModal = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [categoryData, setCategoryData] = useState({});
 
   const { duplicates = [], invalid = [], similar = [], incomplete = [] } = summary || {};
 
@@ -35,10 +34,7 @@ const CleaningModal = ({
     "Recently Deleted": deletedContacts,
   });
 
-  useEffect(() => {
-    // Refresh category data whenever the modal is reopened or summary changes
-    setCategoryData(getCategoryData());
-  }, [summary, flaggedContacts, deletedContacts]);
+  const categoryData = useMemo(() => getCategoryData(), [summary, flaggedContacts, deletedContacts]);
 
   const categoryColors = {
     "Duplicate Contacts": "#fef6f6",
@@ -312,18 +308,18 @@ const CleaningModal = ({
                   overflowWrap: "anywhere",
                 }}
               >
-                {Object.entries(categoryData[selectedCategory][currentIndex] || {}).map(
-                  ([key, value]) => (
+                {Object.entries(categoryData[selectedCategory][currentIndex] || {})
+                  .filter(([key, value]) => value && value !== "N/A") // Filter out empty or "N/A" fields
+                  .map(([key, value]) => (
                     <div key={key}>
                       <strong
                         style={{ display: "block", color: "#34495e", fontSize: "14px" }}
                       >
                         {key}:
                       </strong>
-                      <span>{value || <em style={{ color: "#7f8c8d" }}>N/A</em>}</span>
+                      <span>{value}</span>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
 
               {/* Delete / Restore / Resolved Buttons */}
