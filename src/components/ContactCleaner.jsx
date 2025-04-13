@@ -6,47 +6,38 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCleaned, setIsCleaned] = useState(false);
 
+  // Reset cleaning state whenever new raw contacts are passed in
   useEffect(() => {
     setIsProcessing(false);
     setIsCleaned(false);
   }, [rawContacts]);
 
+  // Format phone numbers and preserve extensions (e.g., "ext 1234", "x456", "#789")
   const formatPhoneNumber = (phone) => {
     if (!phone) return phone;
-  
+
     const extPattern = /(ext\.?|x|#)\s?(\d{1,6})/i;
     const match = phone.match(extPattern);
-  
-    // Capture extension (e.g., "ext 1234", "x456", "#789")
     const extension = match ? match[2] : null;
-  
-    // Remove extension part before parsing
+
     const cleanedPhone = phone.replace(extPattern, "").replace(/[\s()-]/g, "").trim();
-  
-    let parsed = parsePhoneNumberFromString(cleanedPhone) || parsePhoneNumberFromString(cleanedPhone, 'US');
-  
+    const parsed = parsePhoneNumberFromString(cleanedPhone) || parsePhoneNumberFromString(cleanedPhone, "US");
+
     if (parsed && parsed.isValid()) {
       let formatted = "";
-  
       if (parsed.country === "US" || parsed.country === "CA") {
         const national = parsed.nationalNumber;
         formatted = `+1 (${national.slice(0, 3)}) ${national.slice(3, 6)}-${national.slice(6)}`;
       } else {
-        formatted = parsed.formatInternational(); 
+        formatted = parsed.formatInternational();
       }
-  
-      // Re-append the extension
-      if (extension) {
-        formatted += ` ext. ${extension}`;
-      }
-  
-      return formatted;
+
+      return extension ? `${formatted} ext. ${extension}` : formatted;
     }
-  
-    console.warn(`Invalid phone number: "${phone}"`);
+
     return phone;
   };
-  
+
   const formatEmail = (email) => {
     if (email.toUpperCase() === "N/A") return email;
     return email.toLowerCase().trim();
@@ -60,12 +51,8 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   const imputeContactDetails = (contact) => {
     let { "First Name": firstName, "Last Name": lastName, Company: company } = contact;
 
-    if (company && (firstName === "N/A" || !firstName)) {
-      firstName = company;
-    }
-    if (company && (lastName === "N/A" || !lastName)) {
-      lastName = company;
-    }
+    if (company && (!firstName || firstName === "N/A")) firstName = company;
+    if (company && (!lastName || lastName === "N/A")) lastName = company;
 
     return { ...contact, "First Name": firstName, "Last Name": lastName };
   };
@@ -82,17 +69,9 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
     const similar = [];
 
     const phoneFields = [
-      "Mobile Phone",
-      "Home Phone",
-      "Home Phone 2",
-      "Business Phone",
-      "Business Phone 2",
-      "Company Main Phone",
-      "Car Phone",
-      "Other Phone",
-      "Callback",
-      "Primary Phone",
-      "Radio Phone",
+      "Mobile Phone", "Home Phone", "Home Phone 2", "Business Phone",
+      "Business Phone 2", "Company Main Phone", "Car Phone",
+      "Other Phone", "Callback", "Primary Phone", "Radio Phone"
     ];
 
     const cleaned = rawContacts.map((contact) => {
@@ -102,7 +81,6 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
       const lastName = formatName(imputedContact["Last Name"] || "N/A");
       const email = formatEmail(imputedContact["E-mail Address"] || "N/A");
 
-      // Normalize all phone fields
       const normalizedPhones = {};
       phoneFields.forEach((field) => {
         if (imputedContact[field]) {
@@ -120,51 +98,41 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
 
       const reasons = [];
 
-      if (
-        cleanedContact["E-mail Address"].toUpperCase() !== "N/A" &&
-        !cleanedContact["E-mail Address"].includes("@")
-      ) {
+      if (email !== "N/A" && !email.includes("@")) {
         reasons.push("Invalid email format");
         invalid.push({ ...cleanedContact, reasons });
       }
 
-      if (
-        cleanedContact["First Name"] === "N/A" ||
-        cleanedContact["Last Name"] === "N/A"
-      ) {
+      if (firstName === "N/A" || lastName === "N/A") {
         reasons.push("Missing first or last name");
         incomplete.push({ ...cleanedContact, reasons });
         return { ...cleanedContact, reasons };
       }
 
-      const key = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}-${cleanedContact["E-mail Address"]}-${cleanedContact["Mobile Phone"] || ""}`;
+      const key = `${firstName}-${lastName}-${email}-${normalizedPhones["Mobile Phone"] || ""}`;
       if (!seenContacts.has(key)) {
         seenContacts.set(key, cleanedContact);
 
-        const nameKey = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}`;
+        const nameKey = `${firstName}-${lastName}`;
         if (similarMap.has(nameKey)) {
-          const prevContact = similarMap.get(nameKey);
+          const prev = similarMap.get(nameKey);
           let reason = "";
 
           if (
-            prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"] &&
-            prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]
+            prev["Mobile Phone"] !== normalizedPhones["Mobile Phone"] &&
+            prev["E-mail Address"] !== email
           ) {
             reason = "Different phone and email";
-          } else if (
-            prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"]
-          ) {
+          } else if (prev["Mobile Phone"] !== normalizedPhones["Mobile Phone"]) {
             reason = "Different phone";
-          } else if (
-            prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]
-          ) {
+          } else if (prev["E-mail Address"] !== email) {
             reason = "Different email";
           }
 
           if (reason) {
-            if (!prevContact.isSimilar) {
-              prevContact.similarityReason = reason;
-              similar.push(prevContact);
+            if (!prev.isSimilar) {
+              prev.similarityReason = reason;
+              similar.push(prev);
             }
             cleanedContact.similarityReason = reason;
             reasons.push(reason);
