@@ -117,11 +117,9 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
           }
 
           if (reason) {
-            if (!prev.isSimilar) {
-              prev.similarityReason = reason;
-              similar.push(prev);
+            if (!prevContact.isSimilar) {
+              similar.push(prevContact);
             }
-            cleanedContact.similarityReason = reason;
             reasons.push(reason);
             similar.push({ ...cleanedContact, reasons });
           }
@@ -145,7 +143,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
     onCleaned(filteredCleaned);
     onSummary({ duplicates, invalid, incomplete, similar });
 
-    // ✅ Send cleaned contacts instead of raw
+    // Send cleaned contacts instead of raw
     console.log("Sending cleaned contacts to backend:", filteredCleaned);
 
     fetch("http://127.0.0.1:5000/analyze", {
