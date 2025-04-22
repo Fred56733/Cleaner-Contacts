@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import "./CleaningModal.css";
 
@@ -34,7 +34,7 @@ const CleaningModal = ({
     "Recently Deleted": deletedContacts,
   });
 
-  const categoryData = getCategoryData();
+  const categoryData = useMemo(() => getCategoryData(), [summary, flaggedContacts, deletedContacts]);
 
   const categoryColors = {
     "Duplicate Contacts": "#fef6f6",
@@ -51,7 +51,7 @@ const CleaningModal = ({
   };
 
   const handleNext = () => {
-    if (currentIndex < categoryData[selectedCategory].length - 1) {
+    if (currentIndex < categoryData[selectedCategory]?.length - 1) {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
@@ -255,16 +255,16 @@ const CleaningModal = ({
                 >
                   {category}
                 </h3>
-                <p>{categoryData[category].length}</p>
+                <p>{categoryData[category]?.length || 0}</p>
               </div>
             ))}
           </div>
 
-          {selectedCategory && categoryData[selectedCategory].length > 0 && (
+          {selectedCategory && categoryData[selectedCategory]?.length > 0 && (
             <div>
               <h4>{selectedCategory}</h4>
               <p>
-                Contact {currentIndex + 1} of {categoryData[selectedCategory].length}
+                Contact {currentIndex + 1} of {categoryData[selectedCategory]?.length}
               </p>
 
               {/* Navigation Buttons */}
@@ -283,7 +283,7 @@ const CleaningModal = ({
                 </button>
                 <button
                   onClick={handleNext}
-                  disabled={currentIndex === categoryData[selectedCategory].length - 1}
+                  disabled={currentIndex === categoryData[selectedCategory]?.length - 1}
                 >
                   Next ➡️
                 </button>
@@ -308,18 +308,18 @@ const CleaningModal = ({
                   overflowWrap: "anywhere",
                 }}
               >
-                {Object.entries(categoryData[selectedCategory][currentIndex] || {}).map(
-                  ([key, value]) => (
+                {Object.entries(categoryData[selectedCategory][currentIndex] || {})
+                  .filter(([key, value]) => value && value !== "N/A") // Filter out empty or "N/A" fields
+                  .map(([key, value]) => (
                     <div key={key}>
                       <strong
                         style={{ display: "block", color: "#34495e", fontSize: "14px" }}
                       >
                         {key}:
                       </strong>
-                      <span>{value || <em style={{ color: "#7f8c8d" }}>N/A</em>}</span>
+                      <span>{value}</span>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
 
               {/* Delete / Restore / Resolved Buttons */}
@@ -372,7 +372,7 @@ const CleaningModal = ({
               </div>
 
               {/* Merge For Similar Button */}
-              {selectedCategory === "Similar Contacts" && categoryData[selectedCategory].length > 1 && (
+              {selectedCategory === "Similar Contacts" && categoryData[selectedCategory]?.length > 1 && (
                 <button
                   onClick={handleMergeSimilar}
                   style={{
@@ -391,7 +391,7 @@ const CleaningModal = ({
             </div>
           )}
 
-          {selectedCategory && categoryData[selectedCategory].length === 0 && (
+          {selectedCategory && categoryData[selectedCategory]?.length === 0 && (
             <p>No contacts found in this category.</p>
           )}
         </Modal>
