@@ -5,11 +5,12 @@ import FileInput from "../components/FileInput.jsx";
 import "./MergePage.css"; 
 
 const MergePage = () => {
-  const [csvDataFirst, setCsvDataFirst] = useState([]);
-  const [csvDataSecond, setCsvDataSecond] = useState([]);
+  const [csvDataFirst, setCsvDataFirst] = useState([]); // State for the first file
+  const [csvDataSecond, setCsvDataSecond] = useState([]); // State for the second file
   const [mergedCsv, setMergedCsv] = useState("");
   const [mergedContacts, setMergedContacts] = useState([]);
   const [filesProcessed, setFilesProcessed] = useState({ first: false, second: false });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const removeDuplicates = (contacts, key) => {
     const uniqueContacts = [];
@@ -27,12 +28,14 @@ const MergePage = () => {
   };
 
   const handleFileParsedFirst = (data) => {
-    setCsvDataFirst(data);
+    console.log("First CSV Data:", data); // Debugging log
+    setCsvDataFirst(data); // Update state for the first file
     setFilesProcessed((prev) => ({ ...prev, first: true }));
   };
 
   const handleFileParsedSecond = (data) => {
-    setCsvDataSecond(data);
+    console.log("Second CSV Data:", data); // Debugging log
+    setCsvDataSecond(data); // Update state for the second file
     setFilesProcessed((prev) => ({ ...prev, second: true }));
   };
 
@@ -42,6 +45,7 @@ const MergePage = () => {
     }
 
     const combinedData = [...csvDataFirst, ...csvDataSecond];
+    console.log("Combined Data Before Formatting:", combinedData); // Debugging log
 
     const formattedContacts = combinedData.map((contact) => {
       const allPhones = [
@@ -85,9 +89,13 @@ const MergePage = () => {
       return contact;
     });
 
+    console.log("Formatted Contacts:", formattedContacts); // Debugging log
+
     const uniqueContacts = removeDuplicates(formattedContacts, "E-mail Address");
+    console.log("Unique Contacts:", uniqueContacts); // Debugging log
 
     setMergedContacts(uniqueContacts);
+    console.log("Updated Merged Contacts:", uniqueContacts); // Debugging log
     setMergedCsv(Papa.unparse(uniqueContacts));
   };
 
@@ -97,6 +105,26 @@ const MergePage = () => {
     link.href = URL.createObjectURL(blob);
     link.download = "merged.csv";
     link.click();
+  };
+
+  const getFilteredContacts = () => {
+    if (!searchQuery.trim()) {
+      console.log("Filtered Contacts (No Search):", mergedContacts); // Debugging log
+      return mergedContacts;
+    }
+
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    const filteredContacts = mergedContacts.filter((contact) => {
+      return (
+        (contact["First Name"] && contact["First Name"].toLowerCase().includes(lowerCaseQuery)) ||
+        (contact["Last Name"] && contact["Last Name"].toLowerCase().includes(lowerCaseQuery)) ||
+        (contact["E-mail Address"] && contact["E-mail Address"].toLowerCase().includes(lowerCaseQuery)) ||
+        (contact["Mobile Phone"] && contact["Mobile Phone"].toLowerCase().includes(lowerCaseQuery))
+      );
+    });
+
+    console.log("Filtered Contacts (With Search):", filteredContacts); // Debugging log
+    return filteredContacts;
   };
 
   useEffect(() => {
@@ -110,22 +138,33 @@ const MergePage = () => {
       <h2>CSV File Merger</h2>
 
       {/* First File Input */}
-      <h3>Upload First CSV Files</h3>
-      <FileInput onFileParsed={handleFileParsedFirst} />
+      <h3>Upload First CSV File</h3>
+      <FileInput onFileParsed={handleFileParsedFirst} uniqueId="fileInputFirst" />
 
       {/* Second File Input */}
-      <h3>Upload Second CSV Files</h3>
-      <FileInput onFileParsed={handleFileParsedSecond} />
-
+      <h3>Upload Second CSV File</h3>
+      <FileInput onFileParsed={handleFileParsedSecond} uniqueId="fileInputSecond" />
+      
       {/* Download Button */}
       <button onClick={handleDownload} disabled={!mergedCsv}>
         Download Merged CSV
       </button>
 
+      {/* Search Bar */}
+      <div>
+        <input
+          type="text"
+          className="contact-search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search contacts..."
+        />
+      </div>
+
       <div>
         <h4>View Merged Contacts</h4>
         <ContactsDisplay
-          contacts={mergedContacts}
+          contacts={getFilteredContacts()}
           onSelectContact={(contact) => console.log("Selected Contact:", contact)}
         />
       </div>
