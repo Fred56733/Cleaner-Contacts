@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Papa from "papaparse";
 import ContactsDisplay from "../components/ContactsDisplay.jsx";
-import FileInput from "../components/FileInput.jsx"; // Import the FileInput component
+import FileInput from "../components/FileInput.jsx"; 
+import "./MergePage.css"; 
 
 const MergePage = () => {
   const [csvDataFirst, setCsvDataFirst] = useState([]);
