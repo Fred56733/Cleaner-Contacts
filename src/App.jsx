@@ -5,10 +5,8 @@ import HomePage from './pages/HomePage.jsx';
 import ContactManagerPage from './pages/ContactManagerPage.jsx';
 import FileConverter from './pages/FileConverter.jsx';
 import MergePage from './pages/MergePage.jsx';
-import AnalyticsPage from './pages/AnalyticsPage.jsx'; // ⬅️ Add this!
 import NavBar from './components/NavBar.jsx';
 import './App.css';
-
 
 function App() {
   console.log("Rendering App");
@@ -24,7 +22,6 @@ function App() {
             <Route path="file-converter" element={<FileConverter />} />
             <Route path="/merge-page" element={<MergePage />} />
             <Route path="/contact-manager" element={<ContactManagerPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} /> {/* ⬅️ Add this route */}
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<Navigate to="/" />} /> {/* Fallback to redirect to the home page if no other routes match */}
           </Routes>

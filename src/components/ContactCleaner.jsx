@@ -1,121 +1,113 @@
+// ContactCleaner.jsx
 import React, { useEffect, useState } from "react";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCleaned, setIsCleaned] = useState(false);
-  const [backendSummary, setBackendSummary] = useState(null);
 
+  // Reset states when raw contacts change
   useEffect(() => {
     setIsProcessing(false);
     setIsCleaned(false);
   }, [rawContacts]);
 
   const formatPhoneNumber = (phone) => {
-    if (!phone) return phone;
-    const extPattern = /(ext\.?|x|#)\s?(\d{1,6})/i;
-    const match = phone.match(extPattern);
-    const extension = match ? match[2] : null;
-
-    const cleanedPhone = phone.replace(extPattern, "").replace(/[\s()-]/g, "").trim();
-    const parsed = parsePhoneNumberFromString(cleanedPhone) || parsePhoneNumberFromString(cleanedPhone, "US");
-
-    if (parsed && parsed.isValid()) {
-      let formatted = "";
-      if (parsed.country === "US" || parsed.country === "CA") {
-        const national = parsed.nationalNumber;
-        formatted = `+1 (${national.slice(0, 3)}) ${national.slice(3, 6)}-${national.slice(6)}`;
-      } else {
-        formatted = parsed.formatInternational();
-      }
-      return extension ? `${formatted} ext. ${extension}` : formatted;
-    }
-    return phone;
+    const cleaned = phone.replace(/\D/g, "");
+    return cleaned.length === 10
+      ? `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
+      : phone;
   };
 
   const formatEmail = (email) => {
-    if (!email || email.toUpperCase() === "N/A") return "N/A";
+    if (email.toUpperCase() === "N/A") return email;
     return email.toLowerCase().trim();
   };
 
   const formatName = (name) => {
-    if (!name || name.toUpperCase() === "N/A") return "N/A";
+    if (name.toUpperCase() === "N/A") return name;
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
   const imputeContactDetails = (contact) => {
     let { "First Name": firstName, "Last Name": lastName, Company: company } = contact;
-    if (company && (!firstName || firstName === "N/A")) firstName = company;
-    if (company && (!lastName || lastName === "N/A")) lastName = company;
+  
+    if (company && (firstName === "N/A" || !firstName)) {
+      firstName = company; // Use company name if first name is missing
+    }
+    if (company && (lastName === "N/A" || !lastName)) {
+      lastName = company; // Use company name if last name is missing
+    }
+  
     return { ...contact, "First Name": firstName, "Last Name": lastName };
   };
 
-  const cleanContacts = () => {
+    const cleanContacts = () => {
     setIsProcessing(true);
-
+  
     const seenContacts = new Map();
     const similarMap = new Map();
-
-    const duplicates = [], invalid = [], incomplete = [], similar = [];
-
-    const phoneFields = [
-      "Mobile Phone", "Home Phone", "Home Phone 2", "Business Phone",
-      "Business Phone 2", "Company Main Phone", "Car Phone",
-      "Other Phone", "Callback", "Primary Phone", "Radio Phone"
-    ];
-
+  
+    const duplicates = [];
+    const invalid = [];
+    const incomplete = [];
+    const similar = [];
+  
     const cleaned = rawContacts.map((contact) => {
+      // Apply imputation logic to update First Name and Last Name
       const imputedContact = imputeContactDetails(contact);
+  
+      // Format and normalize fields
       const firstName = formatName(imputedContact["First Name"] || "N/A");
       const lastName = formatName(imputedContact["Last Name"] || "N/A");
       const email = formatEmail(imputedContact["E-mail Address"] || "N/A");
-
-      const normalizedPhones = {};
-      phoneFields.forEach((field) => {
-        if (imputedContact[field]) {
-          normalizedPhones[field] = formatPhoneNumber(imputedContact[field]);
-        }
-      });
-
+      const phone = imputedContact["Mobile Phone"]
+        ? formatPhoneNumber(imputedContact["Mobile Phone"])
+        : undefined;
+  
+      // Construct the cleaned contact by updating only the necessary fields
       const cleanedContact = {
-        ...imputedContact,
+        ...imputedContact, // Preserve all original fields
         "First Name": firstName,
         "Last Name": lastName,
         "E-mail Address": email,
-        ...normalizedPhones,
+        "Mobile Phone": phone,
       };
-
+  
+      // Add reasons for summary
       const reasons = [];
-
-      if (email !== "N/A" && !email.includes("@")) {
+  
+      // Flag as invalid if email is badly formatted
+      if (cleanedContact["E-mail Address"].toUpperCase() !== "N/A" && !cleanedContact["E-mail Address"].includes("@")) {
         reasons.push("Invalid email format");
         invalid.push({ ...cleanedContact, reasons });
       }
-
-      if (firstName === "N/A" || lastName === "N/A") {
+  
+      // Flag as incomplete if first/last name is missing
+      if (cleanedContact["First Name"] === "N/A" || cleanedContact["Last Name"] === "N/A") {
         reasons.push("Missing first or last name");
         incomplete.push({ ...cleanedContact, reasons });
         return { ...cleanedContact, reasons };
       }
-
-      const key = `${firstName}-${lastName}-${email}-${normalizedPhones["Mobile Phone"] || ""}`;
+  
+      // Check for duplicate
+      const key = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}-${cleanedContact["E-mail Address"]}-${cleanedContact["Mobile Phone"]}`;
       if (!seenContacts.has(key)) {
         seenContacts.set(key, cleanedContact);
-
-        const nameKey = `${firstName}-${lastName}`;
+  
+        // Check for similarity
+        const nameKey = `${cleanedContact["First Name"]}-${cleanedContact["Last Name"]}`;
         if (similarMap.has(nameKey)) {
-          const prev = similarMap.get(nameKey);
+          const prevContact = similarMap.get(nameKey);
           let reason = "";
-
-          if (prev["Mobile Phone"] !== normalizedPhones["Mobile Phone"] &&
-              prev["E-mail Address"] !== email) {
+  
+          if (prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"] && prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]) {
             reason = "Different phone and email";
-          } else if (prev["Mobile Phone"] !== normalizedPhones["Mobile Phone"]) {
+          } else if (prevContact["Mobile Phone"] !== cleanedContact["Mobile Phone"]) {
             reason = "Different phone";
-          } else if (prev["E-mail Address"] !== email) {
+          } else if (prevContact["E-mail Address"] !== cleanedContact["E-mail Address"]) {
             reason = "Different email";
           }
-
+  
           if (reason) {
             if (!prevContact.isSimilar) {
               similar.push(prevContact);
@@ -126,42 +118,23 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
         } else {
           similarMap.set(nameKey, cleanedContact);
         }
-
+  
         return { ...cleanedContact, reasons };
       } else {
         reasons.push("Duplicate contact");
         duplicates.push({ ...cleanedContact, reasons });
-        return null;
+        return null; // Mark as null to filter out later
       }
     });
-
+  
     const filteredCleaned = cleaned.filter(Boolean);
-
+  
     setIsProcessing(false);
     setIsCleaned(true);
-
+  
+    // Send full contact objects in all categories
     onCleaned(filteredCleaned);
     onSummary({ duplicates, invalid, incomplete, similar });
-
-    // Send cleaned contacts instead of raw
-    console.log("Sending cleaned contacts to backend:", filteredCleaned);
-
-    fetch("http://127.0.0.1:5000/analyze", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(filteredCleaned),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          setBackendSummary(data.summary);
-        } else {
-          console.error("Backend error:", data.message);
-        }
-      })
-      .catch((error) => console.error("Fetch error:", error));
   };
 
   return (
