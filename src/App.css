@@ -47,6 +47,8 @@ body {
   cursor: pointer;
   transition: background 0.3s ease;
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .drop-area p {
