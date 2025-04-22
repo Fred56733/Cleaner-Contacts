@@ -257,7 +257,6 @@ const ContactManagerPage = () => {
     );
   };
 
-
   const mergeSimilarContacts = (mergedContact, similarGroup) => {
     const isSameContact = (a, b) => {
       return (
@@ -267,6 +266,46 @@ const ContactManagerPage = () => {
         (a.phone || a["Mobile Phone"]) === (b.phone || b["Mobile Phone"])
       );
     };
+
+    // Combine all emails into a unique set
+    const allEmails = Array.from(
+      new Set(
+        [
+          mergedContact["E-mail Address"],
+          mergedContact["E-mail 2 Address"],
+          mergedContact["E-mail 3 Address"],
+          ...similarGroup.map((contact) => contact["E-mail Address"]),
+          ...similarGroup.map((contact) => contact["E-mail 2 Address"]),
+          ...similarGroup.map((contact) => contact["E-mail 3 Address"]),
+        ].filter(Boolean) // Remove undefined or empty values
+      )
+    );
+
+    // Preserve the original E-mail Address
+    const assignedEmails = new Set();
+    if (mergedContact["E-mail Address"]) {
+      assignedEmails.add(mergedContact["E-mail Address"]);
+    }
+
+    // Assign the next email to E-mail 2 Address if it's empty
+    if (!mergedContact["E-mail 2 Address"] && allEmails.length > 0) {
+      mergedContact["E-mail 2 Address"] = allEmails.find(
+        (email) => !assignedEmails.has(email)
+      );
+      if (mergedContact["E-mail 2 Address"]) {
+        assignedEmails.add(mergedContact["E-mail 2 Address"]);
+      }
+    }
+
+    // Assign the next email to E-mail 3 Address if it's empty
+    if (!mergedContact["E-mail 3 Address"] && allEmails.length > 0) {
+      mergedContact["E-mail 3 Address"] = allEmails.find(
+        (email) => !assignedEmails.has(email)
+      );
+      if (mergedContact["E-mail 3 Address"]) {
+        assignedEmails.add(mergedContact["E-mail 3 Address"]);
+      }
+    }
 
     // Remove the merged contacts from contacts, cleanedContacts, and rawContacts; then add the merged contact.
     setContacts((prev) => {
@@ -287,6 +326,7 @@ const ContactManagerPage = () => {
       );
       return [...filtered, mergedContact];
     });
+
     // Also update summary to remove these contacts from the "Similar Contacts" category.
     setSummary((prevSummary) => {
       const updatedSimilar = prevSummary.similar.filter(
@@ -295,7 +335,6 @@ const ContactManagerPage = () => {
       return { ...prevSummary, similar: updatedSimilar };
     });
   };
-
 
   // Filter logic
   const getFilteredContacts = () => {

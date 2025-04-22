@@ -110,10 +110,8 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   
           if (reason) {
             if (!prevContact.isSimilar) {
-              prevContact.similarityReason = reason;
               similar.push(prevContact);
             }
-            cleanedContact.similarityReason = reason;
             reasons.push(reason);
             similar.push({ ...cleanedContact, reasons });
           }
