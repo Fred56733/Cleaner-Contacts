@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Papa from "papaparse";
-import ContactsNewDisplay from "../components/ContactNewDisplay.jsx"; // Import ContactsDisplay
+import ContactsNewDisplay from "../components/ContactNewDisplay.jsx"; 
 
 const MergePage = () => {
   const [csvDataFirst, setCsvDataFirst] = useState([]); // First upload data
@@ -9,6 +9,22 @@ const MergePage = () => {
   const [mergedContacts, setMergedContacts] = useState([]); // Merged contacts for ContactsDisplay
 
   const [filesProcessed, setFilesProcessed] = useState({ first: false, second: false }); // Track if both files are processed
+
+  // Function to remove duplicate contacts based on a unique key (e.g., email)
+  const removeDuplicates = (contacts, key) => {
+    const uniqueContacts = [];
+    const seenKeys = new Set();
+
+    for (const contact of contacts) {
+      const contactKey = contact[key]; 
+      if (!seenKeys.has(contactKey) && contactKey !== 'N/A') { 
+        seenKeys.add(contactKey);
+        uniqueContacts.push(contact);
+      }
+    }
+
+    return uniqueContacts;
+  };
 
   // Handle file input for the first upload
   const handleFileChangeFirst = (event) => {
@@ -69,11 +85,10 @@ const MergePage = () => {
   // Combine and map data to the expected structure for contacts
   const combineData = () => {
     if (!filesProcessed.first || !filesProcessed.second) {
-      return; // Don't merge until both files have been processed
+      return; 
     }
 
     const combinedData = [...csvDataFirst, ...csvDataSecond];
-    console.log("Combined Data:", combinedData); // Log the combined data to debug
 
     // Map to the contact format
     const formattedContacts = combinedData.map((contact) => ({
@@ -101,11 +116,13 @@ const MergePage = () => {
         .join(", ") || "N/A",
     }));
 
-    setMergedCsv(Papa.unparse(combinedData)); // Convert merged data to CSV format
-    setMergedContacts(formattedContacts); // Set formatted contacts for display
+    // Remove duplicates based on email
+    const uniqueContacts = removeDuplicates(formattedContacts, 'email'); 
+
+    setMergedCsv(Papa.unparse(uniqueContacts)); 
+    setMergedContacts(uniqueContacts); 
   };
 
-  // Handle file download for the merged CSV
   const handleDownload = () => {
     const blob = new Blob([mergedCsv], { type: "text/csv" });
     const link = document.createElement("a");
@@ -115,13 +132,13 @@ const MergePage = () => {
   };
 
   // Trigger combineData when both files are processed
-  React.useEffect(() => {
+  useEffect(() => {
     if (filesProcessed.first && filesProcessed.second) {
       combineData();
     }
   }, [filesProcessed]);
 
-  return (
+   return (
     <div>
       <h2>CSV File Merger</h2>
 
