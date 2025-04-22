@@ -6,15 +6,14 @@ import ContactsDisplay from "../components/ContactsDisplay.jsx";
 import ContactCleaner from "../components/ContactCleaner.jsx";
 import CleaningModal from "../components/CleaningModal.jsx";
 import ContactPopup from "../components/ContactPopup.jsx";
-import { useNavigate } from "react-router-dom";
 import "./ContactManagerPage.css"; 
 
 const ContactManagerPage = () => {
   const [contacts, setContacts] = useState([]);
-  const [rawContacts, setRawContacts] = useState([]);
-  const [cleanedContacts, setCleanedContacts] = useState([]);
-  const [deletedContacts, setDeletedContacts] = useState([]);
-  const [flaggedContacts, setFlaggedContacts] = useState([]);
+  const [rawContacts, setRawContacts] = useState([]); // Store raw contacts
+  const [cleanedContacts, setCleanedContacts] = useState([]); // Store cleaned contacts
+  const [deletedContacts, setDeletedContacts] = useState([]); // Store deleted contacts
+  const [flaggedContacts, setFlaggedContacts] = useState([]); // Store flagged contacts
   const [summary, setSummary] = useState({
     duplicates: [],
     invalid: [],
@@ -26,25 +25,27 @@ const ContactManagerPage = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
-  const navigate = useNavigate();
 
+  // Parse CSV
   const handleFileParsed = (parsedData) => {
-    setRawContacts(parsedData);
-    setContacts(parsedData);
-    setCleanedContacts([]);
+    setRawContacts(parsedData); // Update raw contact
+    setContacts(parsedData); // Update contacts with raw data
+    setCleanedContacts([]); // Clear cleaned contacts
     setSummary({
       duplicates: [],
       invalid: [],
       similar: [],
       incomplete: [],
-    });
+    }); //Reset summary
   };
 
+  // Cleaning results
   const handleCleanedContacts = (cleanedData) => {
     setCleanedContacts(cleanedData);
-    setSearchQuery("");
+    setSearchQuery(""); // Clear search query
   };
 
+  // Handle cleaning summary
   const handleSummary = (summaryData, shouldOpenModal = true) => {
     setSummary(summaryData);
     if (shouldOpenModal) {
@@ -52,6 +53,7 @@ const ContactManagerPage = () => {
     }
   };
 
+  // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSummary({
@@ -389,33 +391,9 @@ const ContactManagerPage = () => {
       <FileInput onFileParsed={handleFileParsed} />
 
       <div className="action-buttons">
-        <button
-          onClick={() => {
-            const dataToDownload = cleanedContacts.length > 0 ? cleanedContacts : contacts;
-            const csvData = Papa.unparse(dataToDownload);
-            const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "contacts.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }}
-          disabled={!rawContacts.length}
-        >
-          Download CSV
-        </button>
-
+        <button onClick={downloadCSV} disabled={!rawContacts.length}>Download CSV</button>
         {rawContacts.length > 0 && (
-          <>
-            <ContactCleaner
-              rawContacts={rawContacts}
-              onCleaned={handleCleanedContacts}
-              onSummary={(summaryData) => handleSummary(summaryData, true)}
-            />
-            <button style={{ marginLeft: "10px" }} onClick={() => navigate("/analytics")}>View Analytics 📈</button>
-          </>
+          <ContactCleaner rawContacts={rawContacts} onCleaned={handleCleanedContacts} onSummary={(summaryData) => handleSummary(summaryData, true)} />
         )}
       </div>
 
@@ -430,23 +408,23 @@ const ContactManagerPage = () => {
       </div>
 
       <ContactsDisplay
-        contacts={cleanedContacts.length > 0 ? cleanedContacts : contacts}
+        contacts={getFilteredContacts()}
         onSelectContact={setSelectedContact}
         filter={filter}
         searchQuery={searchQuery}
-        isFlagged={() => false} // Dummy placeholder
+        isFlagged={isFlagged}
       />
 
       {selectedContact && (
         <ContactPopup
           contact={selectedContact}
           onClose={() => setSelectedContact(null)}
-          onSave={() => {}}
-          onFlag={() => {}}
-          isFlagged={() => false}
+          onSave={updateContact}
+          onFlag={flagContact}
+          isFlagged={isFlagged}
           isCleaned={cleanedContacts.length > 0}
-          deletedContact={() => {}}
-          setDeletedContacts={() => {}}
+          deletedContact={deletedContact}
+          setDeletedContacts={setDeletedContacts}
         />
       )}
 
@@ -462,9 +440,9 @@ const ContactManagerPage = () => {
         deletedContacts={deletedContacts}
         setDeletedContacts={setDeletedContacts}
         setSummary={setSummary}
-        deletedContact={() => {}}
-        onRestoreContact={() => {}}
-        onMergeSimilar={() => {}}
+        deletedContact={deletedContact}
+        onRestoreContact={restoreContact}
+        onMergeSimilar={mergeSimilarContacts}
         setSelectedContact={setSelectedContact}
         ariaHideApp={false}
       />
