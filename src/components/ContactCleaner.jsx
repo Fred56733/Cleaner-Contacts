@@ -34,12 +34,12 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
   };
 
   const formatEmail = (email) => {
-    if (email.toUpperCase() === "N/A") return email;
+    if (!email || email.toUpperCase() === "N/A") return "N/A";
     return email.toLowerCase().trim();
   };
 
   const formatName = (name) => {
-    if (name.toUpperCase() === "N/A") return name;
+    if (!name || name.toUpperCase() === "N/A") return "N/A";
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
@@ -145,13 +145,15 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
     onCleaned(filteredCleaned);
     onSummary({ duplicates, invalid, incomplete, similar });
 
-    // ✅ Send data to Flask backend
+    // ✅ Send cleaned contacts instead of raw
+    console.log("Sending cleaned contacts to backend:", filteredCleaned);
+
     fetch("http://127.0.0.1:5000/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(rawContacts),
+      body: JSON.stringify(filteredCleaned),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -172,17 +174,6 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
       >
         {isProcessing ? "Cleaning..." : isCleaned ? "Data Cleaned" : "Clean Contacts"}
       </button>
-
-      {/* {backendSummary && (
-        <div style={{ marginTop: "20px", padding: "10px", border: "1px solid #ccc", borderRadius: "8px", background: "#eef9ff" }}>
-          <h3>Backend Summary</h3>
-          <p><strong>Total Contacts:</strong> {backendSummary.total_contacts}</p>
-          <p><strong>Missing Names:</strong> {backendSummary.missing_names}</p>
-          <p><strong>Missing Emails:</strong> {backendSummary.missing_emails}</p>
-          <p><strong>Missing Phones:</strong> {backendSummary.missing_phones}</p>
-          <p><strong>Duplicate Records:</strong> {backendSummary.duplicates}</p>
-        </div>
-      )} */}
     </div>
   );
 };
