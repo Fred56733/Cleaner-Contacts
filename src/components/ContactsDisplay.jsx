@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import "./ContactsDisplay.css"; // optional styling
 
-const ContactsDisplay = memo(function ContactsDisplay({ contacts, onSelectContact, forceUpdate, isFlagged }) {
+const ContactsDisplay = memo(function ContactsDisplay({ contacts, onSelectContact, forceUpdate, isFlagged = () => false }) {
   const [sortedContacts, setSortedContacts] = useState(contacts);
 
   // Track sorting states
@@ -77,7 +77,24 @@ const ContactsDisplay = memo(function ContactsDisplay({ contacts, onSelectContac
 
   // Displays all phone numbers in contacts-tabe
   const getAllPhoneNumbers = (contact) => {
-    const phoneFields = ["Business Phone", "Business Phone 2", "Car Phone", "Company Main Phone", "Home Phone", "Home Phone 2", "Mobile Phone", "Work Phone", "Primary Phone", "Other Phone"];
+    // Check for the new combined Phone field first
+    if (contact.Phone) {
+      return contact.Phone;
+    }
+  
+    // Fall back to the original phone fields
+    const phoneFields = [
+      "Business Phone",
+      "Business Phone 2",
+      "Car Phone",
+      "Company Main Phone",
+      "Home Phone",
+      "Home Phone 2",
+      "Mobile Phone",
+      "Work Phone",
+      "Primary Phone",
+      "Other Phone",
+    ];
     return phoneFields
       .map((field) => contact[field] || contact[field.toLowerCase().replace(" ", "")])
       .filter(Boolean)

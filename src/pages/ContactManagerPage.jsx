@@ -6,6 +6,7 @@ import ContactsDisplay from "../components/ContactsDisplay.jsx";
 import ContactCleaner from "../components/ContactCleaner.jsx";
 import CleaningModal from "../components/CleaningModal.jsx";
 import ContactPopup from "../components/ContactPopup.jsx";
+import "./ContactManagerPage.css"; 
 
 const ContactManagerPage = () => {
   const [contacts, setContacts] = useState([]);
