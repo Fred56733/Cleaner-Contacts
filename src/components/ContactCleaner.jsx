@@ -173,7 +173,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
         {isProcessing ? "Cleaning..." : isCleaned ? "Data Cleaned" : "Clean Contacts"}
       </button>
 
-      {backendSummary && (
+      {/* {backendSummary && (
         <div style={{ marginTop: "20px", padding: "10px", border: "1px solid #ccc", borderRadius: "8px", background: "#eef9ff" }}>
           <h3>Backend Summary</h3>
           <p><strong>Total Contacts:</strong> {backendSummary.total_contacts}</p>
@@ -182,7 +182,7 @@ const ContactCleaner = ({ rawContacts, onCleaned, onSummary, isModalOpen }) => {
           <p><strong>Missing Phones:</strong> {backendSummary.missing_phones}</p>
           <p><strong>Duplicate Records:</strong> {backendSummary.duplicates}</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
