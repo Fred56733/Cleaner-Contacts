@@ -299,7 +299,7 @@ END:VCARD`;
 
   return (
     <div className="file-converter-page">
-      <h2>CSV File Converter</h2>
+      <h2>File Converter</h2>
 
       <div
         className="drop-zone"

@@ -14,7 +14,7 @@ function App() {
     <Router>
       <div className="app-container">
         <header>
-          <h1>Contact Manager</h1>
+          <h1>Cleaner Contact</h1>
         </header>
         <NavBar />
         <main>
