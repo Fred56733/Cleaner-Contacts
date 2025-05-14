@@ -377,12 +377,11 @@ const CleaningModal = ({
                   onClick={handleMergeSimilar}
                   style={{
                     background: "blue",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "5px 10px",
-                    cursor: "pointer",
-                    marginTop: "10px",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      padding: "10px 20px",
+                      cursor: "pointer",
                   }}
                 >
                   🔗 Merge
