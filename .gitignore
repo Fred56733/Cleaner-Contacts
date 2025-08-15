@@ -1,24 +1,41 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Dependencies
+node_modules/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Build outputs
+dist/
+build-output/
+dist-electron/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Electron build files
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.snap
+*.msi
+*.pkg
+
+# Environment variables
+.env*
+
+# IDE/Editor files
+.vscode/
+.idea/
+
+# OS generated files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# Logs
+*.log
+
+# Build artifacts
+builder-effective-config.yaml
+latest.yml
+*.blockmap
+app.asar
+*.pak
+*.dll
+*.dat
+*.bin

@@ -1,6 +1,6 @@
 // Displays the home page
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.jsx';
 import ContactManagerPage from './pages/ContactManagerPage.jsx';
 import FileConverter from './pages/FileConverter.jsx';
@@ -14,16 +14,16 @@ function App() {
     <Router>
       <div className="app-container">
         <header>
-          <h1>Contact Manager</h1>
+          <h1>Cleaner Contact</h1>
         </header>
         <NavBar />
         <main>
           <Routes>
-            <Route path="file-converter" element={<FileConverter />} />
+            <Route path="/file-converter" element={<FileConverter />} />
             <Route path="/merge-page" element={<MergePage />} />
             <Route path="/contact-manager" element={<ContactManagerPage />} />
             <Route path="/" element={<HomePage />} />
-            <Route path="*" element={<Navigate to="/" />} /> {/* Fallback to redirect to the home page if no other routes match */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
       </div>

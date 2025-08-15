@@ -1,10 +1,10 @@
-# Contact-Management-Project
-=======
 <table>
   <tr>
-    <td><img src="Need to put" alt="Contact-Manager-logo" height="220" width="1000"></td>
+    <td><img src="src\assets\contactcleanerbkg.png" alt="Contact-Manager-logo" height="100" width="100"></td>
   </tr>
 </table>
+
+# Contact-Management-Project 
 
 ## 🚀 Overview
 **Contact Manager** is designed to streamline your contact management process. From importing messy contact files to cleaning duplicates and normalizing data, Contact Manager provides a user-friendly interface to help you stay organized. Whether you're managing personal or professional connections, we make it simple and efficient.
