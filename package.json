@@ -20,7 +20,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Secure offline contact management desktop application",
   "dependencies": {
     "debug": "^4.4.0",
     "file-saver": "^2.0.5",
@@ -44,7 +44,6 @@
     "concurrently": "^9.2.0",
     "electron": "^37.3.0",
     "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -60,32 +59,35 @@
     "appId": "com.contactmanager.app",
     "productName": "Contact Manager",
     "directories": {
-      "output": "dist"
+      "output": "build-output"
     },
     "files": [
       "dist/**/*",
       "public/electron.js",
-      "node_modules/**/*"
+      "!node_modules/**/*"
     ],
-    "mac": {
-      "category": "public.app-category.productivity",
-      "target": "dmg"
-    },
+    "extraResources": [
+      {
+        "from": "dist",
+        "to": "dist"
+      }
+    ],
     "win": {
       "target": [
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "forceCodeSigning": false
-    },
-    "linux": {
-      "target": "AppImage"
     }
   }
 }

@@ -1,6 +1,5 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const isDev = require('electron-is-dev');
 
 let mainWindow;
 
@@ -12,37 +11,35 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      webSecurity: true,
+      webSecurity: false,  // Keep disabled for now
       allowRunningInsecureContent: false,
       experimentalFeatures: false
     },
-    icon: path.join(__dirname, 'favicon.ico')
+    show: false
   });
 
-  // Vite runs on port 5173 by default, not 3000
-  const startUrl = isDev 
-    ? 'http://localhost:5173' 
-    : `file://${path.join(__dirname, '../dist/index.html')}`;
+  const isDev = !app.isPackaged;
+  
+  let startUrl;
+  if (isDev) {
+    startUrl = 'http://localhost:5173';
+  } else {
+    // Make sure this points to the correct location
+    startUrl = `file://${path.join(__dirname, '../dist/index.html')}`;
+  }
+  
+  console.log('isDev:', isDev);
+  console.log('Loading URL:', startUrl);
+  console.log('__dirname:', __dirname);
   
   mainWindow.loadURL(startUrl);
 
-  // Block all external network requests for security
-  mainWindow.webContents.session.webRequest.onBeforeRequest((details, callback) => {
-    const url = details.url;
-    
-    if (isDev && url.startsWith('http://localhost:5173')) {
-      callback({ cancel: false });
-    } else if (url.startsWith('file://')) {
-      callback({ cancel: false });
-    } else {
-      console.log('Blocked external request:', url);
-      callback({ cancel: true });
-    }
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
   });
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // Keep DevTools open to see errors
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
