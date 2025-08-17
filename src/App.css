@@ -144,7 +144,7 @@ table {
   border-collapse: collapse;
   table-layout: fixed;
   background: rgba(255, 255, 255, 0.1); /* New background */
-  border-radius: 8px; /* New rounded corners */
+  border-radius: 8px; /* Rounded corners */
   overflow: hidden; /* Ensure clean edges */
 }
 
@@ -197,6 +197,7 @@ input[type="text"] {
 @media (max-width: 768px) {
   .app-container {
     padding: 20px; /* prev was 10 px */
+    margin-top: 95px; /* prev was 85px */
   }
 
   button,
