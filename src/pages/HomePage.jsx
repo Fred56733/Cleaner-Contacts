@@ -1,4 +1,5 @@
 import React from "react";
+import "./HomePage.css";
 import logo from "../assets/contactcleanerbkg.png";
 
 function HomePage() {
