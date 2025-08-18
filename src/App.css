@@ -5,25 +5,48 @@ body {
   background-attachment: fixed;
   background-size: cover;
   color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  margin: 10px;
+  padding: 20px;
+  box-sizing: border-box;
   min-height: 100vh;
-  width: 100vw;
+  overflow-x: hidden;
 }
 
-/* Layout Container */
+/* Layout container */
 .app-container {
   width: 100%;
-  max-width: 1400px; 
+  max-width: 1200px;
+  height: fit-content; /* Consistent height */
   background: rgba(0, 0, 0, 0.6);
-  padding: 40px;
+  padding: 20px;
   border-radius: 12px;
   text-align: center;
   margin-top: 85px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Make header consistent */
+.app-container header {
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+
+.app-container header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+/* Make main content area flexible and scrollable */
+.app-container main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  min-height: 0;
 }
 
 /* Styling for action buttons (clean and download)  */
@@ -75,13 +98,13 @@ body {
 
 /* Header */
 header h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: var(--heading-color);
+  color: white;
   margin-bottom: 1rem;
 }
 
-/* Buttons and Input */
+/* Buttons and input */
 button,
 input[type="file"] {
   background: linear-gradient(135deg, #669cd3, #4b8edb);
@@ -96,7 +119,7 @@ input[type="file"] {
   box-shadow: 0 4px 10px rgba(33, 113, 204, 0.3);
 }
 
-/* Button Hover Effect  make sure to round the edges of buttons 2-7-25 */
+/* Button hover effect */
 button:hover,
 input[type="file"]:hover {
   background: linear-gradient(135deg, #347994, #27616b);
@@ -104,21 +127,21 @@ input[type="file"]:hover {
   box-shadow: 0 6px 15px rgba(14, 40, 88, 0.5);
 }
 
-/* Button Click Effect */
+/* Button click effect */
 button:active,
 input[type="file"]:active {
   transform: scale(0.95);
   box-shadow: 0 2px 5px rgba(17, 16, 15, 0.2);
 }
 
-/* Disabled Button */
+/* Disabled button */
 button:disabled {
   background: gray;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/* Modern Floating Button */
+/* Floating button */
 .floating-button {
   position: fixed;
   bottom: 20px;
@@ -137,27 +160,34 @@ button:disabled {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Table */
+/* Table adjustments */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
 table {
-  width: 100%;
+  width: 90%;
+  margin: 10px auto;
   margin-top: 20px;
   border-collapse: collapse;
   table-layout: fixed;
-  background: rgba(255, 255, 255, 0.1); /* New background */
-  border-radius: 8px; /* Rounded corners */
-  overflow: hidden; /* Ensure clean edges */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 12px; /* Increased padding */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
+  padding: 12px; 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
   text-align: left;
   word-wrap: break-word;
   color: var(--text-color);
 }
 
 th {
-  background: rgba(228, 227, 227, 0.8); /* Updated background */
+  background: rgba(228, 227, 227, 0.8); 
   color: #000;
   text-transform: uppercase;
 }
@@ -171,7 +201,7 @@ tr {
 }
 
 tr:nth-child(even) td {
-  background: rgba(0, 0, 0, 0.404); /* Softer alternate row color */
+  background: rgba(0, 0, 0, 0.404); 
 }
 
 tr:hover td {
@@ -185,8 +215,8 @@ tr:hover td {
 }
 
 input[type="text"] {
-  background-color: #76777e; /* background for text*/
-  color: #fffefe; /* text */
+  background-color: #76777e; 
+  color: #fffefe;
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 10px;
@@ -195,16 +225,25 @@ input[type="text"] {
 
 
 @media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+  
   .app-container {
-    padding: 20px; /* prev was 10 px */
-    margin-top: 95px; /* prev was 85px */
+    padding: 15px;
+  }
+
+  .app-container header h1 {
+    font-size: 1.8rem;
   }
 
   button,
   input[type="file"] {
-    width: 100%;
     margin: 10px 0;
+    padding: 10px 20px;
+    font-size: 1rem;
   }
+  
   nav ul {
     flex-direction: column;
     align-items: center;
@@ -215,7 +254,25 @@ input[type="text"] {
     width: 100%;
     text-align: center;
   }
+  
   table {
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    margin-top: 95px;
+    padding: 10px;
+  }
+  
+  .app-container {
+    min-height: calc(100vh - 20px);
+    height: calc(100vh - 20px);
+    padding: 10px;
+  }
+  
+  .app-container header h1 {
+    font-size: 1.5rem;
   }
 }

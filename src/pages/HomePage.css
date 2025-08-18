@@ -1,5 +1,4 @@
 .homepage-container {
-  min-height: calc(100vh - 120px);
   padding: 2rem;
   flex-direction: column;
   align-items: center;
@@ -35,7 +34,7 @@
 }
 
 .feature-card {
-  /* Glass-morphism effect to match your app */
+  /* Glassy effect */
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -113,7 +112,7 @@
   animation-delay: 0.2s;
 }
 
-/* Responsive Design */
+/* Responsive design */
 @media (max-width: 900px) {
   .homepage-container {
     padding: 1.5rem;
