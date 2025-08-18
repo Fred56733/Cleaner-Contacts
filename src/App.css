@@ -5,27 +5,32 @@ body {
   background-attachment: fixed;
   background-size: cover;
   color: var(--text-color);
-  margin: 10px;
+  margin: 0;
   padding: 20px;
   box-sizing: border-box;
   min-height: 100vh;
-  overflow-x: hidden;
+  width: 100vw;
+  overflow: hidden;
+  position: fixed; 
+  top: 0;
+  left: 0;
 }
 
 /* Layout container */
 .app-container {
-  width: 100%;
-  max-width: 1200px;
-  height: fit-content; /* Consistent height */
+  width: calc(100% - 40px);
+  max-width: 1160px;
+  height: calc(100vh - 120px);
   background: rgba(0, 0, 0, 0.6);
   padding: 20px;
   border-radius: 12px;
   text-align: center;
-  margin-top: 85px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  margin: 80px auto 20px auto;
+  position: relative;
 }
 
 /* Make header consistent */
@@ -64,7 +69,7 @@ body {
   padding: 30px;
   border: 2px dashed rgba(255, 255, 255, 0.3);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   text-align: center;
   cursor: pointer;
@@ -80,20 +85,49 @@ body {
 }
 
 .drop-area span {
-  color: #4b8edb;
+  color: rgb(75, 142, 219);
   font-weight: bold;
   cursor: pointer;
 }
 
 .drop-area.dragging {
   background: rgba(255, 165, 0, 0.3);
-  border-color: rgba(255, 165, 0, 0.8);
+  border-color: rgb(75, 142, 219);
 }
 
 .contact-search {
   width: 100%;
   max-width: 500px;
   margin: 20px auto;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Search input styling */
+.contact-search input,
+input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Focus state - changes border color when clicked/focused */
+.contact-search input:focus,
+input[type="text"]:focus {
+  outline: none;
+  border-color: rgb(75, 142, 219); 
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Placeholder text styling */
+.contact-search input::placeholder,
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Header */
@@ -205,7 +239,7 @@ tr:nth-child(even) td {
 }
 
 tr:hover td {
-  background: rgba(255, 165, 0, 0.5);
+  background: rgba(33, 113, 204, 0.3);
   transition: background 0.3s ease;
 }
 
@@ -215,7 +249,7 @@ tr:hover td {
 }
 
 input[type="text"] {
-  background-color: #76777e; 
+  background-color: rgba(255, 255, 255, 0.15);
   color: #fffefe;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -230,7 +264,11 @@ input[type="text"] {
   }
   
   .app-container {
+    width: calc(100% - 30px);
+    max-width: calc(100vw - 30px);
+    height: calc(100vh - 140px);
     padding: 15px;
+    margin: 100px auto 20px auto;
   }
 
   .app-container header h1 {
@@ -239,9 +277,7 @@ input[type="text"] {
 
   button,
   input[type="file"] {
-    margin: 10px 0;
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 12px 24px;
   }
   
   nav ul {
@@ -262,14 +298,15 @@ input[type="text"] {
 
 @media (max-width: 480px) {
   body {
-    margin-top: 95px;
     padding: 10px;
   }
   
   .app-container {
-    min-height: calc(100vh - 20px);
-    height: calc(100vh - 20px);
+    width: calc(100% - 20px);
+    max-width: calc(100vw - 20px);
+    height: calc(100vh - 160px);
     padding: 10px;
+    margin: 120px auto 20px auto;
   }
   
   .app-container header h1 {

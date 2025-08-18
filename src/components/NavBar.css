@@ -56,8 +56,8 @@ nav ul li a {
 
 /* Hover Effects */
 nav ul li a:hover {
-  background-color: rgba(255, 165, 0, 0.8);
-  color: black;
+  background-color: rgba(33, 113, 204, 0.3);
+  color: rgb(255, 255, 255);
 }
 
 /* Prevent Stacking on All Screens */

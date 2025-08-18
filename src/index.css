@@ -13,22 +13,10 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
 .container {
   width: 100%;
   max-width: 1200px;
   padding: 20px;
   margin: 20px auto;
-  overflow-x: auto; /* Allow horizontal scrolling for the table */
+  overflow-x: auto; 
 }

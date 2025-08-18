@@ -162,7 +162,7 @@ const MergePage = () => {
       </div>
 
       <div>
-        <h4>View Merged Contacts</h4>
+        <h3>Merged Contacts</h3>
         <ContactsDisplay
           contacts={getFilteredContacts()}
           onSelectContact={(contact) => console.log("Selected Contact:", contact)}
