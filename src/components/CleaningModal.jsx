@@ -36,13 +36,16 @@ const CleaningModal = ({
 
   const categoryData = useMemo(() => getCategoryData(), [summary, flaggedContacts, deletedContacts]);
 
-  const categoryColors = {
-    "Duplicate Contacts": "#fef6f6",
-    "Invalid Contacts": "#fff3cd",
-    "Similar Contacts": "#e3fcef",
-    "Incomplete Contacts": "#f0f4f8",
-    "User Flagged": "#d0ebff",
-    "Recently Deleted": "#f8f9fa",
+  const getCategoryClass = (category) => {
+    const classMap = {
+      "Duplicate Contacts": "duplicate",
+      "Invalid Contacts": "invalid",
+      "Similar Contacts": "similar",
+      "Incomplete Contacts": "incomplete",
+      "User Flagged": "user-flagged",
+      "Recently Deleted": "recently-deleted",
+    };
+    return classMap[category] || "";
   };
 
   const handleCategoryClick = (category) => {
@@ -115,10 +118,8 @@ const CleaningModal = ({
   const handleResolved = () => {
     const contactToResolve = categoryData[selectedCategory][currentIndex];
 
-    // Remove the contact from the selected category view
     const updatedCategory = categoryData[selectedCategory].filter((c) => c !== contactToResolve);
 
-    // Update the summary fields
     const updatedSummary = {
       duplicates: [...duplicates.filter((c) => c !== contactToResolve)],
       invalid: [...invalid.filter((c) => c !== contactToResolve)],
@@ -220,59 +221,49 @@ const CleaningModal = ({
           shouldCloseOnOverlayClick={false}
           shouldCloseOnEsc={false}
           ariaHideApp={false}
-          style={{
-            content: {
-              width: "600px",
-              margin: "auto",
-              padding: "20px",
-              borderRadius: "8px",
-              background: "#fff",
-            },
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-          }}
         >
-          <button
-            onClick={() => setIsModalMinimized(true)}
-            style={{ position: "absolute", top: 10, right: 10 }}
-          >
+          <button className="minimize-button" onClick={() => setIsModalMinimized(true)}>
             Minimize
           </button>
+
           <h2>Cleaning Summary</h2>
           <p>Your contacts have been cleaned successfully!</p>
 
           <div>
-            {Object.keys(categoryData).map((category) => (
-              <div key={category} style={{ marginBottom: "10px" }}>
-                <h3
+            {Object.keys(categoryData).map((category) => {
+              const count = categoryData[category]?.length || 0;
+              return (
+                <button
+                  key={category}
+                  className="category-button"
                   onClick={() => handleCategoryClick(category)}
-                  style={{
-                    cursor: "pointer",
-                    color: "blue",
-                    textDecoration: "underline",
-                  }}
+                  aria-label={`${category}: ${count} contacts`}
                 >
-                  {category}
-                </h3>
-                <p>{categoryData[category]?.length || 0}</p>
-              </div>
-            ))}
+                  <h3 className="category-title">
+                    {category}: {count}
+                  </h3>
+                </button>
+              );
+            })}
           </div>
 
           {selectedCategory && categoryData[selectedCategory]?.length > 0 && (
             <div>
               <h4>{selectedCategory}</h4>
-              <p>
+              <p className="contact-counter">
                 Contact {currentIndex + 1} of {categoryData[selectedCategory]?.length}
               </p>
 
-              {/* Navigation Buttons */}
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-                <button onClick={handlePrevious} disabled={currentIndex === 0}>
+              <div className="navigation-buttons">
+                <button
+                  className="nav-button"
+                  onClick={handlePrevious}
+                  disabled={currentIndex === 0}
+                >
                   ⬅️ Previous
                 </button>
                 <button
+                  className="edit-button"
                   onClick={() => {
                     const contactToEdit = categoryData[selectedCategory][currentIndex];
                     setIsModalMinimized(true);
@@ -282,6 +273,7 @@ const CleaningModal = ({
                   ✏️ Edit
                 </button>
                 <button
+                  className="nav-button"
                   onClick={handleNext}
                   disabled={currentIndex === categoryData[selectedCategory]?.length - 1}
                 >
@@ -289,101 +281,36 @@ const CleaningModal = ({
                 </button>
               </div>
 
-              {/* Card Display */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "10px",
-                  border: "1px solid #ccc",
-                  borderRadius: "10px",
-                  padding: "15px",
-                  backgroundColor: categoryColors[selectedCategory] || "#f9f9f9",
-                  color: "#2c3e50",
-                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                  width: "100%",
-                  marginBottom: "15px",
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-wrap",
-                  overflowWrap: "anywhere",
-                }}
-              >
+              <div className={`contact-card ${getCategoryClass(selectedCategory)}`}>
                 {Object.entries(categoryData[selectedCategory][currentIndex] || {})
-                  .filter(([key, value]) => value && value !== "N/A") // Filter out empty or "N/A" fields
+                  .filter(([key, value]) => value && value !== "N/A")
                   .map(([key, value]) => (
                     <div key={key}>
-                      <strong
-                        style={{ display: "block", color: "#34495e", fontSize: "14px" }}
-                      >
-                        {key}:
-                      </strong>
+                      <span className="contact-field-label">{key}:</span>
                       <span>{value}</span>
                     </div>
                   ))}
               </div>
 
-              {/* Delete / Restore / Resolved Buttons */}
-              <div style={{ textAlign: "center", marginBottom: "10px" }}>
+              <div className="action-buttons">
                 {selectedCategory === "Recently Deleted" ? (
-                  <button
-                    onClick={handleRestoreContact}
-                    style={{
-                      background: "green",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      padding: "10px 20px",
-                      cursor: "pointer",
-                    }}
-                  >
+                  <button className="restore-button" onClick={handleRestoreContact}>
                     ♻️ Restore
                   </button>
                 ) : (
                   <>
-                    <button
-                      onClick={handleResolved}
-                      style={{
-                        background: "green",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "6px",
-                        padding: "10px 20px",
-                        cursor: "pointer",
-                        marginRight: "10px",
-                      }}
-                    >
+                    <button className="resolved-button" onClick={handleResolved}>
                       ✅ Resolved
                     </button>
-                    <button
-                      onClick={handleDeleteContact}
-                      style={{
-                        background: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "6px",
-                        padding: "10px 20px",
-                        cursor: "pointer",
-                      }}
-                    >
+                    <button className="delete-button" onClick={handleDeleteContact}>
                       🗑️ Delete
                     </button>
                   </>
                 )}
               </div>
 
-              {/* Merge For Similar Button */}
               {selectedCategory === "Similar Contacts" && categoryData[selectedCategory]?.length > 1 && (
-                <button
-                  onClick={handleMergeSimilar}
-                  style={{
-                    background: "blue",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      padding: "10px 20px",
-                      cursor: "pointer",
-                  }}
-                >
+                <button className="merge-button" onClick={handleMergeSimilar}>
                   🔗 Merge
                 </button>
               )}
@@ -391,25 +318,11 @@ const CleaningModal = ({
           )}
 
           {selectedCategory && categoryData[selectedCategory]?.length === 0 && (
-            <p>No contacts found in this category.</p>
+            <p className="no-contacts-message">No contacts found in this category.</p>
           )}
         </Modal>
       ) : (
-        <div
-          style={{
-            position: "fixed",
-            bottom: 20,
-            right: 20,
-            background: "#f8f9fa",
-            padding: "10px 20px",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            color: "#333",
-          }}
-          onClick={() => setIsModalMinimized(false)}
-        >
+        <div className="minimized-modal" onClick={() => setIsModalMinimized(false)}>
           🔍 Cleaning Summary (Click to Expand)
         </div>
       )}

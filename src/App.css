@@ -40,7 +40,7 @@ body {
 }
 
 .app-container header h1 {
-  font-size: clamp(2rem, 3vw + 0.8rem, 3rem); /* Reduced from 4rem max */
+  font-size: clamp(2rem, 3vw + 0.8rem, 3rem); 
   margin-bottom: 0.5rem;
   color: white;
   font-weight: bold;
@@ -48,9 +48,9 @@ body {
   letter-spacing: 1px;
 }
 
-/* Page titles - slightly smaller than main logo */
+/* Page titles */
 .page-title {
-  font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important; /* Better proportion */
+  font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important; 
   margin-bottom: 1.5rem;
   color: white;
   border-bottom: 2px solid #4b8edb;
@@ -66,6 +66,8 @@ body {
   flex-direction: column;
   overflow: auto;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
 }
 
 .app-container main::-webkit-scrollbar {
@@ -81,33 +83,71 @@ body {
   flex-wrap: wrap; 
 }
 
+/* Drop area for file uploads */
 .drop-area {
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
   margin: 2rem auto;
-  background: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, rgb(187, 187, 187), rgba(228, 227, 227, 0.8));
   backdrop-filter: blur(10px);
   max-width: 600px;
+  border: 3px dashed #4b8edb !important;
+}
+
+.drop-area:hover {
+  background: #4b8edb !important;
+  border-color: rgba(228, 227, 227, 0.8) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.drop-area:hover span {
+  color: white !important;
+}
+
+.drop-area:hover p {
+  color: white !important;
 }
 
 .drop-area p {
-  font-size: 1.1rem;
-  color: white;
-  margin: 0;
-}
-
-.drop-area span {
-  color: blue;
+  color: #4b8edb !important;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s ease;
-  text-decoration: underline;
+  text-decoration: none !important;
   padding: 4px 8px;
   border-radius: 4px;
+}
+
+.drop-area span {
+  color: #4b8edb !important;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  border-radius: 4px;
+}
+
+.drop-area span:hover {
+  color: white !important;
+  background: #4b8edb;
+  border-color: rgba(228, 227, 227, 0.8) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(75, 142, 219, 0.4);
+}
+
+.drop-area:has(span:hover) {
+  background: #4b8edb !important;
+  border-color: rgba(228, 227, 227, 0.8) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.drop-area:has(span:hover) p {
+  color: white !important;
 }
 
 .drop-area.dragging {
@@ -165,7 +205,7 @@ input[type="text"]::placeholder {
   letter-spacing: 1px;
 }
 
-/* Page titles - slightly smaller than main logo */
+/* Page titles */
 .page-title {
   font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important;
   margin-bottom: 1.5rem;
@@ -216,8 +256,8 @@ button:disabled {
 /* Floating button */
 .floating-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 10px;
+  right: 10px;
   background: linear-gradient(135deg, #4CAF50, #2E8B57);
   color: white;
   padding: 15px 20px;
@@ -235,8 +275,6 @@ button:disabled {
 /* Table adjustments */
 .table-container {
   flex: 1;
-  overflow: auto;
-  min-height: 0;
 }
 
 table {
@@ -259,7 +297,7 @@ th, td {
 }
 
 th {
-  background: rgba(228, 227, 227, 0.8); 
+  background: linear-gradient(135deg, rgb(187, 187, 187), rgba(228, 227, 227, 0.8));
   color: #000;
   text-transform: uppercase;
 }
@@ -310,7 +348,7 @@ input[type="text"] {
   }
 
   .app-container header h1 {
-    font-size: clamp(1.8rem, 4vw + 0.5rem, 2.5rem); /* Adjusted for mobile */
+    font-size: clamp(1.8rem, 4vw + 0.5rem, 2.5rem); 
   }
   
   .page-title {
@@ -319,7 +357,7 @@ input[type="text"] {
   
   button,
   input[type="file"] {
-    padding: 12px 24px;
+    padding: 1 .5rem;
   }
   
   nav ul {
@@ -352,7 +390,7 @@ input[type="text"] {
   }
   
   .app-container header h1 {
-    font-size: clamp(1.6rem, 5vw + 0.3rem, 2.2rem); /* Even smaller for small screens */
+    font-size: clamp(1.6rem, 5vw + 0.3rem, 2.2rem); 
   }
   
   .page-title {

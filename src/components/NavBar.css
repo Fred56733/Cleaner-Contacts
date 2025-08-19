@@ -13,8 +13,10 @@ nav {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   overflow-x: auto;  
   white-space: nowrap; 
-  z-index: 999; /* Ensures navbar stays on top */
+  z-index: 999;
   justify-content: space-between;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
 }
 
 /* Navbar List */
@@ -63,22 +65,22 @@ nav ul li a:hover {
 /* Prevent Stacking on All Screens */
 @media (max-width: 1440px) {
   nav ul {
-    justify-content: center; /* Centers items on medium screens */
+    justify-content: center; 
   }
 
   nav ul li {
-    flex: 1 1 auto; /* Keeps items flexible */
-    min-width: 100px; /* Minimum width for small screens */
+    flex: 1 1 auto; 
+    min-width: 100px; 
   }
 }
 
 /* Stack Items on Small Screens */
 @media (max-width: 768px) {
   nav ul {
-    display: block; /* Stack items vertically */
+    display: block; 
   }
 
   nav ul li {
-    width: 100%; /* Full width for stacking */
+    width: 100%; 
   }
 }

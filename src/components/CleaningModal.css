@@ -1,17 +1,324 @@
 .ReactModal__Overlay {
-    margin-top: 85px;
-    border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.651) !important;
+  backdrop-filter: blur(10px);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2rem 1rem !important;
+}
+
+.ReactModal__Content {
+  background: rgba(12, 12, 12, 0.747) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 2rem !important;
+  border-radius: 15px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  width: 50% !important;
+  max-width: 600px !important;
+  max-height: 85vh !important; 
+  text-align: center !important;
+  color: white !important;
+  position: relative !important;
+  margin: 0 !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  overflow-y: auto !important; 
+  margin-top: 4rem !important; 
+}
+
+/* Modal title */
+.ReactModal__Content h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.ReactModal__Content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Minimize button - back to normal positioning */
+.minimize-button {
+  position: absolute;
+  top: 15px; 
+  right: 15px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.minimize-button:hover {
+  background: linear-gradient(135deg, #347994, #27616b);
+  transform: translateY(-2px);
+}
+
+/* Content container for scrolling */
+.modal-content {
+  padding: 1rem 0;
+}
+
+/* Category buttons */
+.category-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #2c3e50;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.category-button:focus-visible {
+  outline: 2px solid #4b8edb;
+  outline-offset: 2px;
+}
+
+.category-title {
+  color: #4b8edb;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.category-button:hover .category-title {
+  color: #3a7bc8;
+  text-shadow: 0 0 8px rgba(75, 142, 219, 0.3);
+}
+
+/* Navigation buttons */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.nav-button, .edit-button {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  flex: 1;
+  text-align: center;
+  min-width: 10px;
+}
+
+.nav-button:hover:not(:disabled), .edit-button:hover {
+  background: linear-gradient(135deg, #347994, #27616b);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Contact card - keep your original styling but improve contrast */
+.contact-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-bottom: 1.5rem;
+  word-break: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.contact-card.duplicate {
+  background-color: rgba(254, 246, 246, 0.95);
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.contact-card.invalid {
+  background-color: rgba(255, 243, 205, 0.95);
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
+.contact-card.similar {
+  background-color: rgba(227, 252, 239, 0.95);
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+.contact-card.incomplete {
+  background-color: rgba(240, 244, 248, 0.95);
+  border-color: rgba(108, 117, 125, 0.3);
+}
+
+.contact-card.user-flagged {
+  background-color: rgba(208, 235, 255, 0.95);
+  border-color: rgba(13, 110, 253, 0.3);
+}
+
+.contact-card.recently-deleted {
+  background-color: rgba(248, 249, 250, 0.95);
+  border-color: rgba(108, 117, 125, 0.3);
+}
+
+.contact-field-label {
+  display: block;
+  color: #495057;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+/* Action buttons */
+.action-buttons {
+  text-align: center;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.restore-button, .resolved-button, .delete-button, .merge-button {
+  background: linear-gradient(135deg, #669cd3, #4b8edb);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.restore-button:hover, .resolved-button:hover, .delete-button:hover, .merge-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #347994, #27616b);
+}
+
+/* Special button colors */
+.delete-button {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.restore-button {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+}
+
+/* Minimized modal */
+.minimized-modal {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #669cd3, #4b8edb);
+  color: white;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.minimized-modal:hover {
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #347994, #27616b);
+}
+
+/* Contact counter */
+.contact-counter {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+/* No contacts message */
+.no-contacts-message {
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Category headers */
+.ReactModal__Content h4 {
+  color: white;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .ReactModal__Overlay {
+    padding: 1rem 0.5rem !important;
   }
   
   .ReactModal__Content {
-    background: rgb(44, 113, 126) !important; 
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Add depth */
-    width: 50%;
-    max-width: 500px;
-    text-align: center;
+    width: 95% !important;
+    max-height: 90vh !important;
+    margin-top: 2rem !important;
+    padding: 1.5rem !important;
   }
-  .ReactModal__Overlay {
-    background-color: rgba(0, 0, 0, 0.5) !important; /* Adjust background darkness */
+  
+  .ReactModal__Content h2 {
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+    font-size: 1.5rem;
   }
+  
+  .minimize-button {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Smooth scrolling */
+.ReactModal__Content {
+  scroll-behavior: smooth;
+}
+
+/* Firefox scrollbar styling */
+.ReactModal__Content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+}
+
