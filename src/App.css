@@ -40,9 +40,23 @@ body {
 }
 
 .app-container header h1 {
-  font-size: 2rem;
+  font-size: clamp(2rem, 3vw + 0.8rem, 3rem); /* Reduced from 4rem max */
   margin-bottom: 0.5rem;
   color: white;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Page titles - slightly smaller than main logo */
+.page-title {
+  font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important; /* Better proportion */
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
 }
 
 /* Make main content area flexible and scrollable */
@@ -52,6 +66,10 @@ body {
   flex-direction: column;
   overflow: auto;
   min-height: 0;
+}
+
+.app-container main::-webkit-scrollbar {
+  display: none;
 }
 
 /* Styling for action buttons (clean and download)  */
@@ -64,35 +82,37 @@ body {
 }
 
 .drop-area {
-  width: 100%;
-  max-width: 500px;
-  padding: 30px;
   border: 2px dashed rgba(255, 255, 255, 0.3);
+  padding: 2rem;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
   text-align: center;
   cursor: pointer;
-  transition: background 0.3s ease;
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  margin: 2rem auto;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  max-width: 600px;
 }
 
 .drop-area p {
+  font-size: 1.1rem;
+  color: white;
   margin: 0;
-  font-size: 1.2rem;
 }
 
 .drop-area span {
-  color: rgb(75, 142, 219);
+  color: blue;
   font-weight: bold;
   cursor: pointer;
+  transition: color 0.3s ease;
+  text-decoration: underline;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .drop-area.dragging {
-  background: rgba(255, 165, 0, 0.3);
-  border-color: rgb(75, 142, 219);
+  border-color: #4b8edb;
+  background: rgba(75, 142, 219, 0.3);
 }
 
 .contact-search {
@@ -131,11 +151,29 @@ input[type="text"]::placeholder {
 }
 
 /* Header */
-header h1 {
-  font-size: 2rem;
-  font-weight: bold;
+.app-container header {
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+
+.app-container header h1 {
+  font-size: clamp(2rem, 3vw + 0.8rem, 3rem);
+  margin-bottom: 0.5rem;
   color: white;
-  margin-bottom: 1rem;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Page titles - slightly smaller than main logo */
+.page-title {
+  font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important;
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
 }
 
 /* Buttons and input */
@@ -272,9 +310,13 @@ input[type="text"] {
   }
 
   .app-container header h1 {
-    font-size: 1.8rem;
+    font-size: clamp(1.8rem, 4vw + 0.5rem, 2.5rem); /* Adjusted for mobile */
   }
-
+  
+  .page-title {
+    font-size: clamp(1.4rem, 3.5vw + 0.3rem, 2rem) !important;
+  }
+  
   button,
   input[type="file"] {
     padding: 12px 24px;
@@ -310,6 +352,10 @@ input[type="text"] {
   }
   
   .app-container header h1 {
-    font-size: 1.5rem;
+    font-size: clamp(1.6rem, 5vw + 0.3rem, 2.2rem); /* Even smaller for small screens */
+  }
+  
+  .page-title {
+    font-size: clamp(1.2rem, 4vw + 0.2rem, 1.7rem) !important;
   }
 }

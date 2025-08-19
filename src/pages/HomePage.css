@@ -1,18 +1,39 @@
 .homepage-container {
-  padding: 2rem;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Add page title styling for consistency */
+.page-title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
 }
 
 .logo-section {
-  margin-bottom: 3rem;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .logo-icon {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
   transition: transform 0.3s ease;
 }
@@ -24,17 +45,22 @@
 .content-section {
   width: 100%;
   max-width: 1000px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .feature-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2.5rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
 }
 
 .feature-card {
-  /* Glassy effect */
+  /* Glassy effect - matching your app theme */
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -111,40 +137,16 @@
   animation-delay: 0.2s;
 }
 
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 900px) {
   .homepage-container {
-    padding: 1.5rem;
+    padding: 1rem;
   }
   
   .feature-cards {
     grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-  
-  .logo-icon {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .feature-card {
-    padding: 2rem 1.5rem;
-  }
-  
-  .feature-card h3 {
-    font-size: 1.2rem;
-  }
-  
-  .feature-card p {
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .homepage-container {
-    padding: 1rem;
+    gap: 1.5rem;
+    max-width: 400px;
   }
   
   .logo-icon {
@@ -156,8 +158,43 @@
     padding: 1.5rem;
   }
   
+  .feature-card h3 {
+    font-size: 1.2rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+  
+  .page-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .homepage-container {
+    padding: 0.5rem;
+  }
+  
+  .logo-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .logo-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .feature-card {
+    padding: 1.2rem;
+  }
+  
   .feature-cards {
-    gap: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
   }
 }
 

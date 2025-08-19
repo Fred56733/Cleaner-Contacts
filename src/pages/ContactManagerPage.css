@@ -1,3 +1,39 @@
+.contact-manager-page {
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: white;
+  animation: fadeIn 0.4s ease-in-out;
+  overflow: auto;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contact-manager-page h2 {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Add this if you don't have a visible h2 in your JSX */
+.page-title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
 .contact-search {
     color: white;
     &::placeholder {
