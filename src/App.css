@@ -6,24 +6,70 @@ body {
   background-size: cover;
   color: var(--text-color);
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
   min-height: 100vh;
   width: 100vw;
+  overflow: hidden;
+  position: fixed; 
+  top: 0;
+  left: 0;
 }
 
-/* Layout Container */
+/* Layout container */
 .app-container {
-  width: 100%;
-  max-width: 1400px; 
+  width: calc(100% - 40px);
+  max-width: 1160px;
+  height: calc(100vh - 120px);
   background: rgba(0, 0, 0, 0.6);
-  padding: 40px;
+  padding: 20px;
   border-radius: 12px;
   text-align: center;
-  margin-top: 85px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 80px auto 20px auto;
+  position: relative;
+}
+
+/* Make header consistent */
+.app-container header {
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+
+.app-container header h1 {
+  font-size: clamp(2rem, 3vw + 0.8rem, 3rem); /* Reduced from 4rem max */
+  margin-bottom: 0.5rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Page titles - slightly smaller than main logo */
+.page-title {
+  font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important; /* Better proportion */
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Make main content area flexible and scrollable */
+.app-container main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  min-height: 0;
+}
+
+.app-container main::-webkit-scrollbar {
+  display: none;
 }
 
 /* Styling for action buttons (clean and download)  */
@@ -36,52 +82,101 @@ body {
 }
 
 .drop-area {
-  width: 100%;
-  max-width: 500px;
-  padding: 30px;
   border: 2px dashed rgba(255, 255, 255, 0.3);
+  padding: 2rem;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
   text-align: center;
   cursor: pointer;
-  transition: background 0.3s ease;
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  margin: 2rem auto;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  max-width: 600px;
 }
 
 .drop-area p {
+  font-size: 1.1rem;
+  color: white;
   margin: 0;
-  font-size: 1.2rem;
 }
 
 .drop-area span {
-  color: #4b8edb;
+  color: blue;
   font-weight: bold;
   cursor: pointer;
+  transition: color 0.3s ease;
+  text-decoration: underline;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .drop-area.dragging {
-  background: rgba(255, 165, 0, 0.3);
-  border-color: rgba(255, 165, 0, 0.8);
+  border-color: #4b8edb;
+  background: rgba(75, 142, 219, 0.3);
 }
 
 .contact-search {
   width: 100%;
   max-width: 500px;
   margin: 20px auto;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Search input styling */
+.contact-search input,
+input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Focus state - changes border color when clicked/focused */
+.contact-search input:focus,
+input[type="text"]:focus {
+  outline: none;
+  border-color: rgb(75, 142, 219); 
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Placeholder text styling */
+.contact-search input::placeholder,
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Header */
-header h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: var(--heading-color);
-  margin-bottom: 1rem;
+.app-container header {
+  flex-shrink: 0;
+  margin-bottom: 10px;
 }
 
-/* Buttons and Input */
+.app-container header h1 {
+  font-size: clamp(2rem, 3vw + 0.8rem, 3rem);
+  margin-bottom: 0.5rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Page titles - slightly smaller than main logo */
+.page-title {
+  font-size: clamp(1.6rem, 2.5vw + 0.5rem, 2.4rem) !important;
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Buttons and input */
 button,
 input[type="file"] {
   background: linear-gradient(135deg, #669cd3, #4b8edb);
@@ -96,7 +191,7 @@ input[type="file"] {
   box-shadow: 0 4px 10px rgba(33, 113, 204, 0.3);
 }
 
-/* Button Hover Effect  make sure to round the edges of buttons 2-7-25 */
+/* Button hover effect */
 button:hover,
 input[type="file"]:hover {
   background: linear-gradient(135deg, #347994, #27616b);
@@ -104,21 +199,21 @@ input[type="file"]:hover {
   box-shadow: 0 6px 15px rgba(14, 40, 88, 0.5);
 }
 
-/* Button Click Effect */
+/* Button click effect */
 button:active,
 input[type="file"]:active {
   transform: scale(0.95);
   box-shadow: 0 2px 5px rgba(17, 16, 15, 0.2);
 }
 
-/* Disabled Button */
+/* Disabled button */
 button:disabled {
   background: gray;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/* Modern Floating Button */
+/* Floating button */
 .floating-button {
   position: fixed;
   bottom: 20px;
@@ -137,27 +232,34 @@ button:disabled {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Table */
+/* Table adjustments */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
 table {
-  width: 100%;
+  width: 90%;
+  margin: 10px auto;
   margin-top: 20px;
   border-collapse: collapse;
   table-layout: fixed;
-  background: rgba(255, 255, 255, 0.1); /* New background */
-  border-radius: 8px; /* New rounded corners */
-  overflow: hidden; /* Ensure clean edges */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 12px; /* Increased padding */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
+  padding: 12px; 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
   text-align: left;
   word-wrap: break-word;
   color: var(--text-color);
 }
 
 th {
-  background: rgba(228, 227, 227, 0.8); /* Updated background */
+  background: rgba(228, 227, 227, 0.8); 
   color: #000;
   text-transform: uppercase;
 }
@@ -171,11 +273,11 @@ tr {
 }
 
 tr:nth-child(even) td {
-  background: rgba(0, 0, 0, 0.404); /* Softer alternate row color */
+  background: rgba(0, 0, 0, 0.404); 
 }
 
 tr:hover td {
-  background: rgba(255, 165, 0, 0.5);
+  background: rgba(33, 113, 204, 0.3);
   transition: background 0.3s ease;
 }
 
@@ -185,8 +287,8 @@ tr:hover td {
 }
 
 input[type="text"] {
-  background-color: #76777e; /* background for text*/
-  color: #fffefe; /* text */
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fffefe;
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 10px;
@@ -195,15 +297,31 @@ input[type="text"] {
 
 
 @media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+  
   .app-container {
-    padding: 20px; /* prev was 10 px */
+    width: calc(100% - 30px);
+    max-width: calc(100vw - 30px);
+    height: calc(100vh - 140px);
+    padding: 15px;
+    margin: 100px auto 20px auto;
   }
 
+  .app-container header h1 {
+    font-size: clamp(1.8rem, 4vw + 0.5rem, 2.5rem); /* Adjusted for mobile */
+  }
+  
+  .page-title {
+    font-size: clamp(1.4rem, 3.5vw + 0.3rem, 2rem) !important;
+  }
+  
   button,
   input[type="file"] {
-    width: 100%;
-    margin: 10px 0;
+    padding: 12px 24px;
   }
+  
   nav ul {
     flex-direction: column;
     align-items: center;
@@ -214,7 +332,30 @@ input[type="text"] {
     width: 100%;
     text-align: center;
   }
+  
   table {
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  .app-container {
+    width: calc(100% - 20px);
+    max-width: calc(100vw - 20px);
+    height: calc(100vh - 160px);
+    padding: 10px;
+    margin: 120px auto 20px auto;
+  }
+  
+  .app-container header h1 {
+    font-size: clamp(1.6rem, 5vw + 0.3rem, 2.2rem); /* Even smaller for small screens */
+  }
+  
+  .page-title {
+    font-size: clamp(1.2rem, 4vw + 0.2rem, 1.7rem) !important;
   }
 }

@@ -1,1 +1,151 @@
-/* Need to transfer over styling */
+/* Merge page styling */
+.merge-page {
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: white;
+  animation: fadeIn 0.4s ease-in-out;
+  overflow: auto;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.merge-page h2,
+.page-title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.merge-section-title {
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem 0;
+  color: white;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Button styling */
+button {
+  background: linear-gradient(135deg, #669cd3, #4b8edb);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(33, 113, 204, 0.3);
+}
+
+button:hover {
+  background: linear-gradient(135deg, #347994, #27616b);
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(14, 40, 88, 0.5);
+}
+
+/* Search input styling */
+.contact-search input {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.contact-search input:focus {
+  outline: none;
+  border-color: #4b8edb;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(75, 142, 219, 0.2);
+}
+
+.contact-search input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Table styling */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+th {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .merge-page {
+    padding: 1.5rem;
+  }
+  
+  .page-title {
+    font-size: 1.8rem;
+  }
+  
+  .merge-section-title {
+    font-size: 1.3rem;
+  }
+  
+  .drop-area {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .merge-page {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .merge-section-title {
+    font-size: 1.2rem;
+  }
+  
+  .drop-area {
+    padding: 1rem;
+  }
+}

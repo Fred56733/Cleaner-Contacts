@@ -387,7 +387,8 @@ const ContactManagerPage = () => {
   };
 
   return (
-    <div>
+    <div className="contact-manager-page">
+      <h2 className="page-title">Contact Manager</h2>
       <FileInput onFileParsed={handleFileParsed} />
 
       <div className="action-buttons">

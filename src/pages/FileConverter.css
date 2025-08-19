@@ -1,12 +1,12 @@
 .file-converter-page {
   padding: 2rem;
-  max-width: 800px;
-  margin: 2rem auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: white;
   animation: fadeIn 0.4s ease-in-out;
+  overflow: auto;
 }
 
 @keyframes fadeIn {
@@ -17,15 +17,17 @@
 .file-converter-page h2 {
   font-size: 2.2rem;
   margin-bottom: 1.5rem;
-  color: #333;
-  border-bottom: 2px solid #007bff;
+  color: white;
+  border-bottom: 2px solid #4b8edb;
   padding-bottom: 0.5rem;
+  text-align: center;
 }
 
 .file-input-wrapper {
   position: relative;
   display: inline-block;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .file-input-wrapper input[type="file"] {
@@ -39,19 +41,22 @@
 }
 
 .custom-file-button {
-  background-color: #007bff;
+  background: linear-gradient(135deg, #669cd3, #4b8edb);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(33, 113, 204, 0.3);
 }
 
 .custom-file-button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #347994, #27616b);
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(14, 40, 88, 0.5);
 }
 
 .file-converter-page .format-options {
@@ -59,78 +64,112 @@
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
+  justify-content: center;
 }
 
 .format-options button {
   flex: 1;
   min-width: 120px;
-  padding: 0.6rem 1rem;
-  background-color: #6c757d;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #669cd3, #4b8edb);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(33, 113, 204, 0.3);
 }
 
 .format-options button.active {
-  background-color: #17a2b8;
+  background: linear-gradient(135deg, #ff9500, #ffab33);
+  box-shadow: 0 4px 10px rgba(255, 149, 0, 0.4);
 }
 
 .format-options button:hover {
-  background-color: #5a6268;
+  background: linear-gradient(135deg, #347994, #27616b);
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(14, 40, 88, 0.5);
 }
 
 .file-converter-page button.convert-btn {
   margin-top: 1rem;
   width: 100%;
-  padding: 0.8rem;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  padding: 12px 24px;
   font-size: 1.1rem;
+  font-weight: bold;
   border-radius: 8px;
-  background-color: #28a745;
+  background: linear-gradient(135deg, #4CAF50, #2E8B57);
   color: white;
-  transition: background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
 }
 
 .file-converter-page button.convert-btn:hover {
-  background-color: #218838;
+  background: linear-gradient(135deg, #45a049, #228B22);
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(76, 175, 80, 0.5);
 }
 
 .file-converter-page pre {
-  background-color: #f1f3f5;
+  background: rgba(255, 255, 255, 0.1);
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid #ced4da;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   overflow-x: auto;
   font-size: 0.9rem;
   margin-top: 1rem;
   white-space: pre-wrap;
-  color: #212529;
-}
-.drop-zone {
-  border: 2px dashed #007bff;
-  padding: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.3s, background-color 0.3s;
-  margin-bottom: 2rem;
-  background-color: #f9f9f9;
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
-.drop-zone.drag-over {
-  border-color: #0056b3;
-  background-color: #e9f5ff;
+/* Responsive design */
+@media (max-width: 768px) {
+  .file-converter-page {
+    padding: 1.5rem;
+  }
+  
+  .file-converter-page h2 {
+    font-size: 1.8rem;
+  }
+  
+  .format-options {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .format-options button {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .drop-zone {
+    padding: 1.5rem;
+  }
 }
 
-.drop-zone p {
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.drop-zone .click-text {
-  color: #007bff;
-  text-decoration: underline;
-  font-weight: bold;
+@media (max-width: 480px) {
+  .file-converter-page {
+    padding: 1rem;
+  }
+  
+  .file-converter-page h2 {
+    font-size: 1.5rem;
+  }
+  
+  .drop-zone {
+    padding: 1rem;
+  }
+  
+  .drop-zone p {
+    font-size: 1rem;
+  }
 }

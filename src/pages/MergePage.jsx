@@ -134,8 +134,8 @@ const MergePage = () => {
   }, [filesProcessed]);
 
   return (
-    <div>
-      <h2>CSV File Merger</h2>
+    <div className="merge-page">
+      <h2 className="page-title">File Merger</h2>
 
       {/* First File Input */}
       <h3>Upload First CSV File</h3>
@@ -162,7 +162,7 @@ const MergePage = () => {
       </div>
 
       <div>
-        <h4>View Merged Contacts</h4>
+        <h3>Merged Contacts</h3>
         <ContactsDisplay
           contacts={getFilteredContacts()}
           onSelectContact={(contact) => console.log("Selected Contact:", contact)}

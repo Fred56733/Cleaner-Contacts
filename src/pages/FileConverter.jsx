@@ -302,7 +302,7 @@ END:VCARD`;
       <h2>File Converter</h2>
 
       <div
-        className="drop-zone"
+        className="drop-area"
         ref={dropRef}
         onClick={triggerFileInput}
         onDrop={handleDrop}
