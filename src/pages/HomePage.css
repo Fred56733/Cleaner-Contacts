@@ -1,11 +1,12 @@
 .homepage-container {
-  height: 100%;
+  height: 100vh;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'Inter', system-ui, sans-serif;
   animation: fadeIn 0.4s ease-in-out;
 }
@@ -198,3 +199,53 @@
   }
 }
 
+@media (max-width: 400px) {
+  .homepage-container {
+    justify-content: flex-start; 
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .content-section {
+    align-items: flex-start; 
+  }
+  
+  .feature-cards {
+    max-width: 300px;
+  }
+  
+  .feature-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .logo-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .page-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .homepage-container {
+    padding: 0.5rem;
+  }
+  
+  .feature-card {
+    padding: 0.8rem;
+  }
+  
+  .feature-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}

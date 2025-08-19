@@ -11,7 +11,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      webSecurity: false,  // Keep disabled for now
+      webSecurity: false,  
       allowRunningInsecureContent: false,
       experimentalFeatures: false
     },
@@ -24,7 +24,6 @@ function createWindow() {
   if (isDev) {
     startUrl = 'http://localhost:5173';
   } else {
-    // Make sure this points to the correct location
     startUrl = `file://${path.join(__dirname, '../dist/index.html')}`;
   }
   
@@ -39,7 +38,7 @@ function createWindow() {
   });
 
   // Keep DevTools open to see errors
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
