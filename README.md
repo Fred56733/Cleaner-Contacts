@@ -7,90 +7,97 @@
 # Contact-Management-Project 
 
 ## 🚀 Overview
-**Contact Manager** is designed to streamline your contact management process. From importing messy contact files to cleaning duplicates and normalizing data, Contact Manager provides a user-friendly interface to help you stay organized. Whether you're managing personal or professional connections, we make it simple and efficient.
+**Cleaner Contact** is a powerful web application designed to streamline contact management. Upload messy CSV or vCard files and get clean, organized contact data in seconds. Perfect for professionals, businesses, or anyone dealing with large contact lists that need cleaning and organization.
 
-**Time Invested**: ⏳ 25+ hours and counting...
-
-**Submitted by**: Group 28
-
----
-
-## 🛠 Features
-
-### Already Implemented:
-- [x] 📂 **Contact File Upload** - Supports CSV and vCard formats.
-- [x] 🧹 **Automatic Data Cleaning** - Normalizes phone numbers and removes duplicates.
-- [x] 👓 **Contact Viewer** - Displays cleaned contacts in a user-friendly table.
-- [x] 📥 **Export Cleaned Data** - Allows downloading of the updated contact list as a CSV file.
-
-### Planned for the Future:
-- [ ] 🔎 **Contact Filtering and Sorting** - Filter by tags and sort alphabetically.
-- [ ] 🔄 **Merge Functionality** - Combine multiple contact files seamlessly.
-- [ ] 📊 **Analytics** - Provide insights like the number of duplicates removed and what was normalized.
-- [ ] 🌐 **Social Media Integration** - Update contacts using platforms like LinkedIn.
+**Built with**: React.js, JavaScript, CSS3  
+**Time Invested**: ⏳ 280+ hours and counting...
 
 ---
 
-## 👨‍💻 Team Contributions
+## 🛠 Key Features
 
-### Frederick DeBiase
-- **Position**: Team Leader, Contact Management Module Developer
-- **Responsibilities**:
-  - Need to enable support foor vCard formats.
-  - Coordinated with the sponsor to finalize design goals.
-- **Implemented Features**:
-  - Developed the file importing and viewing features.
-  - Enabled support for CSV formats.
-  - Design and implemented the layout for the web application.
+### 🧹 **Smart Contact Cleaning**
+- **Duplicate Detection & Removal** - Automatically identifies and removes duplicate contacts based on email, phone, or name
+- **Phone Number Normalization** - Standardizes phone numbers to consistent formats
+- **Data Validation** - Flags incomplete or invalid contact information
+- **Email Validation** - Ensures email addresses follow proper formatting
 
-### Melvin Ho
-- **Position**: Back-end Developer
-- **Responsibilities**:
-  - Focused on implementing algorithms for data cleaning.
-  - Developed initial logic for duplicate removal and phone number normalization.
-  - Researched tools and APIs for enhanced functionality.
+### 📂 **Multi-Format Support**
+- **CSV Import/Export** - Handle standard CSV contact files
+- **vCard Support** - Import and convert .vcf files seamlessly
+- **Excel Export** - Download cleaned data as Excel spreadsheets
+- **JSON Export** - Export data in JSON format for developers
 
-### Talon Farmer
-- **Position**: Synchronization Specialist
-- **Responsibilities**:
-  - Worked on the merging of contact files.
-  - Developed pop-ups for user-friendly conflict resolution.
-  - Planned future filtering and grouping features.
+### 🔄 **File Merging**
+- **Multi-File Processing** - Upload and merge multiple contact files
+- **Conflict Resolution** - Smart handling of conflicting contact information
+- **Bulk Operations** - Process thousands of contacts efficiently
 
-### Mark Reece
-- **Position**: User Interface Designer
-- **Responsibilities**:
-  - Integrate buttons and tables for clean navigation.
-  - Planned features for enhanced filtering and sorting.
+### 📊 **Real-Time Analytics**
+- **Cleaning Summary** - See exactly what was cleaned and removed
+- **Data Insights** - Statistics on duplicates, invalid entries, and corrections
+- **Visual Feedback** - Clear indicators of cleaning progress and results
 
-### Isaiah Cruz
-- **Position**: API Integration and Data Export Specialist
-- **Responsibilities**:
-  - Planned additional APIs for social media integration and updating contacts.
-- **Implemented Features**:
-  - Initial contact data cleaning and duplicate removal.
-  - Develop an export function to download cleaned contact files.
-  
----
-
-## 🎥 Screenshots & Walkthroughs
-
-### Main Interface:
-<img src="add figma" alt="main-interface" width="1000"/>
-
-### Contact Upload and Cleaning:
-<img src="add video" alt="contact-upload" width="1000"/>
+### 🎨 **Modern Interface**
+- **Drag & Drop** - Intuitive file uploading experience
+- **Live Search** - Filter and find contacts instantly
+- **Responsive Design** - Works perfectly on desktop and mobile
+- **Glass Morphism UI** - Beautiful, modern design with smooth animations
 
 ---
 
-## 🔗 Links
-- **Project Proposal**: [Google Docs Proposal Link](#)
-- **Live Demo**: [Contact Manager Demo Link](#)
+## 🔧 Technical Features
+
+### File Processing
+- **Large File Support** - Handle files with thousands of contacts
+- **Memory Efficient** - Optimized processing for better performance
+- **Error Handling** - Graceful handling of corrupted or malformed files
+
+### Data Cleaning Algorithms
+- **Fuzzy Matching** - Identifies similar contacts that might be duplicates
+- **Smart Parsing** - Handles various contact file formats and structures
+- **Validation Rules** - Comprehensive checks for data integrity
+
+### Export Options
+- **Multiple Formats** - CSV, Excel, JSON, vCard
+- **Custom Fields** - Choose which fields to include in exports
+
+### Safety & Privacy
+- **No External APIs** - All processing happens locally in your browser
+- **Zero Data Storage** - Your contact files are never saved or stored on our servers
+- **Complete Privacy** - No data leaves your device during the cleaning process
+- **Offline Capable** - Download and run locally for maximum security
+- **Open Source** - Full transparency with publicly available code
 
 ---
 
-## 📝 Development Notes
-The development of **Contact Manager** focused on creating an intuitive interface while addressing common issues in contact file management, such as duplicate entries and inconsistent formatting. Collaborating as a team, we overcame challenges in algorithm development and UI design, paving the way for advanced features in future iterations.
+### 📥 Download (No coding required)
+
+We publish signed builds on GitHub Releases.
+
+Go to **Releases** → **latest version**.
+
+Under **Assets**, download the installer for your OS:
+- `CleanerContacts-Setup-x64.exe` (Windows)
+- `CleanerContacts-darwin-x64.dmg` (macOS Intel) / `CleanerContacts-darwin-arm64.dmg` (Apple Silicon)
+- `CleanerContacts-linux-x86_64.AppImage` (Linux)
+
+Open the installer and launch Cleaner Contacts.
+
+---
+
+## 🔗 Demo & Links
+- **Live Demo**: [Cleaner Contacts Demo](#)
+- **GitHub Releases (Download App)**: [Releases Page](#)
+
+---
+
+## 👥 Team
+- **Frederick DeBiase** — Team Lead  
+- **Talon Farmer**  
+- **Isaiah Cruz**   
+- **Melvin Ho** 
+- **Mark Reece** 
 
 ---
 
