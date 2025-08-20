@@ -16,29 +16,29 @@
 
 ## 🛠 Key Features
 
-### 🧹 **Smart Contact Cleaning**
+### **Smart Contact Cleaning**
 - **Duplicate Detection & Removal** - Automatically identifies and removes duplicate contacts based on email, phone, or name
 - **Phone Number Normalization** - Standardizes phone numbers to consistent formats
 - **Data Validation** - Flags incomplete or invalid contact information
 - **Email Validation** - Ensures email addresses follow proper formatting
 
-### 📂 **Multi-Format Support**
+### **Multi-Format Support**
 - **CSV Import/Export** - Handle standard CSV contact files
 - **vCard Support** - Import and convert .vcf files seamlessly
 - **Excel Export** - Download cleaned data as Excel spreadsheets
 - **JSON Export** - Export data in JSON format for developers
 
-### 🔄 **File Merging**
+### **File Merging**
 - **Multi-File Processing** - Upload and merge multiple contact files
 - **Conflict Resolution** - Smart handling of conflicting contact information
 - **Bulk Operations** - Process thousands of contacts efficiently
 
-### 📊 **Real-Time Analytics**
+### **Real-Time Analytics**
 - **Cleaning Summary** - See exactly what was cleaned and removed
 - **Data Insights** - Statistics on duplicates, invalid entries, and corrections
 - **Visual Feedback** - Clear indicators of cleaning progress and results
 
-### 🎨 **Modern Interface**
+### **Modern Interface**
 - **Drag & Drop** - Intuitive file uploading experience
 - **Live Search** - Filter and find contacts instantly
 - **Responsive Design** - Works perfectly on desktop and mobile
