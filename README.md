@@ -87,8 +87,8 @@ Open the installer and launch Cleaner Contacts.
 ---
 
 ## 🔗 Demo & Links
-- **Live Demo**: [Cleaner Contacts Demo](#)
-- **GitHub Releases (Download App)**: [Releases Page](#)
+- **Live Demo**: [Cleaner Contacts Demo](https://youtu.be/Si0J3p5zZ88)
+- **GitHub Releases (Download App)**: [Releases Page](https://github.com/Fred56733/Cleaner-Contacts/releases)
 
 ---
 
